@@ -65,17 +65,17 @@
 The ESPM applications consists of five microservices and one external service.
 1. Customer Service - This service process customer and shopping cart information
 2. Product Service - This service can be used to process products and stock information
-3. Sales Services - Sales Orders are processed by this service. Each time a sales order is created, it’s not directly inserted into the database but inserted into a queue and a background process called worker picks the message from queue and inserts to the Database. The rationale behind this approach is explained later in the document. For read operation on sales order, its directly read from the database.
+3. Sales Services - Sales Orders are processed by this service. Each time a sales order is created, it’s not directly inserted into the database, but inserted into a queue. A background process called worker picks the message from queue and inserts to the database. The rationale behind this approach is explained later in the document. For read operation on sales order, its directly read from the database.
 4. Worker - Background process which picks the Sales Order from the queue and inserts it into the database.
 5. Gateway - it’s an optional component and acts as entry point for the complete application. It also acts as a reverse proxy and routes the request to the appropriate microservice.
-6. External Tax Service - This is a service which is external to the application and used to do tax calculation. This Tax calculation service is provided to be used along with the implementation of Circuit Breaker, Quarantine pattern.
+6. External Tax Service - This is a service which is external to the application and used to do tax calculation. This Tax calculation service is provided, to be used along with the implementation of Circuit Breaker, Quarantine pattern.
 
-A [Domain Driven Design](https://en.wikipedia.org/wiki/Domain-driven_design) approach was used to decide the capabilities of each microservices. The Customer and Cart entities are part of the Customer Microservice and Product and Stock entities are part of the Product Service. To keep things simple there is only one entity in Sales Service which is the Sales Order entity. In real world scenarios Sales Entity might have Sales Order Header and Sales Order Line Items Entity and more. The Product and Customer service has its own database while Sale and worker shares the same database.
+A [Domain Driven Design](https://en.wikipedia.org/wiki/Domain-driven_design) approach was used to decide the capabilities of each microservices. The Customer and Cart entities are part of the Customer Microservice and Product and Stock entities are part of the Product Service. To keep things simple there is only one entity in Sales Service which is the Sales Order entity. In real world scenarios, Sales Entity might have Sales Order Header and Sales Order Line Items Entity and more. The Product and Customer service has its own database while Sale and worker shares the same database.
 
 Each of the resilience patterns has been fit into architecture of the ESPM Application to showcase how they can make an application resilient during potential failures. These are some of the potential places where the pattern could be applied. There could be more points in the application where the pattern could have been applied to make it more resilient.
 
 #### Retry
-In a distributed environment some resources may not be reachable or unavailable due to network latency or network glitches. A simple retry might cause the execution of a task to succeed which would have failed if no retry was attempted. This pattern is showcased by wrapping the database calls in Product and Customer Service with a retry so that if the database is not momentarily reachable a retry will ensure that the task succeeds
+In a distributed environment some resources may not be reachable or unavailable due to network latency or network glitches. A simple retry might cause the execution of a task to succeed which would have failed, if no retry was attempted. This pattern is showcased by wrapping the database calls in Product and Customer Service with a retry. This ensures that if the database is not momentarily reachable a retry will ensure that the task succeeds.
 
 #### Timeout
 It's usually not possible to predict how long it will take for response while calling an external service.  Defining a timeout ensures that the caller be interrupted and does not wait indefinitely if the no response is received.  The timeout is implemented in the Sales Service while calling the external Tax Service. This ensures that Sales Service is not indefinitely blocked by calls to Tax Service.
@@ -84,8 +84,8 @@ It's usually not possible to predict how long it will take for response while ca
 This pattern addresses the challenge in communicating with an external system. The status of the external system is not known, and it could be under load and not responding.  The circuit breaker tackles these problems by introducing a kind of circuit for each external dependency. If a problem is identified, the circuit on the caller side controls the behavior of the calls in future. The circuit breaker is implemented in the Sale Service of ESPM application for communicating with the external Tax service. The Tax service could be temporarily, unavailable, under load or non-responsive. The Circuit Breaker ensures that if Tax service is not reachable the circuit is opened, and no future calls goes Tax service and a fall back service or mechanism is used for Tax Calculation.
 
 #### Bounded Queue
-Introduction of a queue brings the application closer to an asynchronous processing paradigm. It based on assumption that computing resources like CPU and memory are not infinite. The bounded queue implementation in Sale Service can ensure that in case there are spikes in the rate at which Sales Orders are created, they can be slowed down by inserting into the queue first. The number of requests the application can process at a point in time can be decided by the size of queue, so that if the queue becomes full it creates a back pressure but rejecting message. This ensures that application is not getting overloaded and does not crash.
-Also, a secondary advantage is that, if due to network latency database is not available momentarily, the data can remain in the queue. Once the database is available, the worker can pick the data from queue and write to database.
+Introduction of a queue brings the application closer to an asynchronous processing paradigm. It based on assumption that computing resources like CPU and memory are not infinite. The bounded queue implementation in Sale Service can ensure that in case there are spikes in the rate at which Sales Orders are created, they can be slowed down by inserting into the queue first. The number of requests, the application can process at a point in time can be decided by the size of queue. If the queue becomes full, it creates a back pressure by rejecting messages. This ensures that application is not getting overloaded and does not crash.
+Also, a secondary advantage is that, if due to network latency, database is not available momentarily, the data can remain in the queue. Once the database is available, the worker can pick the data from queue and write to database.
 
 #### Shed load
 This pattern focuses on handling the rate at which requests are coming and reject requests before processing, if the system can't handle it. Each request consumes memory. If the system tries to process too many requests than it can handle, it can crash. Shedding the load by rejecting requests which it can't handle as early as possible, ensures that the application remains healthy and does not crash. The system can define a fixed rate for accepting request or be elastic and decide at runtime the current load on resources and decide to accept or reject the request. The Shed Load pattern is implemented in Product and Customer Service to avoid spike in the number of concurrent requests handled by the application. The number of requests which can be processed at a point in time is fixed to specific number and the requests exceeding this number is rejected.
@@ -253,7 +253,7 @@ Follow steps below to run each microservice of ESPM one by one. Please ensure th
 
 #### Gateway
 
-* In the root the folder, execute the command to build the Gateway project (Gateway is a node project, but it can be built using maven node plugins)
+* In the root folder of the project, execute the command to build the Gateway project (Gateway is a [Node.js](https://nodejs.org/en/) project, but it can be built using maven node plugins)
 
   `mvn clean install -pl gateway`
 
@@ -267,7 +267,7 @@ Follow steps below to run each microservice of ESPM one by one. Please ensure th
   }`
 * Approuter port can be configured via PORT parameter in default-env.json. By default, the port is set to 9999
 
-* Once all microservice are running and their endpoints are specified in default-env.json, API gateway being a node.js component can be run via the command from gateway project `.\node\npm start` to run it locally.
+* Once all microservice are running and their endpoints are specified in default-env.json, API gateway being a Node.js component can be run via the command from gateway project `.\node\npm start` to run it locally.
 * This will start gateway in the url http://localhost:9999
 * Once gateway is started all the microservice are accessible via the gateway url http://localhost:9999
 E.g. Get Customer by Email Address http://localhost:9999/customer.svc/api/v1/customers/{emailAddress}
@@ -372,14 +372,14 @@ The below are the list of local service API endpoints of all the microservices.
 
 
 #### Test ESPM application locally
-To test ESPM application [Postman REST Client](https://www.getpostman.com/apps) can be used. There a Postman collection which is [provided](./documentation/postman-collections/ESPM-Local.postman_collection.json) which has all the request URLs and sample request body payloads(in case of POST request), this can be used for testing.
+To test ESPM application [Postman REST Client](https://www.getpostman.com/apps) can be used. There a Postman collection which is [provided](./documentation/postman-collections/ESPM-Local.postman_collection.json), it has all the request URLs and sample request body payloads(in case of POST request).
 
 ## Running the application on Cloud Foundry
 
 To run the application on Cloud Foundry you need an account on SAP Cloud Platform Cloud Foundry Environment or signup for a [SAP Cloud Platform Cloud Foundry Environment trial account](https://cloudplatform.sap.com/try.html)
-*Please note that in SAP Cloud Platform Cloud Foundry Environment,  for a trial account there is limited resource and you get a RAM of 2 GB which is not sufficient to run the complete application*  
-To run the complete application, one will need around 5.5 GB or RAM. Each of the 5 Spring boot applications (Product Service, Customer Service, Sales Service, Worker and Tax Service) needs 1 GB of RAM and Gateway needs around 512 MB. The optimal way to run application is
-* Signup for SAP Cloud Platform Neo trial account by following steps in this [link](https://cloudplatform.sap.com/try.html)
+*Please note that in SAP Cloud Platform Cloud Foundry Environment,  for a trial account, there is limited resource and you get a RAM of 2 GB which is not sufficient to run the complete ESPM application*  
+To run the complete ESPM application, one will need around 5.5 GB of RAM. Each of the 5 Spring boot applications (Product Service, Customer Service, Sales Service, Worker and Tax Service) needs 1 GB of RAM and Gateway (based on Node.js) needs around 512 MB. The optimal way to run application is
+* Signup for SAP Cloud Platform Neo trial account by following [these steps](https://cloudplatform.sap.com/try.html)
 * Run Tax service in [SAP Cloud Platform Neo Environment](./tax-service#running-on-sap-cloud-platfrom-neo-environment)
 
 * The recommended way to consume the Tax service would be via a [Destination Service](https://help.sap.com/viewer/cca91383641e40ffbe03bdc78f00f681/Cloud/en-US/7e306250e08340f89d6c103e28840f30.html). In the current implementation, for simplicity the tax service url of the application running on SAP Cloud Platform Neo is hard coded in Cloud Foundry manifest.yml (env name TAX_SERVICE under module espm-sales-svc). This is not a recommended approach since if the tax service url changes the new url must be updated in manifest file for the env TAX_SERVICE and the application must be redeployed. This would mean some downtime for the ESPM application.
@@ -391,22 +391,23 @@ To run the complete application, one will need around 5.5 GB or RAM. Each of the
 
 * Create RabbitMQ Service instance `cf create-service rabbitmq v3.6-dev espm-mq`
 
-* Edit the manifest.yml file and update `<unique-id>` with some unique value for each applications host name
+* Edit the manifest.yml file and update `<unique_id>` with some unique value for each applications host name
 
 * Edit the TAX_SERVICE env variable in manifest.yml file under the module espm-sales-svc with the URL of tax service running on SAP Cloud Platform Neo or SAP Cloud Platform Cloud Foundry.
 
-* Do a maven build of complete application from command line by running command `mvn clean install` from project root folder
+* Do a maven build of complete application from command line by running command `mvn clean install` from the projects root folder.
 
-* Deploy Worker on to Cloud Foundry from the project root folder by running command `cf push espm-worker` from CLI
+* Deploy Worker on to Cloud Foundry from the project root folder by running command `cf push <unique_id>-espm-worker` from CLI
 
-* Deploy Sale Service  on to Cloud Foundry from the project root folder by running command `cf push espm-sales-svc` from CLI
+* Deploy Sale Service  on to Cloud Foundry from the project root folder by running command `cf push espm-sales-svc` from CLI.
+
 * Learn resilience patterns implemented in Sale and worker services
 
-* Stop Sale and Worker service
+* Stop Sale and Worker service.
 
-* Deploy Product Service on to Cloud Foundry from the project root folder by running command `cf push espm-product-svc` from CLI
+* Deploy Product Service on to Cloud Foundry from the project root folder by running command `cf push espm-product-svc` from CLI.
 
-* Deploy Customer Service on to Cloud Foundry from the project root folder by running command `cf push espm-customer-svc` from CLI
+* Deploy Customer Service on to Cloud Foundry from the project root folder by running command `cf push espm-customer-svc` from CLI.
 
 * Learn resilience patterns implemented in Product and Customer  services
 
@@ -511,7 +512,7 @@ The below are the list of local service API endpoints of all the microservices.
 
 
 ### Retry
-Retry patterns is implemented in Customer and Product Service to retry interaction with database. The database might not be reachable momentarily due to network latency. But a simple retry might ensure that the next request might succeed. This ensures that the operation does not fail.
+Retry patterns is implemented in Customer and Product Service to retry interactions with the database. The database might not be reachable momentarily due to network latency. But a simple retry might ensure that the next request might succeed. This ensures that the operation does not fail.
  To see these patterns in action, follow these steps-
 * Hit the Customer Service by running the url `http://localhost:9991/customer.svc/api/v1/customers/viola.gains@itelo.info` and check whether it returns the data
 * Go to the folder where PostgreSQL is installed and navigate to the bin folder and stop the database by running this command `pg_ctl.exe -D "C:\Program Files\PostgreSQL\10\data" stop` in your terminal/command line
@@ -533,8 +534,8 @@ Retry patterns is implemented in Customer and Product Service to retry interacti
 
 * Check if the request succeeds.
 * Check that the response time would be under 1 seconds
-* Stop the Tax Services.
-* Create a Sales Order with following database  
+* Stop the Tax Services which is running on SAP Cloud Platfrom Neo or on Cloud Foundry.
+* Create a Sales Order with following data  
 ` Method : POST `    
   `URL : http://http://localhost:9993/sale.svc/api/v1/salesOrders`       
   `Header: Content-Type : application/json`  
@@ -561,7 +562,7 @@ The Sales service along with Worker implements the Bounded Queue pattern. To see
 	* Again POST some data using `http://localhost:9993/sale.svc/api/v1/salesOrders/` , as Bounded Queue mechanism has been implemented, it will insert the sales order in Queue instead of throwing an error and returns an acknowledgement in the console. e.g.
 	`The message with correlation ID 8f698df8-d5e1-484a-8743-23f5875c1d71 was acknowledged by the broker`
 	* Go to the folder where PostgreSQL is installed and navigate to the bin folder and start the database by running this command `pg_ctl.exe -D "C:\Program Files\PostgreSQL\10\data" start` in your terminal/command line.
-	* Now as Db is up, the Worker will pick the job from Queue and push it into DB, verify it by hitting `http://localhost:9993/sale.svc/api/v1/salesOrders/` .
+	* Now as the database is up, the Worker will pick the job from queue and push it into database, verify it by hitting `http://localhost:9993/sale.svc/api/v1/salesOrders/` .
 
 
 ### Unit Isolation
@@ -582,10 +583,10 @@ To see the pattern in action follow these steps-
 	    "grossAmount": 1000,
 	    "quantity": 2
 	  }`
-	* Now Hit the Sales Service by running the url `http://localhost:9993/sale.svc/api/v1/salesOrders/email/customer@gmail.com` and check whether it returns the data, which includes 2 additional attribues `netAmount` & `taxAmount`.
+	* Now hit the Sales Service by running the url `http://localhost:9993/sale.svc/api/v1/salesOrders/email/customer@gmail.com` and check whether it returns the data, which includes 2 additional attributes `netAmount` & `taxAmount`.
 	* Now Stop the Tax Service which is running locally, which means that the Tax Service endpoint will be unreachable.
 	* Again, POST some data using `http://localhost:9993/sale.svc/api/v1/salesOrders/`.
-	* Normally, this POST method should fail as the endpoint of Tax Service is unreachable but as Circuit Breaker Mechanism is implemented, instead of throwing error, a fallback mechanism is executed which in turn gives default tax value when the Tax Service is down.
+	* Normally, this POST method should fail as the endpoint of Tax Service is unreachable but as Circuit Breaker pattern is implemented, instead of throwing error, a fallback mechanism is executed which in turn gives default tax value when the Tax Service is down.
 	* Now when you start your Tax Service, endpoint becomes reachable and normal flow is resumed.
 
 #### Hystrix Commands
@@ -619,7 +620,7 @@ What this means:
 
 * In the above configuration the Hystrix command key is referred as `taxCommandKey` and the Thread pool command key is referred as  `taxThreadPoolKey`. The `coreSize` is set to 15 which means it will start with a load of 15 threads and can burst up to a  `maximumSize` of 80 threads when necessary. The `maximumSize` settings takes effect only when `allowMaximumSizeToDivergeFromCoreSize`     is set to true. To gain a few seconds of breathing room the requests are parked in a queue by configuring `maxQueueSize` and      `queueSizeRejectionThreshold`. The property `timeoutInMilliseconds` is configured to override the default timeout(1000ms). If the tax     service is unavailable till the configured value, then the caller will observe a timeout and a fallback method will be invoked.  
 
-To see the Hystrix Thread Pool Configuration in action we will use Apache JMeter as performance benchmarking tool.
+To see the Hystrix Thread Pool Configuration in action, we will use Apache JMeter as performance benchmarking tool.
 * Download [Apache JMeter](https://jmeter.apache.org/download_jmeter.cgi).
 * Launch Apache JMeter by running /bin/jmeter.bat or /bin/jmeter.sh (based on your Operating System)
 * The number of concurrent request that can be handled by Sales Order Service is configured in application.properties(/sale-service/src/main/resources/).
