@@ -1,0 +1,373 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "description": "This is an ESPM Customer Service",
+    "version": "1.0.0",
+    "title": "ESPM Customer Service"
+  },
+  "schemes": [
+    "http"
+  ],
+  "basePath": "/customer.svc/api/v1/",
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/customers/": {
+      "get": {
+        "summary": " Get Customer by Email Address",
+        "description": "The Customers endpoint returns all the customers registered in the Webshop.\n",
+        "operationId": "getCustomerByEmailAddress",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "emailAddress",
+            "in": "query",
+            "description": "Email Address of customer that needs to be fetched",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "Customer"
+        ],
+        "responses": {
+          "200": {
+            "description": "Customer found",
+            "schema": {
+              "$ref": "#/definitions/Customer"
+            }
+          },
+          "404": {
+            "description": "Customer not found",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "default": {
+            "description": "Unexpected error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/customers/{customerId}/carts/": {
+      "post": {
+        "summary": "Creat a Cart",
+        "tags": [
+          "Cart"
+        ],
+        "description": "\"The cart endpoint cand be used to create a new cart.\"\n",
+        "operationId": "addCart",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "customerId",
+            "in": "path",
+            "description": "cart that needs to be updated",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Cart which needs to be added",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Cart"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Cart Added",
+            "schema": {
+              "$ref": "#/definitions/Cart"
+            }
+          },
+          "404": {
+            "description": "Customer not found",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "default": {
+            "description": "Unexpected error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      },
+      "get": {
+        "summary": "Get all carts by customer id",
+        "description": "\"The cart returns all carts in Webshop for a customer.\"\n",
+        "operationId": "getCartByCustomerId",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "customerId",
+            "in": "path",
+            "description": "Customer ID of the product to get the cart info.",
+            "required": true,
+            "type": "string",
+            "maxLength": 10
+          }
+        ],
+        "tags": [
+          "Cart"
+        ],
+        "responses": {
+          "200": {
+            "description": "An array of Carts",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Cart"
+              }
+            }
+          },
+          "404": {
+            "description": "Customer not found",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "default": {
+            "description": "Unexpected error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/customers/{customerId}/carts/{itemId}": {
+      "put": {
+        "summary": "Update Cart",
+        "tags": [
+          "Cart"
+        ],
+        "description": "\" The cart endpoint can be used to update cart.\"\n",
+        "operationId": "updateCart",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "customerId",
+            "in": "path",
+            "description": "Customer ID of the product to get the cart info.",
+            "required": true,
+            "type": "string",
+            "maxLength": 10
+          },
+          {
+            "name": "itemId",
+            "in": "path",
+            "description": "cart that needs to be updated",
+            "required": true,
+            "type": "string",
+            "maxLength": 50
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Cart which needs to be updated.",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Cart"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Cart updated.",
+            "schema": {
+              "$ref": "#/definitions/Cart"
+            }
+          },
+          "404": {
+            "description": "Customer or Cart Item not found",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "default": {
+            "description": "Unexpected error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete cart by Item Id",
+        "description": "\"The cart returns all carts in Webshop for a customer.\"\n",
+        "operationId": "deleteCartById",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "customerId",
+            "in": "path",
+            "description": "Customer ID of the product to get the cart info.",
+            "required": true,
+            "type": "string",
+            "maxLength": 10
+          },
+          {
+            "name": "itemId",
+            "in": "path",
+            "description": "Item ID of the cart item",
+            "required": true,
+            "type": "string",
+            "maxLength": 50
+          }
+        ],
+        "tags": [
+          "Cart"
+        ],
+        "responses": {
+          "200": {
+            "description": "Cart Deleted"
+          },
+          "404": {
+            "description": "Cart Item not found",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "default": {
+            "description": "Unexpected error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "Customer": {
+      "type": "object",
+      "properties": {
+        "customerId": {
+          "type": "string",
+          "maxLength": 10,
+          "description": "Unique identifier representing a specific customer."
+        },
+        "emailAddress": {
+          "type": "string",
+          "description": "Email Address of a customer."
+        },
+        "phoneNumber": {
+          "type": "string",
+          "maxLength": 30,
+          "description": "Telephone number of the customer."
+        },
+        "firstName": {
+          "type": "string",
+          "maxLength": 40,
+          "description": "First Name of the customer."
+        },
+        "lastName": {
+          "type": "string",
+          "maxLength": 40,
+          "description": "Last Name of the customer."
+        },
+        "dateOfBirth": {
+          "type": "string",
+          "description": "Date of birth of customer."
+        },
+        "city": {
+          "type": "string",
+          "maxLength": 40,
+          "description": "City where the customer is located."
+        },
+        "postalCode": {
+          "type": "string",
+          "maxLength": 10,
+          "description": "Postal Code of the city where the customer is located."
+        },
+        "street": {
+          "type": "string",
+          "maxLength": 60,
+          "description": "Street where the address of the customer is located."
+        },
+        "houseNumber": {
+          "type": "string",
+          "maxLength": 10,
+          "description": "House Number of the customer."
+        },
+        "country": {
+          "type": "string",
+          "maxLength": 3,
+          "description": "Country of the customer."
+        }
+      }
+    },
+    "Cart": {
+      "type": "object",
+      "properties": {
+        "itemId": {
+          "type": "string",
+          "maxLength": 50,
+          "description": "Unique identifier representing a specific product."
+        },
+        "customerId": {
+          "type": "string",
+          "maxLength": 10,
+          "description": "Unique identifier representing a specific customer."
+        },
+        "productId": {
+          "type": "string",
+          "maxLength": 10,
+          "description": "Unique identifier representing a specific product."
+        },
+        "quantity": {
+          "type": "number",
+          "format": "double",
+          "description": "Stock quantity of the product."
+        },
+        "checkOutStatus": {
+          "type": "boolean",
+          "description": "Check out status of the cart."
+        }
+      }
+    },
+    "Error": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "fields": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}

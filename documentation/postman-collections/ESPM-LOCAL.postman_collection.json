@@ -1,0 +1,197 @@
+{
+	"variables": [],
+	"info": {
+		"name": "ESPM-LOCAL",
+		"_postman_id": "c46a6cb8-11da-9154-da54-54b06af458e1",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Product-Get-All-Products",
+			"request": {
+				"url": "http://localhost:9992/product.svc/api/v1/products",
+				"method": "GET",
+				"header": [
+					{
+						"key": "",
+						"value": "",
+						"description": "",
+						"disabled": true
+					}
+				],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Product-Get-Product-By-ProductID",
+			"request": {
+				"url": "http://localhost:9992/product.svc/api/v1/products/HT-1000",
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Product-Get-Stocks-By-ProductID",
+			"request": {
+				"url": "http://localhost:9992/product.svc/api/v1/stocks/HT-1000",
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Product-Update-Stocks-By-ProductID",
+			"request": {
+				"url": "http://localhost:9992/product.svc/api/v1/stocks/HT-1000",
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"productId\": \"HT-1000\",\n    \"quantity\": 2\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Customer-Get-Customer-By-EmailID",
+			"request": {
+				"url": "http://localhost:9991/customer.svc/api/v1/customers/viola.gains@itelo.info",
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Customer-Create-Cart",
+			"request": {
+				"url": "http://localhost:9991/customer.svc/api/v1/customers/0000000002/carts/",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"productId\": \"HT-1002\",\r\n    \"checkOutStatus\": \"false\",\r\n    \"quantityUnit\": 5\r\n}\r\n"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Customer-Get-Cart-By-CustomerID",
+			"request": {
+				"url": "http://localhost:9991/customer.svc/api/v1/customers/0000000002/carts/",
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Customer-Update-Cart-By-ItemID",
+			"request": {
+				"url": "http://localhost:9991/customer.svc/api/v1/customers/0000000002/carts/2272f1d8-a4c6-47ff-b5dc-0bb7123af42f",
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"productId\": \"HT-1002\",\n    \"quantityUnit\": 5,\n    \"checkOutStatus\": false\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Customer-Delete-Cart-By-ItemID",
+			"request": {
+				"url": "http://localhost:9991/customer.svc/api/v1/customers/0000000002/carts/7ada5240-62ba-4ec2-aabf-f05ee014fe1f",
+				"method": "DELETE",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Sale-Create-Sales-Order",
+			"request": {
+				"url": "http://localhost:9993/sale.svc/api/v1/salesOrders",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"customerEmail\": \"viola.gains@itelo.info\",\n\t\"productId\": \"HT-1000\",\n\t\"currencyCode\": \"EUR\",\n\t\"grossAmount\":956,\n\t\"quantity\":2\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Sale-Get-Sales-Order-By-SalesOrderID",
+			"request": {
+				"url": "http://localhost:9993/sale.svc/api/v1/salesOrders/496aaa9f-1a8d-4212-8c9f-9005c9ece7f2",
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Sale-Get-Sales-Order-By-Customer-Email",
+			"request": {
+				"url": "http://localhost:9993/sale.svc/api/v1/salesOrders/email/viola.gains@itelo.info",
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Sale-Get-All-Sales-Order",
+			"request": {
+				"url": "http://localhost:9993/sale.svc/api/v1/salesOrders/",
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		}
+	]
+}

@@ -1,0 +1,265 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "description": "This is an ESPM Sales Service",
+    "version": "1.0.0",
+    "title": "ESPM Sales Service"
+  },
+  "schemes": [
+    "http"
+  ],
+  "basePath": "/sale.svc/api/v1/",
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/salesOrders": {
+      "post": {
+        "summary": "Create Sales Order",
+        "tags": [
+          "Sales Order"
+        ],
+        "description": "\"This endpoint is used to create a new Sales Order\"\n",
+        "operationId": "addSalesOrder",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Details of the sales order which needs to be created.",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/SalesOrder"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Sales Order created",
+            "schema": {
+              "$ref": "#/definitions/SalesOrder"
+            }
+          },
+          "503": {
+            "description": "Unable to create sales order",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "default": {
+            "description": "Unexpected error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      },
+      "get": {
+        "summary": " Get all SalesOrders",
+        "description": "The Sales Order endpoint returns all the Sales Orders in the Webshop.\n",
+        "operationId": "getSalesOrders",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "Sales Order"
+        ],
+        "responses": {
+          "200": {
+            "description": "An array of Sales Orders",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/SalesOrder"
+              }
+            }
+          },
+          "default": {
+            "description": "Unexpected error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/salesOrders/{salesOrderId}": {
+      "get": {
+        "summary": "Get Sales Order by Id",
+        "description": "\"The Sales Order endpoint which returns sales orders by id.\"\n",
+        "operationId": "getSalesOrderById",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "salesOrderId",
+            "in": "path",
+            "description": "ID of Sales Order that needs to be fetched",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "Sales Order"
+        ],
+        "responses": {
+          "200": {
+            "description": "Sales Order with matching Id",
+            "schema": {
+              "$ref": "#/definitions/SalesOrder"
+            }
+          },
+          "404": {
+            "description": "Sales Order not found",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "default": {
+            "description": "Unexpected error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/salesOrders/email/{emailAddress}": {
+      "get": {
+        "summary": "Get Sales Order by Id",
+        "description": "\"The Sales Order endpoint which returns sales orders by customer email.\"\n",
+        "operationId": "getSalesOrderByCustomerEmail",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "emailAddress",
+            "in": "path",
+            "description": "Email Address of Customer whose sales orders be fetched",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "Sales Order"
+        ],
+        "responses": {
+          "200": {
+            "description": "Sales Order with matching Id",
+            "schema": {
+              "$ref": "#/definitions/SalesOrder"
+            }
+          },
+          "404": {
+            "description": "Sales Order not found",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "default": {
+            "description": "Unexpected error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "SalesOrder": {
+      "type": "object",
+      "properties": {
+        "salesOrderId": {
+          "type": "string",
+          "maxLength": 50,
+          "description": "Unique identifier representing a specific customer."
+        },
+        "customerEmail": {
+          "type": "string",
+          "description": "Email Address of customer"
+        },
+        "currencyCode": {
+          "type": "string",
+          "maxLength": 5,
+          "description": "Currency of product price"
+        },
+        "grossAmount": {
+          "type": "number",
+          "format": "double",
+          "description": "Gross amount of sales order"
+        },
+        "netAmount": {
+          "type": "number",
+          "format": "double",
+          "description": "Net amount of sales order"
+        },
+        "taxAmount": {
+          "type": "number",
+          "format": "double",
+          "description": "Tax amount of sales order"
+        },
+        "lifeCycleStatus": {
+          "type": "string",
+          "maxLength": 1,
+          "description": "Life cycle status of the Sales Order"
+        },
+        "lifeCycleStatusName": {
+          "type": "string",
+          "description": "Life cycle status name of the Sales Order"
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Sales order creation date"
+        },
+        "deliveryDate": {
+          "type": "string",
+          "description": "Sales order delivery date"
+        },
+        "productId": {
+          "type": "string",
+          "maxLength": 10,
+          "description": "Unique identifier representing a specific product."
+        },
+        "quantity": {
+          "type": "number",
+          "format": "double",
+          "description": "Product quantity."
+        },
+        "quantityUnit": {
+          "type": "string",
+          "maxLength": 3,
+          "description": "Unit of Quantity. e.g kg, metre"
+        }
+      }
+    },
+    "Error": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "fields": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,289 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "description": "This is an ESPM Product Service",
+    "version": "1.0.0",
+    "title": "ESPM Product Service"
+  },
+  "schemes": [
+    "http"
+  ],
+  "basePath": "/product.svc/api/v1/",
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/products": {
+      "get": {
+        "summary": "Get all product",
+        "description": "\"The Products endpoint returns all the products offered in the Webshop.\"\n",
+        "operationId": "getAllProducts",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "Product"
+        ],
+        "responses": {
+          "200": {
+            "description": "An array of products",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Product"
+              }
+            }
+          },
+          "default": {
+            "description": "Unexpected error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/products/{productId}": {
+      "get": {
+        "summary": "Get product by id",
+        "description": "\"The Products endpoint returns all the products offered in the Webshop.\"\n",
+        "operationId": "getProductById",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "productId",
+            "in": "path",
+            "description": "Product Id of the Product which needs to be retreived",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Product Id of the Product which needs to be retreived",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Product"
+            }
+          }
+        ],
+        "tags": [
+          "Product"
+        ],
+        "responses": {
+          "200": {
+            "description": "An array of products",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Product"
+              }
+            }
+          },
+          "404": {
+            "description": "Product not found",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "default": {
+            "description": "Unexpected error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/stocks/{productId}": {
+      "put": {
+        "summary": "Stock",
+        "tags": [
+          "Stock"
+        ],
+        "description": "\"Updates the stock quantity by value provided in payload.\"\n",
+        "operationId": "checkAndUpdateStock",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "productId",
+            "in": "path",
+            "description": "Product Id of the stock that needs to be updated",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Stock which needs to be updated.",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Stock"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Stock updated",
+            "schema": {
+              "$ref": "#/definitions/Stock"
+            }
+          },
+          "404": {
+            "description": "Product not found",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "default": {
+            "description": "Unexpected error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      },
+      "get": {
+        "summary": "Stock",
+        "description": "\"The stocks endpoint returns current stock of all products in Webshop.\"\n",
+        "operationId": "getStockByProductId",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "productId",
+            "in": "path",
+            "description": "Product ID of the product to get the stock info.",
+            "required": true,
+            "type": "string",
+            "maxLength": 10
+          }
+        ],
+        "tags": [
+          "Stock"
+        ],
+        "responses": {
+          "200": {
+            "description": "An array of stocks",
+            "schema": {
+              "$ref": "#/definitions/Stock"
+            }
+          },
+          "default": {
+            "description": "Unexpected error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "Product": {
+      "type": "object",
+      "properties": {
+        "productId": {
+          "type": "string",
+          "maxLength": 10,
+          "description": "Unique identifier representing a specific product."
+        },
+        "name": {
+          "type": "string",
+          "description": "Name of the product."
+        },
+        "shortDescription": {
+          "type": "string",
+          "description": "Short description of the product."
+        },
+        "category": {
+          "type": "string",
+          "maxLength": 40,
+          "description": "Product Category of the product."
+        },
+        "weight": {
+          "type": "number",
+          "format": "double",
+          "description": "Weight of the product."
+        },
+        "weightUnit": {
+          "type": "string",
+          "maxLength": 3,
+          "description": "Unit of Quantity. e.g kg, grams"
+        },
+        "price": {
+          "type": "number",
+          "format": "double",
+          "description": "Price of the product."
+        },
+        "currencyCode": {
+          "type": "string",
+          "maxLength": 5,
+          "description": "Currency of product price"
+        },
+        "dimensionWidth": {
+          "type": "number",
+          "format": "double",
+          "description": "Width of the product."
+        },
+        "dimensionDepth": {
+          "type": "number",
+          "format": "double",
+          "description": "Depth of the product."
+        },
+        "dimensionHeight": {
+          "type": "number",
+          "format": "double",
+          "description": "Height of the product."
+        },
+        "dimensionUnit": {
+          "type": "string",
+          "maxLength": 3,
+          "description": "Unit of dimension. e.g m,cm"
+        },
+        "pictureUrl": {
+          "type": "string",
+          "description": "URL of the product image"
+        }
+      }
+    },
+    "Stock": {
+      "type": "object",
+      "properties": {
+        "productId": {
+          "type": "string",
+          "maxLength": 10,
+          "description": "Unique identifier representing a specific product."
+        },
+        "quantity": {
+          "type": "number",
+          "format": "double",
+          "description": "Stock quantity of the product."
+        }
+      }
+    },
+    "Error": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "fields": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}

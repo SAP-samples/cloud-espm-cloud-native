@@ -1,0 +1,20 @@
+{
+	"authenticationMethod": "none",
+	"routes": [
+		{
+			"source": "/product.svc/api",
+			"destination": "product-service",
+			"httpMethods": ["GET","PUT"]
+		},
+		{
+			"source": "/customer.svc/api",
+			"destination": "customer-service",
+			"httpMethods": ["GET","POST","PUT","DELETE"]
+		},
+		{
+			"source": "/sale.svc/api",
+			"destination": "sales-service",
+			"httpMethods": ["GET","POST"]
+		}
+	]
+}

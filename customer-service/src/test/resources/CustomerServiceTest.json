@@ -1,0 +1,41 @@
+[  
+   {  
+      "customerId":"0000000001",
+      "firstName":"Viola",
+      "lastName":"Gains",
+      "dateOfBirth":"19801231",
+      "city":"Antioch, Illinois",
+      "postalCode":"60002",
+      "street":"Spring Garden Street",
+      "houseNumber":"143",
+      "country":"US",
+      "phoneNumber":"1029384756",
+      "emailAddress":"viola.gains@itelo.info"
+   },
+   {  
+      "customerId":"0000000002",
+      "firstName":"Paul",
+      "lastName":"Burke",
+      "dateOfBirth":"19811224",
+      "city":"Los Angeles, California",
+      "postalCode":"90067",
+      "street":"Main Street",
+      "houseNumber":"100",
+      "country":"US",
+      "phoneNumber":"1029384757",
+      "emailAddress":"paul.burke@itelo.info"
+   },
+   {  
+      "customerId":"0000000003",
+      "firstName":"Sally",
+      "lastName":"Spring",
+      "dateOfBirth":"19791224",
+      "city":"Rome",
+      "postalCode":"00164",
+      "street":"Piazza Adriana",
+      "houseNumber":"53",
+      "country":"IT",
+      "phoneNumber":"1029384758",
+      "emailAddress":"sally.spring@itelo.info"
+   }
+]

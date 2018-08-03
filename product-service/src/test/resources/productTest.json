@@ -1,0 +1,32 @@
+[
+	{
+		"productId": "HT-1000",
+		"currencyCode": "EUR",
+		"category": "Notebooks",
+		"weight": "4.2",
+		"weightUnit": "KG",
+		"shortDescription": "Notebook Basic 15 with 1,7GHz - 15\" XGA - 1024MB DDR2 SDRAM - 40GB Hard Disc",
+		"name": "Notebook Basic 15",
+		"pictureUrl": "/SAP/PUBLIC/BC/NWDEMO_MODEL/IMAGES/HT-1000.jpg",
+		"price": "956.00",
+		"dimensionWidth": "0.3",
+		"dimensionDepth": "0.18",
+		"dimensionHeight": "0.03",
+		"dimensionUnit": "m"
+	},
+	{
+		"productId": "HT-1001",
+		"currencyCode": "EUR",
+		"category": "Notebooks",
+		"weight": "4.5",
+		"weightUnit": "KG",
+		"shortDescription": "Notebook Basic 17 with 1,7GHz - 17\" XGA - 1024MB DDR2 SDRAM - 40GB Hard Disc",
+		"name": "Notebook Basic 17",
+		"pictureUrl": "/SAP/PUBLIC/BC/NWDEMO_MODEL/IMAGES/HT-1001.jpg",
+		"price": "1249.00",
+		"dimensionWidth": "0.29",
+		"dimensionDepth": "0.17",
+		"dimensionHeight": "0.031",
+		"dimensionUnit": "m"
+	}
+]

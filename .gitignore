@@ -1,0 +1,27 @@
+# Compiled class file
+*.class
+target/
+.DS_Store
+
+# Log file
+*.log
+
+# Package Files #
+*.jar
+*.war
+*.ear
+*.zip
+*.tar.gz
+*.rar
+
+#Intellij
+*.iml
+.idea/
+#eclispe
+.project
+.classpath
+.springBeans
+.settings/
+
+#Fortify Scan Results
+*.fpr

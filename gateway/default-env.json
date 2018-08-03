@@ -1,0 +1,20 @@
+{
+"PORT":9999,
+"destinations": [
+  {
+    "name": "product-service",
+    "url": "http://localhost:9992",
+	"strictSSL": false
+  },
+   {
+    "name": "customer-service",
+    "url": "http://localhost:9991",
+	"strictSSL": false
+  },
+  {
+    "name": "sales-service",
+    "url": "http://localhost:9993",
+	"strictSSL": false
+  }
+]
+}
