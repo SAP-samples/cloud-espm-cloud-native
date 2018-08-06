@@ -25,23 +25,23 @@
   * [Message Server](#message-server)
   * [SQL Database Server](#sql-database-server)
 - [Running ESPM Application Locally](#running-the-espm-application-locally)
-  * [Customer Service](#customer-service-1)
-  * [Product Service](#products-service)
+  * [Customer Service](#customer-service)
+  * [Product Service](#product-service)
   * [Worker](#worker)
   * [Tax Service](#tax-service)
-  * [Sales Service](#sales-service-1)
+  * [Sales Service](#sales-service)
   * [Gateway](#gateway)
 - [Accessing the local API Endpoints](#accessing-the-local-api-endpoints)
-  * [Customer Service](#customer-service-2)
+  * [Customer Service](#customer-service-1)
   * [Product Service](#product-service-1)
-  * [Sales Service](#sales-service-2)
+  * [Sales Service](#sales-service-1)
   * [Tax Service](#tax-service-external-service)
 - [Test ESPM Application locally (Postman Collection)](#test-espm-application-locally)
 - [Running the application on Cloud Foundry](#running-the-application-on-cloud-foundry)
-- [Accessing the Cloud Foundry API Endpoints](#accessing-the-cloud-foundary-api-endpoints)
-  * [Customer Service](#customer-service-3)
+- [Accessing the Cloud Foundry API Endpoints](#accessing-the-cloud-foundry-api-endpoints)
+  * [Customer Service](#customer-service-2)
   * [Product Service](#product-service-2)
-  * [Sales Service](#sales-service-3)
+  * [Sales Service](#sales-service-2)
 - [Resilience Patterns in action](#resilience-patterns-in-action)
   * [Retry](#retry-1)
   * [Timeout](#timeout-1)
@@ -163,7 +163,7 @@ Follow steps below to run each microservice of ESPM one by one. Please ensure th
 
 * Test the Customer Service by running the url http://localhost:9991/customer.svc/api/v1/customers/viola.gains@itelo.info
 
-#### Products Service
+#### Product Service
 
 * Navigate to `/product-service/src/main/resources` in the project you have cloned
 * If required update the `<PORT_NO>`,`<DATABASE_NAME>`, `<USERNAME>`, `<PASSWORD>`  in application.properties file.
@@ -372,7 +372,7 @@ The below are the list of local service API endpoints of all the microservices.
 
 
 #### Test ESPM application locally
-To test ESPM application [Postman REST Client](https://www.getpostman.com/apps) can be used. There a Postman collection which is [provided](./documentation/postman-collections/ESPM-Local.postman_collection.json), it has all the request URLs and sample request body payloads(in case of POST request).
+To test ESPM application [Postman REST Client](https://www.getpostman.com/apps) can be used. There a Postman collection which is [provided](./documentation/postman-collections/ESPM-LOCAL.postman_collection.json), it has all the request URLs and sample request body payloads(in case of POST request).
 
 ## Running the application on Cloud Foundry
 
@@ -548,7 +548,8 @@ Retry patterns is implemented in Customer and Product Service to retry interacti
 * In the response it can be seen that the sales order is created with email id `customer1@gmail.com`. The first sales order created while Tax service was up will have a non-zero value for `taxAmount` field, while for the sales order created with email id `customer2@gmail.com` will have `taxAmount` as zero as the fallback `taxAmount` is set to zero
 
 ### Bounded Queue
-The Sales service along with Worker implements the Bounded Queue pattern. To see the pattern in action, follow these steps-
+The Sales service along with Worker implements the Bounded Queue pattern. To achieve reliable messaging [Consumer Acknowledgement and Publisher Confirms](https://www.rabbitmq.com/confirms.html). This ensures that messages are not lost and delivered reliably to consumers.
+ To see the pattern in action, follow these steps-
 	* Hit the Sales Service by running the url `http://localhost:9993/sale.svc/api/v1/salesOrders/` and POST the sales data.
 	  For e.g.:
 	  `{
