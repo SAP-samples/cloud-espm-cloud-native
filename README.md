@@ -401,7 +401,7 @@ To run the complete ESPM application, one will need around 5.5 GB of RAM. Each o
        <br>.
 
        ![Alt text](./documentation/images/tax-service-properties.png "Adding Destination")<br>
-       * The implementation of destination services is in [SalesOrderServiceImpl](./sale-service/src/main/java/com/sap/refapps/espm/service/SalesOrderServiceImpl.java#L214) class.
+       * The implementation of destination services is in [SalesOrderServiceImpl](./sale-service/src/main/java/com/sap/refapps/espm/service/SalesOrderServiceImpl.java#L209) class.
 
 
 
