@@ -393,7 +393,21 @@ To run the complete ESPM application, one will need around 5.5 GB of RAM. Each o
 
 * Edit the manifest.yml file and update `<unique_id>` with some unique value for each applications host name
 
-* Edit the TAX_SERVICE env variable in manifest.yml file under the module espm-sales-svc with the URL of tax service running on SAP Cloud Platform Neo or SAP Cloud Platform Cloud Foundry.
+* The TAX SERVICE can be accessed in Cloud Foundary in either of the 2 ways:
+   * **Destination Services (Recommended):** <br>
+       * Create an instance of the destination service by using the command `cf create-service destination lite espm-destination` <br>
+       * From the SCP Cockpit go to your space and open the `espm-destination` service instance in your space.. Create a new destination by clicking `New Destination`
+       and filling with the properties as shown below. (URL of tax service running on SAP Cloud Platform Neo or SAP Cloud Platform Cloud Foundry.)
+       <br>.
+
+       ![Alt text](./documentation/images/tax-service-properties.png "Adding Destination")<br>
+       * The implementation of destination services is in [SalesOrderServiceImpl](./sale-service/src/main/java/com/sap/refapps/espm/service/SalesOrderServiceImpl.java#L214) class.
+
+
+
+   * **Environment Variable :** <br>
+   If you do not want to configure Destination Services, the alternative approach is to edit the TAX_SERVICE env variable in manifest.yml file under the module espm-sales-svc with the URL of tax service running on SAP Cloud Platform Neo or SAP Cloud Platform Cloud Foundry.<br> 
+*Note: This is not a recommended approach since if the tax service url changes the new url must be updated in manifest file for the env TAX_SERVICE and the application must be redeployed. This would mean some downtime for the ESPM application.*
 
 * Do a maven build of complete application from command line by running command `mvn clean install` from the projects root folder.
 
