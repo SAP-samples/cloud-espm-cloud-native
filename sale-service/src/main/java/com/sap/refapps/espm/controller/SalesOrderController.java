@@ -1,8 +1,10 @@
 package com.sap.refapps.espm.controller;
 
+import java.io.UnsupportedEncodingException;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.cloudfoundry.com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +19,8 @@ import com.netflix.hystrix.exception.HystrixRuntimeException;
 import com.sap.refapps.espm.model.SalesOrder;
 import com.sap.refapps.espm.model.Tax;
 import com.sap.refapps.espm.service.SalesOrderService;
+
+import javax.jms.JMSException;
 
 /**
  * This class is a controller class of sales service 
@@ -41,12 +45,12 @@ public class SalesOrderController {
 	 */
 	@PostMapping
 	public ResponseEntity<String> createSalesOrder(@RequestBody final SalesOrder salesOrder)
-			throws HystrixRuntimeException {
+			throws HystrixRuntimeException, UnsupportedEncodingException, JMSException, JsonProcessingException {
         String soId= UUID.randomUUID().toString();
 		salesOrder.setSalesOrderId(soId);
 		final Tax tax = salesOrderService.getTax(salesOrder.getGrossAmount());
-		if(!salesOrderService.insert(salesOrder, tax))
-			return errorMessage("Service Currently Unavailable",HttpStatus.SERVICE_UNAVAILABLE);
+		salesOrderService.insert(salesOrder, tax);
+			//return errorMessage("Service Currently Unavailable",HttpStatus.SERVICE_UNAVAILABLE);
 		return new ResponseEntity<>("Sales Order with ID " + soId+ " created", HttpStatus.ACCEPTED);
 	}
 

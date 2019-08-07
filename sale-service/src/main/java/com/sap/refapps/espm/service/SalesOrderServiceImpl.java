@@ -1,9 +1,19 @@
 package com.sap.refapps.espm.service;
 
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixException;
+import com.sap.cloud.servicesdk.xbem.extension.sapcp.jms.MessagingServiceJmsConnectionFactory;
+import com.sap.refapps.espm.model.SalesOrder;
+import com.sap.refapps.espm.model.SalesOrderRepository;
+import com.sap.refapps.espm.model.Tax;
+
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.net.URI;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
@@ -11,11 +21,13 @@ import java.util.Base64;
 import java.util.Date;
 import java.util.HashMap;
 
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.cloudfoundry.com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import org.springframework.cloud.cloudfoundry.com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.cloud.cloudfoundry.com.fasterxml.jackson.databind.DeserializationFeature;
 import org.springframework.cloud.cloudfoundry.com.fasterxml.jackson.databind.JsonNode;
 import org.springframework.cloud.cloudfoundry.com.fasterxml.jackson.databind.ObjectMapper;
@@ -27,11 +39,9 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
-import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
-import com.netflix.hystrix.contrib.javanica.annotation.HystrixException;
-import com.sap.refapps.espm.model.SalesOrder;
-import com.sap.refapps.espm.model.SalesOrderRepository;
-import com.sap.refapps.espm.model.Tax;
+import javax.jms.*;
+
+
 
 /**
  * This is the implementation class for the sales order service
@@ -49,12 +59,11 @@ public class SalesOrderServiceImpl implements SalesOrderService {
 	@Value("${tax.service}")
 	private String taxServiceEndPoint;
 
-	@Value("${tax.destinationName}")
+    @Value("${tax.destinationName}")
 	private String taxDestination;
 
 	private Iterable<SalesOrder> salesOrder;
 
-	private QueueDispatcherService queueDispatcherService;
 
 	private String taxUri;
 
@@ -62,45 +71,46 @@ public class SalesOrderServiceImpl implements SalesOrderService {
 
     private HashMap<String,String> taxUrlCache = new HashMap<>(1);
 
+    private boolean destinationEnabled = false;
 
     final HttpHeaders headers = new HttpHeaders();
+	private MessagingServiceJmsConnectionFactory factory;
 
     final static String DESTINATION_PATH = "/destination-configuration/v1/destinations/";
-	
+
 
 
 	@Autowired
 	private Environment environment;
-	
-	
+
+
 	/**
 	 * @param salesOrderRepository
-	 * @param queueDispatcherService
 	 * @param rest
 	 */
 	@Autowired
-	public SalesOrderServiceImpl(final SalesOrderRepository salesOrderRepository,
-			final QueueDispatcherService queueDispatcherService, final RestTemplate rest) {
+	public SalesOrderServiceImpl(final SalesOrderRepository salesOrderRepository, final MessagingServiceJmsConnectionFactory factory,
+			 final RestTemplate rest) {
 		this.salesOrderRepository = salesOrderRepository;
-		this.queueDispatcherService = queueDispatcherService;
 		this.restTemplate = rest;
+		this.factory = factory;
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * com.sap.refapps.espm.service.SalesOrderService#insert(com.sap.refapps.espm.
 	 * model.SalesOrder, com.sap.refapps.espm.model.Tax)
 	 */
 	@Override
-	public boolean insert(final SalesOrder salesOrder, final Tax tax) {
+	public void insert(final SalesOrder salesOrder, final Tax tax) throws JsonProcessingException, UnsupportedEncodingException, JMSException {
 
 		final BigDecimal netAmount;
 		Date now = new Date();
 		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-				
+
 		// create MathContext object with 4 precision
 		MathContext mc = new MathContext(15);
 		netAmount = tax.getTaxAmount().add(salesOrder.getGrossAmount(), mc);
@@ -110,13 +120,18 @@ public class SalesOrderServiceImpl implements SalesOrderService {
 		salesOrder.setTaxAmount(tax.getTaxAmount());
 		salesOrder.setQuantityUnit("EA");
 		salesOrder.setCreatedAt(dateFormat.format(now));
-		return queueDispatcherService.dispatch(salesOrder, salesOrder.getSalesOrderId());
+
+        final ObjectMapper mapper = new ObjectMapper();
+        final String salesOrderString = mapper.writeValueAsString(salesOrder);
+
+        sendMessage(salesOrderString);
+
 
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see com.sap.refapps.espm.service.SalesOrderService#getAll()
 	 */
 	@Override
@@ -127,7 +142,7 @@ public class SalesOrderServiceImpl implements SalesOrderService {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * com.sap.refapps.espm.service.SalesOrderService#getByEmail(java.lang.String)
 	 */
@@ -139,7 +154,7 @@ public class SalesOrderServiceImpl implements SalesOrderService {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see com.sap.refapps.espm.service.SalesOrderService#getById(java.lang.String)
 	 */
 	@Override
@@ -149,13 +164,13 @@ public class SalesOrderServiceImpl implements SalesOrderService {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * com.sap.refapps.espm.service.SalesOrderService#getTax(java.math.BigDecimal)
 	 */
 	@HystrixCommand(fallbackMethod = "taxServiceFallback", raiseHystrixExceptions = HystrixException.RUNTIME_EXCEPTION, commandKey = "taxCommandKey", groupKey = "taxThreadPoolKey")
 	public Tax getTax(BigDecimal amount) {
-        Tax tax;
+		Tax tax;
         taxUri = taxUrlCache.get("TAX_URI");
         if (taxUri == "" || taxUri == null){
             taxUri = getTaxUrlFromDestinationService();
@@ -163,7 +178,6 @@ public class SalesOrderServiceImpl implements SalesOrderService {
         }
 
 
-        //If destination service not configured
         if (taxUri == "") {
             taxUri = Arrays.stream(environment.getActiveProfiles())
                     .anyMatch(env -> (env.equalsIgnoreCase("cloud"))) ? this.environment.getProperty("TAX_SERVICE")
@@ -172,27 +186,29 @@ public class SalesOrderServiceImpl implements SalesOrderService {
             tax = this.restTemplate.getForObject(uri, Tax.class);
         }
         else
-            try{
-                URI uri = URI.create(taxUri + amount);
-                tax = restTemplate.getForObject(uri, Tax.class);
-            }catch(HttpClientErrorException e){
-                logger.info("Retrying");
-                taxUri = getTaxUrlFromDestinationService();
-                taxUrlCache.put("TAX_URI",taxUri);
-                URI uri = URI.create(taxUri + amount);
-                tax = restTemplate.getForObject(uri, Tax.class);
+        try{
+            URI uri = URI.create(taxUri + amount);
+            tax = restTemplate.getForObject(uri, Tax.class);
+        }catch(HttpClientErrorException e){
+            logger.info("Retrying");
+            taxUri = getTaxUrlFromDestinationService();
+            taxUrlCache.put("TAX_URI",taxUri);
+            URI uri = URI.create(taxUri + amount);
+            tax = restTemplate.getForObject(uri, Tax.class);
 
 
-            }
+        }
         logger.info("Tax service endpoint is {}", taxUri);
         logger.info("Tax service is called to calculate tax for amount : {}", amount);
         logger.info("Tax amount is : {}", tax.getTaxAmount());
         return tax;
+
+
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * com.sap.refapps.espm.service.SalesOrderService#taxServiceFallback(java.math.
 	 * BigDecimal)
@@ -202,12 +218,11 @@ public class SalesOrderServiceImpl implements SalesOrderService {
 		final Tax tax = new Tax();
 		tax.setTaxPercentage(00.00);
 		tax.setTaxAmount(new BigDecimal(00.00));
-
 		return tax;
 	}
 
-    private String getTaxUrlFromDestinationService(){
-        try {
+	private String getTaxUrlFromDestinationService(){
+	    try {
             final DestinationService destination = getDestinationServiceDetails();
             final String accessToken = getOAuthToken(destination);
             headers.set("Authorization","Bearer "+accessToken);
@@ -218,10 +233,10 @@ public class SalesOrderServiceImpl implements SalesOrderService {
             final String texDestination = root.path("destinationConfiguration").path("URL").asText();
             return texDestination;
         }catch (IOException e){
-            logger.error("No proper destination Service available: {}", e.getMessage());
+	        logger.error("No proper destination Service available: {}", e.getMessage());
 
         }
-        return "";
+	    return "";
     }
 
 
@@ -243,7 +258,7 @@ public class SalesOrderServiceImpl implements SalesOrderService {
     }
 
 
-    private DestinationService getDestinationServiceDetails() throws IOException {
+	private DestinationService getDestinationServiceDetails() throws IOException {
         final String destinationService = System.getenv("VCAP_SERVICES");
         final JsonNode root = mapper.readTree(destinationService);
         final JsonNode destinations = root.get("destination").get(0).get("credentials");
@@ -252,14 +267,32 @@ public class SalesOrderServiceImpl implements SalesOrderService {
 
     }
 
+    private synchronized void sendMessage(final String messageString) throws JMSException {
+
+        final Connection connection =factory.createConnection();
+        connection.start();
+        final Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+        final Queue queue= session.createQueue("queue:EmSampleInQueue");
+        final MessageProducer messageProducer = session.createProducer(queue);
+        TextMessage message = session.createTextMessage(messageString);
+        messageProducer.send(message);
+        session.close();
+        connection.close();
+
+
+
+    }
+
+
+
 }
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 class DestinationService{
 
-    public String clientid;
-    public String clientsecret;
-    public String uri;
-    public String url;
+     public String clientid;
+     public String clientsecret;
+     public String uri;
+     public String url;
 
 }

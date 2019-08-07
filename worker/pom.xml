@@ -45,13 +45,25 @@
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-cloudfoundry-connector</artifactId>
 		</dependency>
+        <!-- xbem -->
 		<dependency>
-			<groupId>org.springframework.amqp</groupId>
-			<artifactId>spring-amqp</artifactId>
+			<groupId>com.sap.cloud.servicesdk.xbem</groupId>
+			<artifactId>emjapi-connector-sap-cp</artifactId>
 		</dependency>
+
 		<dependency>
-			<groupId>org.springframework.amqp</groupId>
-			<artifactId>spring-rabbit</artifactId>
+			<groupId>com.sap.cloud.servicesdk.xbem</groupId>
+			<artifactId>emjapi-core</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>com.sap.cloud.servicesdk.xbem</groupId>
+			<artifactId>emjapi-extension-sap-cp-jms</artifactId>
+		</dependency>
+		
+		<dependency> 
+				<groupId>io.netty</groupId>
+				<artifactId>netty-handler</artifactId>
 		</dependency>
 	</dependencies>
 	<build>

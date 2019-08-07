@@ -1,9 +1,13 @@
 package com.sap.refapps.espm.service;
 
+import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 
 import com.sap.refapps.espm.model.SalesOrder;
 import com.sap.refapps.espm.model.Tax;
+import org.springframework.cloud.cloudfoundry.com.fasterxml.jackson.core.JsonProcessingException;
+
+import javax.jms.JMSException;
 
 
 /**
@@ -44,7 +48,7 @@ public interface SalesOrderService {
 	 * @param tax
 	 * @return true if sales order get inserted successfully
 	 */
-	boolean insert(SalesOrder salesOrder, Tax tax);
+	void insert(SalesOrder salesOrder, Tax tax) throws JsonProcessingException, UnsupportedEncodingException, JMSException;
 
 	/**
 	 * Returns a tax based on amount provided

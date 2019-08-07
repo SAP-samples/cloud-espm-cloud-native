@@ -2,56 +2,50 @@
 applications:
 - name: <unique_id>-espm-product-svc
   memory: 1G
-  buildpacks:
-    - https://github.com/cloudfoundry/java-buildpack.git
+  buildpack: https://github.com/cloudfoundry/java-buildpack.git
   path: product-service/target/product-service-1.0.0.jar
   env:
     CORS_DOMAIN: "cfapps.sap.hana.ondemand.com"
     
   services:
-    - espm-db
+    - espm-hana-db
 
-- name: <unique_id>-espm-customer-svc
+- name:  <unique_id>-espm-customer-svc
   memory: 1G
-  buildpacks:
-    - https://github.com/cloudfoundry/java-buildpack.git
+  buildpack: https://github.com/cloudfoundry/java-buildpack.git
   path: customer-service/target/customer-service-1.0.0.jar
   env:
     CORS_DOMAIN: "cfapps.sap.hana.ondemand.com"
   services:
-    - espm-db
+    - espm-hana-db
     
 - name: <unique_id>-espm-sales-svc
   memory: 1G
-  buildpacks:
-    - https://github.com/cloudfoundry/java-buildpack.git
+  buildpack: https://github.com/cloudfoundry/java-buildpack.git
   path: sale-service/target/sale-service-1.0.0.jar
   env:
     TAX_SERVICE: https://<tax-service><accountname>.hanatrial.ondemand.com/api/v1/calculate/tax?amount=
     CORS_DOMAIN: "cfapps.sap.hana.ondemand.com"
   services:
-    - espm-db
-    - espm-mq
+    - espm-hana-db
+    - espm-em
     - espm-destination
     
 - name: espm-worker
-  no-route: true
+  no-host: true
   health-check-type: process
   memory: 1G
-  buildpacks:
-    - https://github.com/cloudfoundry/java-buildpack.git
+  buildpack: https://github.com/cloudfoundry/java-buildpack.git
   path: worker/target/worker-1.0.0.jar
   env:
     CORS_DOMAIN: "cfapps.sap.hana.ondemand.com"
   services:
-    - espm-db
-    - espm-mq
+    - espm-hana-db
+    - espm-em
 
-- name: espm-gateway
-  host: <unique_id>-espm-gateway
+- name: <unique_id>-espm-gateway
   memory: 512M
-  buildpacks:
-    - https://github.com/cloudfoundry/nodejs-buildpack.git
+  buildpack: https://github.com/cloudfoundry/nodejs-buildpack.git
   path: gateway
   env:
     destinations: >

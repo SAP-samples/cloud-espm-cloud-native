@@ -1,7 +1,6 @@
 package com.sap.refapps.espm.config;
 
-import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
-import org.springframework.amqp.rabbit.connection.ConnectionFactory;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -50,16 +49,6 @@ public class LocalDataSourceConfig {
 
 
 
-	@Bean
-	public ConnectionFactory connectionFactory() throws IOException, URISyntaxException {
-
-		CachingConnectionFactory connectionFactory = new CachingConnectionFactory(amqpUrl);
-		connectionFactory.setUsername(rabbitUserName);
-		connectionFactory.setPassword(rabbitPassword);
-		connectionFactory.setChannelCacheSize(100);
-		connectionFactory.setPublisherConfirms(true);
-		return connectionFactory;
-	}
 
 }
 
