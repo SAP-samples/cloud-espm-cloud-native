@@ -1,11 +1,12 @@
 {
-  "name": "espm-gateway",
+  "name": "ESPM-UI",
   "version": "0.0.1",
+  "description": "UI for the ESPM Resilience project",
   "private": true,
-  "scripts": {
-	 "start": "node node_modules/@sap/approuter/approuter.js" 
-  },
   "dependencies": {
-	 "@sap/approuter": "2.10.0"
+    "@sap/approuter": "2.10.0"
+  },
+  "scripts": {
+    "start": "node node_modules/@sap/approuter/approuter.js"
   }
 }

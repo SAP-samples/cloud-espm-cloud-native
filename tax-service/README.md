@@ -53,7 +53,7 @@ response will be `{"taxAmount":100.0,"taxPercentage":10.0}`
     * Select the Runtime name as "Java Web Tomcat 8"
     * Other fields keep it as default.
 
-3. To test the service execute URL : https://taxservicew6e0ed3dd.int.sap.hana.ondemand.com/tax.svc/api/v1/calculate/tax?amount=1000
+3. To test the service execute URL : https://<url>/tax.svc/api/v1/calculate/tax?amount=1000
 
 
 # API Documentation

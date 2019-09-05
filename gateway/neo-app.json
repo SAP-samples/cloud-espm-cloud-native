@@ -1,0 +1,49 @@
+{
+  "welcomeFile": "/webapp/index.html",
+  "routes": [
+    {
+      "path": "/resources",
+      "target": {
+        "type": "service",
+        "name": "sapui5",
+        "entryPath": "/resources"
+      },
+      "description": "SAPUI5 Resources"
+    },
+    {
+      "path": "/test-resources",
+      "target": {
+        "type": "service",
+        "name": "sapui5",
+        "entryPath": "/test-resources"
+      },
+      "description": "SAPUI5 Test Resources"
+    },
+    {
+      "path": "/destinations/customers",
+      "target": {
+        "type": "destination",
+        "name": "espm-customers"
+      },
+      "description": "ESPM Customers Service"
+    },
+    {
+      "path": "/destinations/salesorders",
+      "target": {
+        "type": "destination",
+        "name": "espm-salesorders"
+      },
+      "description": "ESPM SalesOrder Service"
+    },
+    {
+      "path": "/destinations/products",
+      "target": {
+        "type": "destination",
+        "name": "espm-products"
+      },
+      "description": "ESPM Products Service"
+    }
+    
+  ],
+  "sendWelcomeFileRedirect": true
+}

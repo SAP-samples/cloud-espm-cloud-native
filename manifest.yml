@@ -50,6 +50,18 @@ applications:
   env:
     destinations: >
       [
+        {
+          "name":"espm-products",
+          "url":"https://<unique_id>-espm-product-svc.cfapps.sap.hana.ondemand.com/product.svc/"
+        },
+        {
+          "name":"espm-salesorder",
+          "url":"https://<unique_id>-espm-sales-svc.cfapps.sap.hana.ondemand.com/sale.svc/"
+        },
+        {
+          "name":"espm-customers",
+          "url":"https://<unique_id>-espm-customer-svc.cfapps.sap.hana.ondemand.com/customer.svc/"
+        },
         {"name":"product-service", "url":"https://<unique_id>-espm-product-svc.cfapps.sap.hana.ondemand.com/", "forwardAuthToken": false},
         {"name":"customer-service", "url":"https://<unique_id>-espm-customer-svc.cfapps.sap.hana.ondemand.com/", "forwardAuthToken": false},
         {"name":"sales-service", "url":"https://<unique_id>-espm-sales-svc.cfapps.sap.hana.ondemand.com/", "forwardAuthToken": false}

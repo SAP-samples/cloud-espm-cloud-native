@@ -45,7 +45,7 @@ The ESPM applications consists of five microservices and one external service.
 2. Product Service - This service can be used to process products and stock information
 3. Sales Services - Sales Orders are processed by this service. Each time a sales order is created, it’s not directly inserted into the database, but inserted into a queue. A background process called worker picks the message from queue and inserts to the database. The rationale behind this approach is explained later in the document. For read operation on sales order, its directly read from the database.
 4. Worker - Background process which picks the Sales Order from the queue and inserts it into the database.
-5. Gateway - it’s an optional component and acts as entry point for the complete application. It also acts as a reverse proxy and routes the request to the appropriate microservice.
+5. Gateway - it’s an optional component and acts as entry point for the complete application. It also acts as a reverse proxy and routes the request to the appropriate microservice. We have added UI for the application to showcase end to end story of a customer. We have specified the destinations in the manifest.yml file as part of the destinations environment variable.
 6. External Tax Service - This is a service which is external to the application and used to do tax calculation. This Tax calculation service is provided, to be used along with the implementation of Circuit Breaker, Quarantine pattern.
 
 A [Domain Driven Design](https://en.wikipedia.org/wiki/Domain-driven_design) approach was used to decide the capabilities of each microservices. The Customer and Cart entities are part of the Customer Microservice and Product and Stock entities are part of the Product Service. To keep things simple there is only one entity in Sales Service which is the Sales Order entity. In real world scenarios, Sales Entity might have Sales Order Header and Sales Order Line Items Entity and more. The Product and Customer service has its own database while Sale and worker shares the same database.
@@ -113,7 +113,7 @@ Please refer [link](https://github.com/SAP-samples/cloud-espm-cloud-native/tree/
 
 To run the application on Cloud Foundry you need an account on SAP Cloud Platform Cloud Foundry Environment or signup for a [SAP Cloud Platform Cloud Foundry Environment trial account](https://cloudplatform.sap.com/try.html)
 *Please note that in SAP Cloud Platform Cloud Foundry Environment,  for a trial account, there is limited resource and you get a RAM of 2 GB which is not sufficient to run the complete ESPM application.*  
-To run the complete ESPM application, one will need around 5.5 GB of RAM. Each of the 5 Spring boot applications (Product Service, Customer Service, Sales Service, Worker and Tax Service) needs 1 GB of RAM and Gateway (based on Node.js) needs around 512 MB. The optimal way to run application is
+To run the complete ESPM application, one will need around 5.5 GB of RAM. Each of the 5 Spring boot applications (Product Service, Customer Service, Sales Service, Worker and Tax Service) needs 1 GB of RAM and Gateway (based on Node.js) which also contains UI for the application, needs around 512 MB. The optimal way to run application is
 * Signup for SAP Cloud Platform Neo trial account by following [these steps](https://cloudplatform.sap.com/try.html)
 * Run Tax service in [SAP Cloud Platform Neo Environment](./tax-service#running-on-sap-cloud-platfrom-neo-environment)
 
@@ -162,6 +162,8 @@ To run the complete ESPM application, one will need around 5.5 GB of RAM. Each o
 * Learn resilience patterns implemented in Product and Customer  services
 
 * *[Optional] if one has a non-trial SAP Cloud Platform Cloud Foundry account with 5.5GB of RAM or more, espm-gateway can be deployed via command `cf push espm-gateway` from CLI.*
+
+* When the UI is deployed, you will be presented with a screen where you can enter using the email address provided for a customer. The views themselves are rather simple and use databinding extensively to avoid writing lots of code. You can do the operations like, view details of the customer, display shopping cart, display sales order, create cart, delete cart, create sales order.
 
 
 ### Accessing the Cloud Foundry API Endpoints

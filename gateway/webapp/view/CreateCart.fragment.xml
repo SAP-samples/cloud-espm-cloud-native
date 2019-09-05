@@ -1,0 +1,20 @@
+<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core">
+	<Dialog title="Cart" type="Message" contentWidth="auto">
+		<content>
+			<Label text="Product" labelFor="inputProduct"/>
+			<Input id="inputProduct" type="Text" value="{/productId}" textFormatMode="KeyValue" placeholder="Enter Product..." showSuggestion="true"
+				showValueHelp="true" suggestionItems="{customer>/products/data}" suggestionItemSelected="suggestionItemSelected">
+				<suggestionItems>
+					<!--core:ListItem key="{customer>productId}" text="{customer>name}" additionalText="{customer>shortDescription}"/-->
+					<core:ListItem key="{customer>productId}" text="{customer>name}"/>
+				</suggestionItems>
+			</Input>
+			<Label text="Quantity" labelFor="inputQuantity"/>
+			<Input id="inputQuantity" type="Number" value="{/quantityUnit}" class="sapUiSmallMarginBottom" placeholder="Enter a Quantity ..."/>
+		</content>
+		<buttons>
+			<Button text="Save Cart" type="Accept" width="auto" press="onCreateCartSaveCartPressed"/>
+			<Button text="Cancel" width="auto" press="onCreateCartCancelPressed"/>
+		</buttons>
+	</Dialog>
+</core:FragmentDefinition>
