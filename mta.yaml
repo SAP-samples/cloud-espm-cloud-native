@@ -1,0 +1,176 @@
+_schema-version: "2.0.0"
+ID: CLOUD_ESPM_CLOUD_NATIVE
+version: 1.0.0
+
+modules:
+  - name: <unique_ID>-espm-product-svc
+    type: java.tomcat
+    path: product-service
+    build-parameters:
+      builder: maven
+      build-result: "target/product-service-1.0.0.jar"
+      timeout: 60m
+      maven-opts:
+        command: [ clean, install ]
+      buildpack: https://github.com/cloudfoundry/java-buildpack.git
+    properties:
+      TARGET_RUNTIME: tomcat
+      uri: "cfapps.sap.hana.ondemand.com"
+    requires:
+      - name: espm-hana-db
+    parameters:
+      memory: 1G
+    provides:
+      - name: product-service
+        properties:
+          url: "${default-url}"
+      - name: espm-products
+        properties:
+          url: "${default-url}"
+
+  - name: <unique_ID>-espm-customer-svc
+    type: java.tomcat
+    path: customer-service
+    build-parameters:
+      builder: maven
+      build-result: "target/customer-service-1.0.0.jar"
+      timeout: 60m
+      maven-opts:
+        command: [ clean, install ]
+      buildpack: https://github.com/cloudfoundry/java-buildpack.git
+    properties:
+      TARGET_RUNTIME: tomcat
+      uri: "cfapps.sap.hana.ondemand.com"
+    requires:
+      - name: espm-hana-db
+    parameters:
+      memory: 1G
+    provides:
+      - name: customer-service
+        properties:
+          url: "${default-url}"
+      - name: espm-customers
+        properties:
+          url: "${default-url}"
+
+  - name: <unique_ID>-espm-sales-svc
+    type: java.tomcat
+    path: sale-service
+    build-parameters:
+      builder: maven
+      build-result: "target/sale-service-1.0.0.jar"
+      timeout: 60m
+      maven-opts:
+        command: [ clean, install ]
+      buildpack: https://github.com/cloudfoundry/java-buildpack.git
+    properties:
+      TARGET_RUNTIME: tomcat
+      uri: "cfapps.sap.hana.ondemand.com"
+      TAX_SERVICE: https://tax-service<unique_ID>.hanatrial.ondemand.com/api/v1/calculate/tax?amount=
+    requires:
+      - name: espm-hana-db
+      - name: enterprise-messaging-dev
+      - name: espm-destination
+    parameters:
+      memory: 1G
+    provides:
+      - name: sales-service
+        properties:
+          url: "${default-url}"
+      - name: espm-salesorder
+        properties:
+          url: "${default-url}"
+
+  - name: espm-worker
+    type: java.tomcat
+    path: worker
+    build-parameters:
+      builder: maven
+      build-result: "target/worker-1.0.0.jar"
+      timeout: 60m
+      maven-opts:
+        command: [ clean, install ]
+      buildpack: https://github.com/cloudfoundry/java-buildpack.git
+    properties:
+      TARGET_RUNTIME: tomcat
+      uri: "cfapps.sap.hana.ondemand.com"
+    requires:
+      - name: espm-hana-db
+      - name: enterprise-messaging-dev
+    parameters:
+      memory: 1G
+      no-host: true
+      health-check-type: process
+
+  - name: <unique_ID>-espm-gateway
+    type: html5
+    path: gateway
+    parameters:
+      version: 2.0-${timestamp}
+      memory: 512M
+    build-parameters:
+      builder: npm
+      #build-result: dist
+      timeout: 60m
+      maven-opts:
+        command: install 
+      buildpack: https://github.com/cloudfoundry/nodejs-buildpack.git
+    requires:
+      - name: espm-products
+        group: destinations
+        properties:
+          name: espm-products
+          url: '~{url}/product.svc'
+          forwardAuthToken: true
+      - name: espm-salesorder
+        group: destinations
+        properties:
+          name: espm-salesorder
+          url: '~{url}/sale.svc'
+          forwardAuthToken: true
+      - name: espm-customers
+        group: destinations
+        properties:
+          name: espm-customers
+          url: '~{url}/customer.svc'
+          forwardAuthToken: true
+      - name: product-service
+        group: destinations
+        properties:
+          name: product-service
+          url: '~{url}'
+          forwardAuthToken: false
+      - name: customer-service
+        group: destinations
+        properties:
+          name: customer-service
+          url: '~{url}'
+          forwardAuthToken: false
+      - name: sales-service
+        group: destinations
+        properties:
+          name: sales-service
+          url: '~{url}'
+          forwardAuthToken: false
+    provides:
+      - name: ui
+        properties:
+          url: "${default-url}"
+
+resources:
+  - name: enterprise-messaging-dev
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: enterprise-messaging
+      service-plan: dev
+      path: em.json
+  - name: espm-destination
+    type: destination
+    parameters:
+      service: destination
+      service-plan: lite
+  - name: espm-hana-db
+    type: com.sap.xs.hana-schema
+    parameters:
+      service: hana
+      service-plan: schema

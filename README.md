@@ -23,6 +23,7 @@
 - [Requirements](#requirements)
   * [SAP Cloud Platform Enterprise Messaging](#sap-cloud-platform-enterprise-messaging)
 - [Running ESPM Application Locally](#running-the-espm-application-locally)
+- [Running the application on Cloud Foundry using MTA](#running-the-espm-application-locally)
 - [Running the application on Cloud Foundry](#running-the-application-on-cloud-foundry)
 - [Accessing the Cloud Foundry API Endpoints](#accessing-the-cloud-foundry-api-endpoints)
   * [Customer Service](#customer-service-3)
@@ -89,12 +90,23 @@ Before running ESPM application one would need
 * [Apache Maven](https://maven.apache.org/)
 * SAP Cloud Platform account
 * [SAP Cloud Platform Enterprise Messaging](https://help.sap.com/viewer/product/SAP_ENTERPRISE_MESSAGING/Cloud/en-US)
+* To deploy the MTAR we need the MTA CF CLI plugin, download the MTA CF CLI Plugin from [here](https://tools.hana.ondemand.com/#cloud)
+* The MultiApps CF CLI Plugin is now also available on the CF Community Repository. To install the latest available version of the MultiApps CLI Plugin execute the following:
+
+cf install-plugin multiapps
+
+* If you do not have the community repository in your CF CLI you can add it first by executing:
+
+cf add-plugin-repo CF-Community https://plugins.cloudfoundry.org
+
+
+* The multi-target application archive builder is a standalone command-line tool that builds a deployment-ready multi-target application (MTA) archive .mtar file from the artifacts of an MTA project according to the project’s MTA development descriptor (mta.yaml file).The archive builder is used on a file system independently of the development environment in which the application project has been created. The build process and the resulting MTA archive depend on the target platform on which the archive is deployed. Download MTA archive builder - jar file from [here](https://tools.hana.ondemand.com/#cloud) and rename it as mta.jar
 
 ### SAP Cloud Platform Enterprise Messaging
 
 * Create new enterprise messaging service using the command:
 
-`cf cs enterprise-messaging dev espm-em -c '{ "emname": "messaging-products" }'`
+`cf cs enterprise-messaging dev espm-em -c em.json`
 
 Make sure that the emname is a unique name
 
@@ -108,6 +120,20 @@ For more details, check [here](https://help.sap.com/viewer/bf82e6b26456494cbdd19
 ## Running the ESPM application locally
 
 Please refer [link](https://github.com/SAP-samples/cloud-espm-cloud-native/tree/localDeployment#running-the-espm-application-locally).
+
+## Running the application on Cloud Foundry using MTA
+
+From the root folder where mta.yaml is kept run the command: 
+
+	java -jar mta.jar --build-target=CF --mtar=cloud-espm-cf.mtar build
+	
+This will package your application to be ready for deployment.
+
+As you can see from MTA file, the service names for enterprise-messaging is kept as enterprise-messaging-dev, destination as espm-destination, hana as espm-hana-db. Make sure to rename unique id as your I/C/D number.
+
+To Deploy MTAR, run the command:
+
+	cf deploy cloud-espm-cf.mtar
 
 ## Running the application on Cloud Foundry
 
