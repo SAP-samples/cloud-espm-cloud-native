@@ -12,18 +12,6 @@
 	<version>1.0.0</version>
 	<packaging>jar</packaging>
 
-	<dependencyManagement>
-		<dependencies>
-			<dependency>
-				<groupId>org.springframework.cloud</groupId>
-				<artifactId>spring-cloud-dependencies</artifactId>
-				<version>Finchley.RELEASE</version>
-				<type>pom</type>
-				<scope>import</scope>
-			</dependency>
-		</dependencies>
-	</dependencyManagement>
-
 	<dependencies>
 		<dependency>
 			<groupId>com.sap.refapps.espm</groupId>
@@ -34,17 +22,15 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
+		
+		<!-- h2 database -->
 		<dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
 			<scope>test</scope>
 		</dependency>
-		<!-- PostgreSQL Database for local/cloud deployments -->
-		<dependency>
-			<groupId>org.postgresql</groupId>
-			<artifactId>postgresql</artifactId>
-		</dependency>
-		<!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter -->
+
+		<!-- Spring boot starter -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter</artifactId>
@@ -54,35 +40,39 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+		
 		<!-- Spring cloud connector -->
-		<!-- https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-spring-service-connector -->
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-spring-service-connector</artifactId>
 		</dependency>
-		<!-- https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-cloudfoundry-connector -->
+		
+		<!-- Spring cloud cloudfoundry connector -->
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-cloudfoundry-connector</artifactId>
 		</dependency>
-		<!-- Hystrix -->
-		<dependency>
-			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-starter-netflix-hystrix</artifactId>
-			<version>1.4.4.RELEASE</version>
-		</dependency>
-		<!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-amqp -->
 
-	<!--	<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-amqp</artifactId>
-		</dependency>-->
-
+		<!-- netty handler  -->
 		<dependency> 
 			<groupId>io.netty</groupId>
 			<artifactId>netty-handler</artifactId>
 		</dependency>
 				
+		<!-- Resilience4j circuit breaker -->
+		<dependency>
+		   <groupId>io.github.resilience4j</groupId>
+		   <artifactId>resilience4j-circuitbreaker</artifactId>
+		   <version>0.15.0</version>
+		</dependency>
+		
+		<!-- Resilience4j retry -->
+		<dependency>
+		    <groupId>io.github.resilience4j</groupId>
+		    <artifactId>resilience4j-retry</artifactId>
+		    <version>0.15.0</version>
+		</dependency>
+		
         <dependency>
             <groupId>com.sap.cloud.servicesdk.xbem</groupId>
             <artifactId>emjapi-connector-sap-cp</artifactId>
@@ -97,15 +87,6 @@
             <groupId>com.sap.cloud.servicesdk.xbem</groupId>
             <artifactId>emjapi-extension-sap-cp-jms</artifactId>
         </dependency>
-
-		
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-web</artifactId>
-            <version>5.0.5.RELEASE</version>
-            <scope>compile</scope>
-        </dependency>
-
 
     </dependencies>
 

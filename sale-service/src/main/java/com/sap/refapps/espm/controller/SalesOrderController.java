@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.netflix.hystrix.exception.HystrixRuntimeException;
 import com.sap.refapps.espm.model.SalesOrder;
 import com.sap.refapps.espm.model.Tax;
 import com.sap.refapps.espm.service.SalesOrderService;
@@ -45,7 +44,7 @@ public class SalesOrderController {
 	 */
 	@PostMapping
 	public ResponseEntity<String> createSalesOrder(@RequestBody final SalesOrder salesOrder)
-			throws HystrixRuntimeException, UnsupportedEncodingException, JMSException, JsonProcessingException {
+			throws UnsupportedEncodingException, JMSException, JsonProcessingException {
         String soId= UUID.randomUUID().toString();
 		salesOrder.setSalesOrderId(soId);
 		final Tax tax = salesOrderService.getTax(salesOrder.getGrossAmount());

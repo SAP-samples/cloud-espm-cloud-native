@@ -1,7 +1,6 @@
 package com.sap.refapps.espm;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
@@ -13,18 +12,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.cloud.cloudfoundry.com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.context.ApplicationContext;
 
-
-
-import com.sap.refapps.espm.config.WorkerContextInitializer;
 import com.sap.refapps.espm.model.SalesOrder;
 import com.sap.refapps.espm.model.SalesOrderRepository;
-import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.transaction.CannotCreateTransactionException;
 
@@ -87,72 +80,51 @@ public class Worker implements CommandLineRunner {
 
         queue = session.createQueue("queue:EmSampleInQueue");
         consumer = session.createConsumer(queue);
-
-        /*
-		connection.setExceptionListener(e -> {
-			logger.error("Exception Occured");
-
-
-		});
-		*/
-
-
-
-
-
-		consumer.setMessageListener((message) -> {
+        
+		consumer.setMessageListener(message -> {
 			try {
-				final byte[] body = message.getBody(byte[].class);
-				final String content = new String(body, StandardCharsets.UTF_8);
-				System.out.println("Received message: " + content);
+				String messageBody = message.getBody(String.class);
+				ObjectMapper mapper = new ObjectMapper();
+				SalesOrder so = mapper.readValue(messageBody, SalesOrder.class);
+
+				SalesOrderRepository repo = appContext.getBean(SalesOrderRepository.class);
 				try {
-					String newString = content.substring(8);
-					System.out.println(newString);
-					ObjectMapper mapper = new ObjectMapper();
-					SalesOrder so = mapper.readValue(newString, SalesOrder.class);
-					System.out.println(so.getCustomerEmail());
+					if (!repo.existsById(so.getSalesOrderId())) {
+						repo.save(so);
+						logger.info(so.getSalesOrderId() + " created");
 
-					SalesOrderRepository repo = appContext.getBean(SalesOrderRepository.class);
-					try {
-						if (!repo.existsById(so.getSalesOrderId())) {
-							repo.save(so);
-							logger.info(so.getSalesOrderId() + " created");
-
-
-						} else {
-							logger.error(so.getSalesOrderId() + " already Exists, Deleting from Queue");
-							//message.acknowledge();
-
-
-						}
-						message.acknowledge();
-					} catch (DataIntegrityViolationException e) {
-						logger.error(so.getSalesOrderId() + " is an invalid Sales-Order, Deleting from Queue");
-						//channel.basicNack(tag, false, false);
-						message.acknowledge();
-
-					} catch (CannotCreateTransactionException ccte) {
-						logger.error("Unable to connect to DB");
-						logger.error("Backing  for " + value);
-						TimeUnit.MILLISECONDS.sleep(value);
-						if (value <= maxVal)
-							value = value * multiplier;
+					} else {
+						logger.error(so.getSalesOrderId() + " already Exists, Deleting from Queue");
+						// message.acknowledge();
 
 					}
-				} catch (Exception e) {
-					System.out.println(e.getMessage());
-					latch.countDown();
+					message.acknowledge();
+				} catch (DataIntegrityViolationException e) {
+					logger.error(so.getSalesOrderId() + " is an invalid Sales-Order, Deleting from Queue");
+					// channel.basicNack(tag, false, false);
+					message.acknowledge();
+
+				} catch (CannotCreateTransactionException ccte) {
+					logger.error("Unable to connect to DB");
+					logger.error("Backing  for " + value);
+					TimeUnit.MILLISECONDS.sleep(value);
+					if (value <= maxVal)
+						value = value * multiplier;
+
 				}
+			} catch (Exception e) {
+				System.out.println(e.getMessage());
+				latch.countDown();
+			}
+			try {
 				message.acknowledge();
 			} catch (JMSException e) {
-				throw new RuntimeException("Unexpected exception during message receive: " + e.getMessage(), e);
+				logger.error(e.getMessage());
 			}
 		});
 
 		connection.start();
 		System.out.println("Connection started");
-
-		System.out.println("Start receiving messages...");
 
 		try {
 
