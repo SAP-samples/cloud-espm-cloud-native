@@ -1,6 +1,6 @@
 # ESPM Tax Service 
 
-ESPM Tax Service is a tax calculation app. This was developed to supplement the [ESPM Dragonblood](https://github.wdf.sap.corp/refapps/espm-dragonblood) application. It can be deployed locally (as a Spring Boot application), on SAP Cloud Platform Cloud Foundry Environment and on SAP Cloud Platform Neo Environment.  
+ESPM Tax Service is a tax calculation app. This was developed to supplement the [ESPM Cloud Native](https://github.com/SAP-samples/cloud-espm-cloud-native) application. It can be deployed locally (as a Spring Boot application), on SAP Cloud Platform Cloud Foundry Environment and on SAP Cloud Platform Neo Environment.  
 # Tax Calculation Matrix (Tax Slab)
 The tax service calculate the tax based on various slabs as defined below. The requesting application needs to provide a gross amount and tax service will respond with tax calculation
 `/api/v1/calculate/tax?amount=?`
