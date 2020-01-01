@@ -1,25 +1,27 @@
 ---
 applications:
-- name: xsuaademo-espm-product-svc
+- name: espm-product-svc
+  host: <unique_id>-espm-product-svc
   memory: 1G
   buildpack: https://github.com/cloudfoundry/java-buildpack.git
   path: product-service/target/product-service-1.0.0.jar
   env:
-    CORS_DOMAIN: "cfapps.sap.hana.ondemand.com"
-    
+    CORS_DOMAIN: "cfapps.sap.hana.ondemand.com"    
   services:
-    - espm-hanadb-xsuaa
+    - espm-hana-db
 
-- name:  xsuaademo-espm-customer-svc
+- name: espm-customer-svc
+  host: <unique_id>-espm-customer-svc
   memory: 1G
   buildpack: https://github.com/cloudfoundry/java-buildpack.git
   path: customer-service/target/customer-service-1.0.0.jar
   env:
     CORS_DOMAIN: "cfapps.sap.hana.ondemand.com"
   services:
-    - espm-hanadb-xsuaa
+    - espm-hana-db
     
-- name: biswa-espm-sales-svc
+- name: espm-sales-svc
+  host: <unique_id>-espm-sales-svc
   memory: 1G
   buildpack: https://github.com/cloudfoundry/java-buildpack.git
   path: sale-service/target/sale-service-1.0.0.jar
@@ -30,11 +32,10 @@ applications:
   services:
     - espm-hana-db
     - espm-em
-    - biswaDestination
+    - espm-destination
     - espm-xsuaa
     
-- name: biswa-espm-worker
-  no-host: true
+- name: espm-worker
   health-check-type: process
   memory: 1G
   buildpack: https://github.com/cloudfoundry/java-buildpack.git
@@ -46,16 +47,16 @@ applications:
     - espm-hana-db
     - espm-em
 
-- name: xsuaademo-espm-gateway
+- name: espm-gateway
   memory: 512M
   buildpack: https://github.com/cloudfoundry/nodejs-buildpack.git
   path: gateway
   env:
     destinations: >
       [
-        {"name":"product-service", "url":"https://xsuaademo-espm-product-svc.cfapps.sap.hana.ondemand.com/"},
-        {"name":"customer-service", "url":"https://xsuaademo-espm-customer-svc.cfapps.sap.hana.ondemand.com/"},
-        {"name":"sales-service", "url":"https://xsuaademo-espm-sales-svc.cfapps.sap.hana.ondemand.com/", "forwardAuthToken": true}
+        {"name":"product-service", "url":"https://<unique_id>-espm-product-svc.cfapps.sap.hana.ondemand.com/"},
+        {"name":"customer-service", "url":"https://<unique_id>-espm-customer-svc.cfapps.sap.hana.ondemand.com/"},
+        {"name":"sales-service", "url":"https://<unique_id>-espm-sales-svc.cfapps.sap.hana.ondemand.com/", "forwardAuthToken": true}
        ]
   services:
-    - espm-uaa-xsuaa
+    - espm-xsuaa
