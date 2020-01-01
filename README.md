@@ -153,8 +153,7 @@ For Running locally:
 
 For Cloud: 
 
-* SAP Cloud Platform account
-* [SAP Cloud Platform Enterprise Messaging](https://help.sap.com/viewer/product/SAP_ENTERPRISE_MESSAGING/Cloud/en-US)
+* SAP Cloud Platform account with [Enterprise Messaging](https://help.sap.com/viewer/product/SAP_ENTERPRISE_MESSAGING/Cloud/en-US) service. The 'default' plan for Enterprise Messaging service is required.
 * To deploy the MTAR we need the MTA CF CLI plugin, download the MTA CF CLI Plugin from [here](https://tools.hana.ondemand.com/#cloud)
 * The MultiApps CF CLI Plugin is now also available on the CF Community Repository. To install the latest available version of the MultiApps CLI Plugin execute the following:
 
@@ -168,30 +167,19 @@ cf add-plugin-repo CF-Community https://plugins.cloudfoundry.org
 
 * Create new enterprise messaging service using the command:
 
-`cf cs enterprise-messaging default espm-em -c '{ "emname": "messaging-products" }'`
+`cf cs enterprise-messaging default espm-em -c em-default.json`
 
-Make sure that the emname is a unique name
+You can edit the sure that the emname, namespace in the em-default.json file to a unique one. 
 
 For more details, check [here](https://help.sap.com/viewer/bf82e6b26456494cbdd197057c09979f/Cloud/en-US/d0483a9e38434f23a4579d6fcc72654b.html)
 
-* Open the dashboard for the service that is created and create a queue.
-
-![Alt text](./documentation/images/EM.png "Enterprise Messaging")
-
-### Optional: SAP Cloud Platform Enterprise Messaging default plan
-
-* Create new enterprise messaging service using the command:
-
-`cf cs enterprise-messaging default espm-em -c em-default.json`
-
-Make sure that the emname is a unique name
 
 * Open Enterprise Messaging subscription in cockpit and please proceed with creating a queue.
 For more details about creating a queue, check [here](https://help.sap.com/viewer/bf82e6b26456494cbdd197057c09979f/Cloud/en-US/57af1bd4e8f54b0a9b36414a5ec6b800.html)
 
-* Replace `queue:EmSampleInQueue` in [salesorderserviceimpl](https://github.com/SAP-samples/cloud-espm-cloud-native/blob/1927672a633f01c9f68cf826f8e226b02ece6892/sale-service/src/main/java/com/sap/refapps/espm/service/SalesOrderServiceImpl.java#L292) with `queue:<namespace>/EmSampleInQueue`
+![Alt text](./documentation/images/EM.png "Enterprise Messaging")
 
-* Replace `queue:EmSampleInQueue` in [Emlistner](https://github.wdf.sap.corp/refapps/espm-dragonblood/blob/2c54fc7f7b0c1a6c03482da0edc29b87024cd9ba/worker/src/main/java/com/sap/refapps/espm/listner/EMListner.java#L77) with `queue:<namespace>/EmSampleInQueue`
+* Replace the `QUEUE_NAME` for sales-svc, worker apps in [manifest.yml file](https://github.com/SAP-samples/cloud-espm-cloud-native/blob/master/manifest.yml) with the new queue name that was created based on the namespace, name provided in the previous step. 
 
 ## Running the ESPM application locally
 
@@ -444,13 +432,9 @@ To test ESPM application [Postman REST Client](https://www.getpostman.com/apps) 
 
 To run the application on Cloud Foundry you need an account on SAP Cloud Platform Cloud Foundry Environment or signup for a [SAP Cloud Platform Cloud Foundry Environment trial account](https://cloudplatform.sap.com/try.html)
 *Please note that in SAP Cloud Platform Cloud Foundry Environment,  for a trial account, there is limited resource and you get a RAM of 2 GB which is not sufficient to run the complete ESPM application.*  
-To run the complete ESPM application, one will need around 5.5 GB of RAM. Each of the 5 Spring boot applications (Product Service, Customer Service, Sales Service, Worker and Tax Service) needs 1 GB of RAM and Gateway (based on Node.js) which also contains UI for the application, needs around 512 MB. The optimal way to run application is
-* Signup for SAP Cloud Platform Neo trial account by following [these steps](https://cloudplatform.sap.com/try.html)
-* Run Tax service in [SAP Cloud Platform Neo Environment](./tax-service#running-on-sap-cloud-platfrom-neo-environment)
+To run the complete ESPM application, one will need around 5.5 GB of RAM. Each of the 5 Spring boot applications (Product Service, Customer Service, Sales Service, Worker and Tax Service) needs 1 GB of RAM and Gateway (based on Node.js) which also contains UI for the application, needs around 512 MB.
 
-* The recommended way to consume the Tax service would be via a [Destination Service](https://help.sap.com/viewer/cca91383641e40ffbe03bdc78f00f681/Cloud/en-US/7e306250e08340f89d6c103e28840f30.html).  
-
-* Run command `cf marketplace` and check the service and plan names of HANA and Enterprise Messaging backing service.
+* Run command `cf marketplace` and check the service and plan names of HANA and XSUAA backing service.
 
 * Create HANA Service instance with `schema` plan.  `cf create-service hana schema espm-hana-db`.
 * Create XSUAA service instance with `application` plan. `cf create-service xsuaa application espm-xsuaa -c xs-security.json`
