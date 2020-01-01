@@ -1,6 +1,7 @@
 package com.sap.refapps.espm;
 
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
@@ -14,7 +15,7 @@ import com.sap.refapps.espm.config.SaleApplicationContextInitializer;
  * application.
  *
  */
-@SpringBootApplication
+@SpringBootApplication(exclude = {SecurityAutoConfiguration.class})
 public class Application {
 
     public static void main(String[] args) {

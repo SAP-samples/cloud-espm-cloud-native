@@ -1,16 +1,19 @@
 package com.sap.refapps.espm.controller;
 
 import java.io.UnsupportedEncodingException;
+import java.util.Arrays;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.cloudfoundry.com.fasterxml.jackson.core.JsonProcessingException;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -22,8 +25,8 @@ import com.sap.refapps.espm.service.SalesOrderService;
 import javax.jms.JMSException;
 
 /**
- * This class is a controller class of sales service 
- * which is responsible for handling all endpoints.
+ * This class is a controller class of sales service which is responsible for
+ * handling all endpoints.
  *
  */
 @RestController
@@ -34,28 +37,52 @@ public class SalesOrderController {
 
 	@Autowired
 	private SalesOrderService salesOrderService;
+	
+	@Autowired
+	private Environment environment;
 
 	/**
 	 * It creates a sales order
 	 * 
 	 * @param salesOrder
 	 * @return ResponseEntity<String> message
-	 * @throws HystrixRuntimeException
 	 */
 	@PostMapping
 	public ResponseEntity<String> createSalesOrder(@RequestBody final SalesOrder salesOrder)
 			throws UnsupportedEncodingException, JMSException, JsonProcessingException {
-        String soId= UUID.randomUUID().toString();
+		String soId = UUID.randomUUID().toString();
 		salesOrder.setSalesOrderId(soId);
-		final Tax tax = salesOrderService.getTax(salesOrder.getGrossAmount());
-		salesOrderService.insert(salesOrder, tax);
-			//return errorMessage("Service Currently Unavailable",HttpStatus.SERVICE_UNAVAILABLE);
-		return new ResponseEntity<>("Sales Order with ID " + soId+ " created", HttpStatus.ACCEPTED);
+		
+		if(Arrays.stream(environment.getActiveProfiles()).anyMatch(env -> env.equalsIgnoreCase("local"))) {
+			if(!salesOrderService.insert(salesOrder, "local"))
+				return errorMessage("Service is currently unavailable",HttpStatus.SERVICE_UNAVAILABLE);
+		}
+		else if(Arrays.stream(environment.getActiveProfiles()).anyMatch(env -> env.equalsIgnoreCase("cloud"))) {
+			salesOrderService.insert(salesOrder);
+		}
+		
+		return new ResponseEntity<>("Sales Order with ID " + soId + " created", HttpStatus.ACCEPTED);
 	}
 
 	/**
-	 * Returns list of sales orders based on customer
-	 * email.
+	 * update sales order
+	 * 
+	 * @param salesOrderId, status
+	 * @return ResponseEntity<String> message
+	 */
+	@PutMapping("/{salesOrderId}/{statusCode}")
+	public ResponseEntity<String> updateSalesOrder(@PathVariable("salesOrderId") final String salesOrderId,
+			@PathVariable("statusCode") final String statusCode, @RequestBody final String note) {
+		if (salesOrderService.getById(salesOrderId) != null) {
+			salesOrderService.updateStatus(salesOrderId, statusCode, note);
+			return new ResponseEntity<>("Sales Order with ID " + salesOrderId + " updated", HttpStatus.OK);
+		} else {
+			return errorMessage("SalesOrder " + salesOrderId + " not found", HttpStatus.NOT_FOUND);
+		}
+	}
+
+	/**
+	 * Returns list of sales orders based on customer email.
 	 * 
 	 * @param customerEmail
 	 * @return list of sales order
@@ -67,7 +94,8 @@ public class SalesOrderController {
 		final Iterable<SalesOrder> salesOrders = salesOrderService.getByEmail(customerEmail);
 		if (salesOrders.iterator().hasNext())
 			return new ResponseEntity<>(salesOrders, HttpStatus.OK);
-		return errorMessage("Customer with email Address "+ customerEmail + " not found or customer does not have any sales orders", HttpStatus.NOT_FOUND);
+		return errorMessage("Customer with email Address " + customerEmail
+				+ " not found or customer does not have any sales orders", HttpStatus.NOT_FOUND);
 	}
 
 	/**
@@ -96,7 +124,6 @@ public class SalesOrderController {
 		return new ResponseEntity<>(salesOrders, HttpStatus.OK);
 
 	}
-
 
 	/**
 	 * It is used to print the error message.

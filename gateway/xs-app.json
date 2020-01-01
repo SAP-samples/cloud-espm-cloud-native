@@ -1,48 +1,57 @@
 {
-  "welcomeFile": "/webapp/index.html",
-  "authenticationMethod": "none",
+  "welcomeFile": "/webapp/webshop/index.html",
+  "authenticationMethod": "route",
   "logout": {
     "logoutEndpoint": "/do/logout"
   },
   "routes": [
-    {
-      "source": "^/espm-products/(.*)$",
-      "target": "$1",
-      "destination": "espm-products"
-    },
-    {
-      "source": "^/espm-customers/(.*)$",
-      "target": "$1",
-      "csrfProtection": false,
-      "destination": "espm-customers"
-    },
-    {
-      "source": "^/espm-salesorders/(.*)$",
-      "target": "$1",
-      "csrfProtection": false,
-      "destination": "espm-salesorder"
-    },
-    {
-      "source": "^/(.*)$",
-      "target": "$1",
-      "localDir": "."
-    },
 	{
-	  "source": "/product.svc/api",
+	  "source": "^/product.svc/api/(.*)",
 	  "destination": "product-service",
+	  "csrfProtection": false,
 	  "httpMethods": ["GET","PUT"]
 	},
 	{
-	  "source": "/customer.svc/api",
+	  "source": "^/customer.svc/api/(.*)",
 	  "destination": "customer-service",
+	  "csrfProtection": false,
 	  "httpMethods": ["GET","POST","PUT","DELETE"]
 	},
 	{
-	  "source": "/sale.svc/api",
+	  "source": "^/sale.svc/api/(.*)",
 	  "destination": "sales-service",
+	  "csrfProtection": false,
+	  "scope": "$XSAPPNAME.Update",
+	  "httpMethods": ["PUT"]
+	},
+	{
+	  "source": "^/sale.svc/api/(.*)",
+	  "destination": "sales-service",
+	  "csrfProtection": false,
 	  "httpMethods": ["GET","POST"]
-	}
-  ]
+	},
+    {
+      "source": "^/webapp/retailer/(.*)",
+      "localDir": ".",
+      "replace": {
+        "pathSuffixes": [
+          "index.html"
+        ]
+      },
+      "scope": "$XSAPPNAME.Update",
+	  "authenticationType": "xsuaa"
+    },
+    {
+      "source": "^/webapp/webshop/(.*)",
+      "localDir": ".",
+      "replace": {
+        "pathSuffixes": [
+          "index.html"
+        ]
+      },
+	"authenticationType": "xsuaa"
+    }
+    ]
 }
 
 

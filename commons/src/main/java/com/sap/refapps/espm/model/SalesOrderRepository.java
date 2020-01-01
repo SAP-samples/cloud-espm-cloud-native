@@ -18,7 +18,7 @@ public interface SalesOrderRepository extends CrudRepository<SalesOrder, String>
 	 * @param customerEmail
 	 * @return list of sales order
 	 */
-	@Query(value = "SELECT * FROM ESPM_SALES_ORDER WHERE CUSTOMER_EMAIL = ?1", nativeQuery = true)
+	@Query(value = "SELECT * FROM ESPM_SALES_ORDER WHERE CUSTOMER_EMAIL = ?1 ORDER BY CREATED_AT DESC", nativeQuery = true)
 	Iterable<SalesOrder> getAllSalesOrderForCustomer(String customerEmail);
 	
 	/**
@@ -29,5 +29,8 @@ public interface SalesOrderRepository extends CrudRepository<SalesOrder, String>
 	 */
 	@Query(value = "SELECT * FROM ESPM_SALES_ORDER WHERE SALES_ORDER_ID = ?1", nativeQuery = true)
 	SalesOrder findSalesOrderById(String salesOrderId);
-
+	
+	@Query(value = "SELECT * FROM ESPM_SALES_ORDER ORDER BY CREATED_AT DESC", nativeQuery = true)
+	Iterable<SalesOrder> getAllSalesOrders();
+	
 }

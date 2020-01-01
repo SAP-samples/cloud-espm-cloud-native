@@ -1,0 +1,153 @@
+{
+	"_version": "1.8.0",
+	"sap.app": {
+		"id": "com.sap.ESPM-UI",
+		"type": "application",
+		"i18n": "i18n/i18n.properties",
+		"applicationVersion": {
+			"version": "1.0.0"
+		},
+		"title": "{{appTitle}}",
+		"description": "{{appDescription}}",
+		"sourceTemplate": {
+			"id": "ui5template.basicSAPUI5ApplicationProject",
+			"version": "1.40.12"
+		}
+	},
+	"sap.ui": {
+		"technology": "UI5",
+		"icons": {
+			"icon": "",
+			"favIcon": "",
+			"phone": "",
+			"phone@2": "",
+			"tablet": "",
+			"tablet@2": ""
+		},
+		"deviceTypes": {
+			"desktop": true,
+			"tablet": true,
+			"phone": true
+		},
+		"supportedThemes": [
+			"sap_hcb",
+			"sap_belize"
+		]
+	},
+	"sap.ui5": {
+		"_version": "1.1.0",
+		"rootView": {
+			"viewName": "com.sap.ESPM-UI.view.App",
+			"type": "XML"
+		},
+		"dependencies": {
+			"minUI5Version": "1.30.0",
+			"libs": {
+				"sap.ui.core": {
+					
+				},
+				"sap.m": {
+					
+				},
+				"sap.ui.layout": {
+					
+				}
+			}
+		},
+		"contentDensities": {
+			"compact": true,
+			"cozy": true
+		},
+		"models": {
+"i18n": {
+"type": "sap.ui.model.resource.ResourceModel",
+"settings": {
+"bundleName": "com.sap.ESPM-UI.i18n.i18n"
+}
+}
+},
+"resources": {
+"css": [
+{
+"uri": "css/style.css"
+}
+]
+},
+		"routing": {
+			"config": {
+"routerClass": "sap.m.routing.Router",
+"viewType": "XML",
+"async": true,
+"viewPath": "com.sap.ESPM-UI.view",
+"controlAggregation": "pages",
+"controlId": "espmRetailerId",
+"clearControlAggregation": false,
+"bypassed": {
+"target": "notfound"
+}
+},
+			"routes": [
+				{
+					"pattern": "",
+					"name": "Home",
+					"target": "Home"
+				},
+				{
+					"pattern": "SalesOrder",
+					"name": "SalesOrder",
+					"target": "SalesOrder"
+				},
+				{
+					"pattern": "StockInformation",
+					"name": "StockInformation",
+					"target": "StockInformation"
+				}
+			],
+			"targets": {
+				"app": {
+					"viewType": "XML",
+					"viewName": "App",
+					"routerClass": "sap.m.routing.Router",
+					"async": true,
+					"viewPath": "com.sap.ESPM-UI.view",
+					"controlAggregation": "pages",
+					"controlId": "espmRetailerId",
+					"clearControlAggregation": false,
+					"viewLevel": 1,
+					"bypassed": {
+						"target": "notfound"
+					}
+				},
+				"Home": {
+					"viewType": "XML",
+					"viewName": "Home",
+					"routerClass": "sap.m.routing.Router",
+					"async": true,
+					"viewPath": "com.sap.ESPM-UI.view",
+					"controlAggregation": "pages",
+					"controlId": "espmRetailerId",
+					"clearControlAggregation": false,
+					"viewLevel": 2,
+					"bypassed": {
+						"target": "notfound"
+					}
+				},
+				"SalesOrder": {
+					"viewType": "XML",
+					"viewName": "SalesOrder",
+					"routerClass": "sap.m.routing.Router",
+					"async": true,
+					"viewPath": "com.sap.ESPM-UI.view",
+					"controlAggregation": "pages",
+					"controlId": "espmRetailerId",
+					"clearControlAggregation": false,
+					"viewLevel": 2,
+					"bypassed": {
+						"viewName": "StockInformation"
+					}
+				}
+			}
+			}
+			}
+			}
+			

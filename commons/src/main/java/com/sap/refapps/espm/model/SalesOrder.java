@@ -61,6 +61,9 @@ public class SalesOrder implements Serializable {
 
 	@Column(name = "CREATED_AT")
 	private String createdAt;
+	
+	@Column(name = "NOTE")
+	private String note;
 
 	public String getSalesOrderId() {
 		return salesOrderId;
@@ -164,5 +167,13 @@ public class SalesOrder implements Serializable {
 
 	public void setCreatedAt(String createdAt) {
 		this.createdAt = createdAt;
+	}
+	
+	public String getNote() {
+		return note;
+	}
+
+	public void setNote(String note) {
+		this.note = note;
 	}
 }

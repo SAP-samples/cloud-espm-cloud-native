@@ -1,8 +1,5 @@
 package com.sap.refapps.espm.config;
 
-
-
-
 import com.sap.cloud.servicesdk.xbem.core.MessagingService;
 import com.sap.cloud.servicesdk.xbem.core.MessagingServiceFactory;
 import com.sap.cloud.servicesdk.xbem.core.exception.MessagingException;
@@ -16,11 +13,11 @@ import org.springframework.cloud.CloudFactory;
 import org.springframework.cloud.service.ServiceConnectorConfig;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
+import org.springframework.context.annotation.Profile;
 
 @Configuration
+@Profile("cloud")
 public class EnterpriseMessagingConfig {
-
 
     @Bean
     public MessagingServiceFactory getMessagingServiceFactory() {

@@ -14,8 +14,9 @@ import org.springframework.cloud.CloudFactory;
 import org.springframework.cloud.service.ServiceConnectorConfig;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 
-
+@Profile("cloud")
 @Configuration
 public class EnterpriseMessagingConfig {
 
@@ -34,7 +35,7 @@ public class EnterpriseMessagingConfig {
     @Bean
     public MessagingServiceJmsConnectionFactory getMessagingServiceJmsConnectionFactory(MessagingServiceFactory messagingServiceFactory) {
         try {
-            /*
+        	/*
              * The settings object is preset with default values (see JavaDoc)
              * and can be adjusted. The settings aren't required and depend on
              * the use-case. Note: a connection will be closed after an idle
@@ -51,8 +52,5 @@ public class EnterpriseMessagingConfig {
             throw new IllegalStateException("Unable to create the Connection Factory", e);
         }
     }
-
-
-
 
 }

@@ -1,6 +1,6 @@
 ---
 applications:
-- name: <unique_id>-espm-product-svc
+- name: xsuaademo-espm-product-svc
   memory: 1G
   buildpack: https://github.com/cloudfoundry/java-buildpack.git
   path: product-service/target/product-service-1.0.0.jar
@@ -8,30 +8,32 @@ applications:
     CORS_DOMAIN: "cfapps.sap.hana.ondemand.com"
     
   services:
-    - espm-hana-db
+    - espm-hanadb-xsuaa
 
-- name:  <unique_id>-espm-customer-svc
+- name:  xsuaademo-espm-customer-svc
   memory: 1G
   buildpack: https://github.com/cloudfoundry/java-buildpack.git
   path: customer-service/target/customer-service-1.0.0.jar
   env:
     CORS_DOMAIN: "cfapps.sap.hana.ondemand.com"
   services:
-    - espm-hana-db
+    - espm-hanadb-xsuaa
     
-- name: <unique_id>-espm-sales-svc
+- name: biswa-espm-sales-svc
   memory: 1G
   buildpack: https://github.com/cloudfoundry/java-buildpack.git
   path: sale-service/target/sale-service-1.0.0.jar
   env:
-    TAX_SERVICE: https://<tax-service><accountname>.hanatrial.ondemand.com/api/v1/calculate/tax?amount=
+    TAX_SERVICE: https://taxservice.cfapps.sap.hana.ondemand.com/api/v1/calculate/tax?amount=
     CORS_DOMAIN: "cfapps.sap.hana.ondemand.com"
+    QUEUE_NAME: "refapps/espm/1/salesOrderQueue"
   services:
     - espm-hana-db
     - espm-em
-    - espm-destination
+    - biswaDestination
+    - espm-xsuaa
     
-- name: espm-worker
+- name: biswa-espm-worker
   no-host: true
   health-check-type: process
   memory: 1G
@@ -39,30 +41,21 @@ applications:
   path: worker/target/worker-1.0.0.jar
   env:
     CORS_DOMAIN: "cfapps.sap.hana.ondemand.com"
+    QUEUE_NAME: "refapps/espm/1/salesOrderQueue"
   services:
     - espm-hana-db
     - espm-em
 
-- name: <unique_id>-espm-gateway
+- name: xsuaademo-espm-gateway
   memory: 512M
   buildpack: https://github.com/cloudfoundry/nodejs-buildpack.git
   path: gateway
   env:
     destinations: >
       [
-        {
-          "name":"espm-products",
-          "url":"https://<unique_id>-espm-product-svc.cfapps.sap.hana.ondemand.com/product.svc/"
-        },
-        {
-          "name":"espm-salesorder",
-          "url":"https://<unique_id>-espm-sales-svc.cfapps.sap.hana.ondemand.com/sale.svc/"
-        },
-        {
-          "name":"espm-customers",
-          "url":"https://<unique_id>-espm-customer-svc.cfapps.sap.hana.ondemand.com/customer.svc/"
-        },
-        {"name":"product-service", "url":"https://<unique_id>-espm-product-svc.cfapps.sap.hana.ondemand.com/", "forwardAuthToken": false},
-        {"name":"customer-service", "url":"https://<unique_id>-espm-customer-svc.cfapps.sap.hana.ondemand.com/", "forwardAuthToken": false},
-        {"name":"sales-service", "url":"https://<unique_id>-espm-sales-svc.cfapps.sap.hana.ondemand.com/", "forwardAuthToken": false}
-      ]
+        {"name":"product-service", "url":"https://xsuaademo-espm-product-svc.cfapps.sap.hana.ondemand.com/"},
+        {"name":"customer-service", "url":"https://xsuaademo-espm-customer-svc.cfapps.sap.hana.ondemand.com/"},
+        {"name":"sales-service", "url":"https://xsuaademo-espm-sales-svc.cfapps.sap.hana.ondemand.com/", "forwardAuthToken": true}
+       ]
+  services:
+    - espm-uaa-xsuaa

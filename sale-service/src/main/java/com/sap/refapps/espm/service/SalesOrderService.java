@@ -3,16 +3,15 @@ package com.sap.refapps.espm.service;
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 
-import com.sap.refapps.espm.model.SalesOrder;
-import com.sap.refapps.espm.model.Tax;
-import org.springframework.cloud.cloudfoundry.com.fasterxml.jackson.core.JsonProcessingException;
-
 import javax.jms.JMSException;
 
+import org.springframework.cloud.cloudfoundry.com.fasterxml.jackson.core.JsonProcessingException;
+
+import com.sap.refapps.espm.model.SalesOrder;
+import com.sap.refapps.espm.model.Tax;
 
 /**
- * This interface defines all the methods
- * for the sales order service.
+ * This interface defines all the methods for the sales order service.
  *
  */
 public interface SalesOrderService {
@@ -33,8 +32,7 @@ public interface SalesOrderService {
 	SalesOrder getById(String salesOrderId);
 
 	/**
-	 * Returns a list of sales order based on 
-	 * customer email.
+	 * Returns a list of sales order based on customer email.
 	 * 
 	 * @param customerEmail
 	 * @return list of sales order
@@ -48,26 +46,26 @@ public interface SalesOrderService {
 	 * @param tax
 	 * @return true if sales order get inserted successfully
 	 */
-	void insert(SalesOrder salesOrder, Tax tax) throws JsonProcessingException, UnsupportedEncodingException, JMSException;
+	void insert(SalesOrder salesOrder)
+			throws JsonProcessingException, UnsupportedEncodingException, JMSException;
+	
+	
+	/**
+	 * create a sales order for local environment
+	 * 
+	 * @param salesOrder
+	 * @param tax
+	 * @param status
+	 * @return
+	 */
+	boolean insert(SalesOrder salesOrder, String profile);
 
 	/**
-	 * Returns a tax based on amount provided
-	 * from an external service.
+	 * It updates a sales order status.
 	 * 
-	 * @param amount
-	 * @return tax object
+	 * @param salesOrder
+	 * @param tax
 	 */
-	Tax getTax(BigDecimal amount);
-
-	/**
-	 * Returns a tax if the tax service is not
-	 * reachable or down. This is the fallback
-	 * method for getTax().
-	 * 
-	 * @param amount
-	 * @return tax object
-	 */
-	Tax taxServiceFallback(BigDecimal amount);
+	void updateStatus(String salesOrderId, String lifecyleStatus, String note);
 
 }
-
