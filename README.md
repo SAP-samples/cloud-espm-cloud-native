@@ -434,14 +434,27 @@ To run the application on Cloud Foundry you need an account on SAP Cloud Platfor
 *Please note that in SAP Cloud Platform Cloud Foundry Environment,  for a trial account, there is limited resource and you get a RAM of 2 GB which is not sufficient to run the complete ESPM application.*  
 To run the complete ESPM application, one will need around 5.5 GB of RAM. Each of the 5 Spring boot applications (Product Service, Customer Service, Sales Service, Worker and Tax Service) needs 1 GB of RAM and Gateway (based on Node.js) which also contains UI for the application, needs around 512 MB.
 
-* Run command `cf marketplace` and check the service and plan names of HANA and XSUAA backing service.
 
-* Create HANA Service instance with `schema` plan.  `cf create-service hana schema espm-hana-db`.
-* Create XSUAA service instance with `application` plan. `cf create-service xsuaa application espm-xsuaa -c xs-security.json`
+
+
+### Database Creation
+* Run command `cf marketplace` and check the service and plan names of HANA. Check if service with name `hana` and plan `schema` exists 
+
+* Create HANA DB Service instance with `schema` plan by running command  `cf create-service hana schema espm-hana-db`.
+
+*For simplicity all the microservices are bound to one database instance espm-hana-db. If required three database instances can be created (e.g. esmp-customer, espm-product and espm-sales) and individual microservice can be bound to them*
+
+
+### Security Implementation
+* Run command `cf marketplace` and check the service and plan names  for XSUAA backing service. Check if service `xsuaa` and plan `application` exists.
+
+* Create XSUAA service instance with `application` plan by running the command `cf create-service xsuaa application espm-xsuaa -c xs-security.json`
 
 #### Setup Role collections
 
-We need to setup the Role collections for the UAA, since the Retailer application needs the template role called "Retailer" assigned to the user, for the application to work.
+The ESPM application defines a role template called as `Retailer` in the xs-security.json. This role template is to define a role collection called as `Retailer`. This Retailer role collection is required by a user to accept Sales Orders. Creation of Sales Orders can be done by anonymous users.
+
+To create `Retailer` role collection follow the steps below
 
  - In your Cloud Foundry account, in the left pane select Role collections under the Security tab.
 
@@ -464,12 +477,18 @@ We need to assign the role which we have created in the previous step to the use
  - Enter username/email and click on the add Assignment button.
 
  - Select the Role as "Retailer" to assign it to the user.
-
-*For simplicity all the microservices are bound to one database instance espm-hana-db. If required three database instances can be created (e.g. esmp-customer, espm-product and espm-sales) and individual microservice can be bound to them*
+ 
+ 
+### Enterprise Messaging Service Creation
 
 * Create Enterprise Messaging Service instance as mentioned [above](#sap-cloud-platform-enterprise-messaging). 
 
-* Edit the manifest.yml file and update `<unique_id>` with some unique value for each applications host name
+
+
+### Tax Service Application Deployment
+* Navigate to tax-service folder
+
+* Edit the manifest.yml file and update `<unique_id>` with some unique value for each tax applications host name
 
 * The TAX SERVICE can be accessed in Cloud Foundary in either of the 2 ways:
    * **Destination Services (Recommended):** <br>
@@ -482,10 +501,13 @@ We need to assign the role which we have created in the previous step to the use
        * The implementation of destination services is in [SalesOrderServiceImpl](./sale-service/src/main/java/com/sap/refapps/espm/service/SalesOrderServiceImpl.java#L214) class.
 
 
-
    * **Environment Variable :** <br>
    If you do not want to configure Destination Services, the alternative approach is to edit the TAX_SERVICE env variable in manifest.yml file under the module espm-sales-svc with the URL of tax service running on SAP Cloud Platform Neo or SAP Cloud Platform Cloud Foundry.<br> 
 *Note: This is not a recommended approach since if the tax service url changes the new url must be updated in manifest file for the env TAX_SERVICE and the application must be redeployed. This would mean some downtime for the ESPM application.*
+
+
+### Build and Deploy ESPM Application using CF push
+* In the root folder of project edit the manifest.yml file and update `<unique_id>` with some unique value for each applications host name
 
 * Do a maven build of complete application from command line by running command `mvn clean install` from the projects root folder.
 
@@ -507,7 +529,7 @@ We need to assign the role which we have created in the previous step to the use
 
 * When the UI is deployed, you will be presented with a screen where you can enter using the email address provided for a customer. The views themselves are rather simple and use databinding extensively to avoid writing lots of code. You can do the operations like, view details of the customer, display shopping cart, display sales order, create cart, delete cart, create sales order.
 
-## Running the application on Cloud Foundry using MTA
+### Build and Deploy ESPM Application as an MTA using CF deploy service
 
 From the root folder where mta.yaml is kept run the command: 
 
@@ -522,7 +544,7 @@ To Deploy MTAR, run the command:
 	cf deploy cloud-espm-cf.mtar
 
 
-### Accessing the Cloud Foundry API Endpoints
+## Accessing the Cloud Foundry API Endpoints
 
 The below are the list of local service API endpoints of all the microservices.
 
