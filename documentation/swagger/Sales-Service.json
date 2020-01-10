@@ -19,8 +19,8 @@
         "tags": [
           "Sales Order"
         ],
-        "description": "\"This endpoint is used to create a new Sales Order\"\n",
-        "operationId": "addSalesOrder",
+        "description": "\"This endpoint is used to create a new sales order\"\n",
+        "operationId": "createSalesOrder",
         "consumes": [
           "application/json"
         ],
@@ -46,7 +46,7 @@
             }
           },
           "503": {
-            "description": "Unable to create sales order",
+            "description": "Service is currently unavailable",
             "schema": {
               "$ref": "#/definitions/Error"
             }
@@ -61,7 +61,7 @@
       },
       "get": {
         "summary": " Get all SalesOrders",
-        "description": "The Sales Order endpoint returns all the Sales Orders in the Webshop.\n",
+        "description": "Returns all the created Sales Orders.\n",
         "operationId": "getSalesOrders",
         "produces": [
           "application/json"
@@ -91,7 +91,7 @@
     "/salesOrders/{salesOrderId}": {
       "get": {
         "summary": "Get Sales Order by Id",
-        "description": "\"The Sales Order endpoint which returns sales orders by id.\"\n",
+        "description": "\"Returns a sales order by id.\"\n",
         "operationId": "getSalesOrderById",
         "consumes": [
           "application/json"
@@ -133,10 +133,10 @@
         }
       }
     },
-    "/salesOrders/email/{emailAddress}": {
+    "/salesOrders/email/{customerEmail}": {
       "get": {
-        "summary": "Get Sales Order by Id",
-        "description": "\"The Sales Order endpoint which returns sales orders by customer email.\"\n",
+        "summary": "Get Sales Order by customerEmail",
+        "description": "\"Returns sales orders by customer email.\"\n",
         "operationId": "getSalesOrderByCustomerEmail",
         "consumes": [
           "application/json"
@@ -146,9 +146,9 @@
         ],
         "parameters": [
           {
-            "name": "emailAddress",
+            "name": "customerEmail",
             "in": "path",
-            "description": "Email Address of Customer whose sales orders be fetched",
+            "description": "email address of customer.",
             "required": true,
             "type": "string"
           }
@@ -158,13 +158,65 @@
         ],
         "responses": {
           "200": {
-            "description": "Sales Order with matching Id",
+            "description": "sales order found with given emailId.",
             "schema": {
               "$ref": "#/definitions/SalesOrder"
             }
           },
           "404": {
-            "description": "Sales Order not found",
+            "description": "Customer with given email address not found or customer doesn't have any sales order.",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "default": {
+            "description": "Unexpected error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/salesOrders/{salesOrderId}/{statusCode}": {
+      "put": {
+        "summary": "Update sales order.",
+        "description": "\"updates an existing sales order by salesOrderId and statusCode.\"\n",
+        "operationId": "updateSalesOrder",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "salesOrderId",
+            "in": "path",
+            "description": "Sales Order ID",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "statusCode",
+            "in": "path",
+            "description": "status code",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "Sales Order"
+        ],
+        "responses": {
+          "200": {
+            "description": "Sales Order with matching id updated.",
+            "schema": {
+              "$ref": "#/definitions/SalesOrder"
+            }
+          },
+          "404": {
+            "description": "Sales Order not found.",
             "schema": {
               "$ref": "#/definitions/Error"
             }
@@ -190,44 +242,44 @@
         },
         "customerEmail": {
           "type": "string",
-          "description": "Email Address of customer"
+          "description": "Email address of a customer."
         },
         "currencyCode": {
           "type": "string",
           "maxLength": 5,
-          "description": "Currency of product price"
+          "description": "Currency of product price."
         },
         "grossAmount": {
           "type": "number",
           "format": "double",
-          "description": "Gross amount of sales order"
+          "description": "Gross amount of a product."
         },
         "netAmount": {
           "type": "number",
           "format": "double",
-          "description": "Net amount of sales order"
+          "description": "Net amount of a product."
         },
         "taxAmount": {
           "type": "number",
           "format": "double",
-          "description": "Tax amount of sales order"
+          "description": "Tax amount of a product."
         },
         "lifeCycleStatus": {
           "type": "string",
           "maxLength": 1,
-          "description": "Life cycle status of the Sales Order"
+          "description": "Life cycle status of a sales order."
         },
         "lifeCycleStatusName": {
           "type": "string",
-          "description": "Life cycle status name of the Sales Order"
+          "description": "Life cycle status name of a sales order."
         },
         "createdAt": {
           "type": "string",
-          "description": "Sales order creation date"
+          "description": "Sales order creation date."
         },
         "deliveryDate": {
           "type": "string",
-          "description": "Sales order delivery date"
+          "description": "Sales order delivery date."
         },
         "productId": {
           "type": "string",
@@ -243,6 +295,10 @@
           "type": "string",
           "maxLength": 3,
           "description": "Unit of Quantity. e.g kg, metre"
+        },
+        "note": {
+          "type": "string",
+          "description": "A note on sales order details and its status."
         }
       }
     },
