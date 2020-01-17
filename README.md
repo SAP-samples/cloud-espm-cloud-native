@@ -452,7 +452,7 @@ To run the complete ESPM application, one will need around 5.5 GB of RAM. Each o
 
 #### Setup Role collections
 
-The ESPM application defines a role template called as `Retailer` in the xs-security.json. This role template is to define a role collection called as `Retailer`. This Retailer role collection is required by a user to accept Sales Orders. Creation of Sales Orders can be done by anonymous users.
+The ESPM application defines a role template called as `Retailer` in the xs-security.json. This role template is to define a role collection called as `Retailer`. This Retailer role collection is required by a user to accept Sales Orders. Creation of Sales Orders can be done by anonymous users. More information on adding roles to role collection is [here](https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/7596a0bdab4649ac8a6f6721dc72db19.html) .
 
 To create `Retailer` role collection follow the steps below
 
@@ -468,7 +468,7 @@ To create `Retailer` role collection follow the steps below
 
 #### Assign Role to the user
 
-We need to assign the role which we have created in the previous step to the user.
+We need to assign the role which we have created in the previous step to the user. More information on assigning role collection is [here](https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/9e1bf57130ef466e8017eab298b40e5e.html) .
 
  - In your account, in the left pane select "Trust Configuration" under the Security tab.
 
@@ -482,7 +482,6 @@ We need to assign the role which we have created in the previous step to the use
 ### Enterprise Messaging Service Creation
 
 * Create Enterprise Messaging Service instance as mentioned [here](#sap-cloud-platform-enterprise-messaging). 
-
 
 
 ### Tax Service Application Deployment
