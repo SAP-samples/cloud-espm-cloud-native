@@ -7,3 +7,5 @@ applications:
   path: target/tax-service.jar
   env:
     SPRING_PROFILES_DEFAULT: cf
+  services:
+    - espm-xsuaa-tax

@@ -21,33 +21,30 @@ import com.sap.cloud.security.xsuaa.token.TokenAuthenticationConverter;
 
 @Configuration
 @Profile("cloud")
-
-//This feature should not be active in production environment
 @EnableWebSecurity(debug = true)
-public class WebSecurityConfig  extends WebSecurityConfigurerAdapter {
+
+// Avoid using (debug = true) in productive code
+
+public class AppSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Autowired
 	XsuaaServiceConfiguration xsuaaServiceConfiguration;
 
 	// configure Spring Security, demand authentication and specific scopes
 	@Override
 	public void configure(HttpSecurity http) throws Exception {
-       
-	   http.csrf().disable();
-       http
-           .sessionManagement()
-           // session is created by approuter
-           .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-           .and()
-               // demand specific scopes depending on intended request
-               .authorizeRequests()
-               // enable OAuth2 checks
-               .antMatchers(POST, "/sale.svc/api/v1/salesOrders").permitAll()
-               .antMatchers(PUT, "/sale.svc/api/v1/**").hasAuthority("Update")               
-               .antMatchers(GET, "/sale.svc/api/v1/**").authenticated()               .anyRequest().denyAll()
 
-           .and()
-               .oauth2ResourceServer().jwt()
-					.jwtAuthenticationConverter(getJwtAuthoritiesConverter());
+		http.csrf().disable();
+		http.sessionManagement()
+				// session is created by approuter
+				.sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
+				// demand specific scopes depending on intended request
+				.authorizeRequests()
+				// enable OAuth2 checks
+				.antMatchers(GET, "/product.svc/api/v1/products/**").permitAll()
+				.antMatchers(GET, "/product.svc/api/v1/stocks/**").authenticated()
+				.antMatchers(PUT, "/product.svc/api/v1/stocks/**").hasAuthority("Update").anyRequest().denyAll()
+
+				.and().oauth2ResourceServer().jwt().jwtAuthenticationConverter(getJwtAuthoritiesConverter());
 	}
 
 	/**

@@ -1,7 +1,6 @@
 package com.sap.refapps.espm.controller;
 
 import static org.hamcrest.Matchers.is;
-import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8;
 import static org.springframework.http.MediaType.TEXT_PLAIN;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -20,6 +19,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
@@ -84,7 +84,7 @@ public class CustomerControllerTest {
 		requestBuilder = buildGetRequest(CUSTOMER_URL_VALID);
 		mockMvc.perform(requestBuilder)
 				.andExpect(status().isOk())
-				.andExpect(content().contentType(APPLICATION_JSON_UTF8))
+				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
 				.andExpect(content().json(CUSTOMER_JSON));
 	}
 	
@@ -112,7 +112,7 @@ public class CustomerControllerTest {
 		requestBuilder = buildPostRequest(CART_URL);
 		mockMvc.perform(requestBuilder)
 				.andExpect(status().isCreated())
-				.andExpect(content().contentType(APPLICATION_JSON_UTF8));
+				.andExpect(content().contentType(MediaType.APPLICATION_JSON));
 	}
 	
 	
@@ -137,7 +137,7 @@ public class CustomerControllerTest {
 	 */
 	@Test
 	public void testCreateCartWithNoContent() throws Exception {
-		mockMvc.perform(post(CART_URL,CUSTOMER_ID).contentType(APPLICATION_JSON_UTF8))
+		mockMvc.perform(post(CART_URL,CUSTOMER_ID).contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isBadRequest());
 	}
 
@@ -153,7 +153,7 @@ public class CustomerControllerTest {
 		
 		requestBuilder = buildGetRequest(CART_URL);
 		mockMvc.perform(requestBuilder).andExpect(status().isOk())
-				.andExpect(content().contentType(APPLICATION_JSON_UTF8))
+				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
 				.andExpect(jsonPath("$.[0]customer.customerId", is(CUSTOMER_ID)));
 	}
 
@@ -176,7 +176,7 @@ public class CustomerControllerTest {
 
 		String itemId = getIdFromLocation(response.getHeader(LOCATION));
 		requestBuilder = buildPutRequest(CART_URL + itemId, cart);
-		mockMvc.perform(requestBuilder.contentType(APPLICATION_JSON_UTF8))
+		mockMvc.perform(requestBuilder.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
 				.andExpect(content().contentType(TEXT_PLAIN))
 				.andExpect(content().string("Cart updated for item id : " + itemId));
@@ -197,7 +197,7 @@ public class CustomerControllerTest {
 		
 		objectToJson = convertObjectToJson(cart);
 		mockMvc.perform(requestBuilder
-				.contentType(APPLICATION_JSON_UTF8).content(objectToJson))
+				.contentType(MediaType.APPLICATION_JSON).content(objectToJson))
 				.andExpect(status().isNotFound());
 	}
 
@@ -270,7 +270,7 @@ public class CustomerControllerTest {
 
 		// post the Cart object as a JSON entity in the request body
 		objectToJson = convertObjectToJson(cart);
-		return post(path).content(objectToJson).contentType(APPLICATION_JSON_UTF8);
+		return post(path).content(objectToJson).contentType(MediaType.APPLICATION_JSON);
 	}
 
 	/**
@@ -284,7 +284,7 @@ public class CustomerControllerTest {
 	private MockHttpServletRequestBuilder buildPutRequest(String path, Cart cart) throws JsonProcessingException {
 		objectToJson = convertObjectToJson(cart);
 		return put(path).content(objectToJson)
-				.contentType(APPLICATION_JSON_UTF8);
+				.contentType(MediaType.APPLICATION_JSON);
 	} 
 
 	/**

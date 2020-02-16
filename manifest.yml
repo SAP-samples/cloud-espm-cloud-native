@@ -9,6 +9,8 @@ applications:
     CORS_DOMAIN: "cfapps.sap.hana.ondemand.com"    
   services:
     - espm-hana-db
+    - espm-xsuaa
+
 
 - name: espm-customer-svc
   host: <unique_id>-espm-customer-svc
@@ -29,10 +31,11 @@ applications:
     TAX_SERVICE: https://taxservice.cfapps.sap.hana.ondemand.com/api/v1/calculate/tax?amount=
     CORS_DOMAIN: "cfapps.sap.hana.ondemand.com"
     QUEUE_NAME: "refapps/espm/1/salesOrderQueue"
+    PROD_SERVICE: https://<unique_id>-espm-product-svc.cfapps.sap.hana.ondemand.com/product.svc/api/v1/stocks/
   services:
     - espm-hana-db
     - espm-em
-    - espm-destination
+    - espm-Destination
     - espm-xsuaa
     
 - name: espm-worker
@@ -52,6 +55,7 @@ applications:
   buildpack: https://github.com/cloudfoundry/nodejs-buildpack.git
   path: gateway
   env:
+    TENANT_HOST_PATTERN: "^(.*)-gateway.cfapps.eu10.hana.ondemand.com"
     destinations: >
       [
         {"name":"product-service", "url":"https://<unique_id>-espm-product-svc.cfapps.sap.hana.ondemand.com/"},

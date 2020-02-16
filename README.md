@@ -38,7 +38,7 @@
   * [Product Service](#product-service-2)
   * [Sales Service](#sales-service-2)
   * [Tax Service](#tax-service-external-service)
-- [Test ESPM Application locally (Postman Collection)](#test-espm-application-locally)
+- [Test the ESPM Application locally (Postman Collection)](#test-the-espm-application-locally)
 - [Running the application on Cloud Foundry](#running-the-application-on-cloud-foundry)
 - [Accessing the Cloud Foundry API Endpoints](#accessing-the-cloud-foundry-api-endpoints)
   * [Customer Service](#customer-service-3)
@@ -75,7 +75,8 @@ webshop: this application is a webshopping app where authentication is implement
 
 retailer: this application is used for approve/reject sales orders. User with retailer role will be able to access the end point.
 
-6. External Tax Service - This is a service which is external to the application and used to do tax calculation. This Tax calculation service is provided, to be used along with the implementation of Circuit Breaker, Quarantine pattern.
+6. External Tax Service - This is a service which is external to the application and used to do tax calculation. This Tax calculation service is provided, to be used along with the implementation of Circuit Breaker, Quarantine pattern. This service is also used in showcasing the communication between two applications deployed in the same subaccount but bounded to two different Authorization and Trust Management services. For more information see  [referencing the application](https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/517895a9612241259d6941dbf9ad81cb.html#loio517895a9612241259d6941dbf9ad81cb__section_fm2_wsk_pdb) in the documentation for SAP Cloud Platform. 
+
 
 A [Domain Driven Design](https://en.wikipedia.org/wiki/Domain-driven_design) approach was used to decide the capabilities of each microservices. The Customer and Cart entities are part of the Customer Microservice and Product and Stock entities are part of the Product Service. To keep things simple there is only one entity in Sales Service which is the Sales Order entity. In real world scenarios, Sales Entity might have Sales Order Header and Sales Order Line Items Entity and more. The Product and Customer service has its own database while Sale and worker shares the same database.
 
@@ -169,22 +170,21 @@ cf add-plugin-repo CF-Community https://plugins.cloudfoundry.org
 
 `cf cs enterprise-messaging default espm-em -c em-default.json`
 
-You can edit the sure that the emname, namespace in the em-default.json file to a unique one. 
+You can make sure that the emname, namespace in the em-default.json file is set to a unique one. 
 
 For more details, check [here](https://help.sap.com/viewer/bf82e6b26456494cbdd197057c09979f/Cloud/en-US/d0483a9e38434f23a4579d6fcc72654b.html)
-
 
 * Open Enterprise Messaging subscription in cockpit and please proceed with creating a queue.
 For more details about creating a queue, check [here](https://help.sap.com/viewer/bf82e6b26456494cbdd197057c09979f/Cloud/en-US/57af1bd4e8f54b0a9b36414a5ec6b800.html)
 
 ![Alt text](./documentation/images/EM.png "Enterprise Messaging")
 
-* Replace the `QUEUE_NAME` for sales-svc, worker apps in [manifest.yml file](https://github.com/SAP-samples/cloud-espm-cloud-native/blob/master/manifest.yml) with the new queue name that was created based on the namespace, name provided in the previous step. 
+* Replace the `QUEUE_NAME` for sales-svc, worker apps in [manifest.yml file](https://github.com/SAP-samples/cloud-espm-cloud-native/blob/master/manifest.yml) with the new queue name that was created based on the namespace, name provided in the previous step.
 
 ## Running the ESPM application locally
 
 * Download the project from GitHub or Open the Gitbash/cmd (if you have Git installed) and clone the project by using the command
-  `git clone https://github.wdf.sap.corp/refapps/espm-dragonblood.git`
+  `git clone https://github.com/SAP-samples/cloud-espm-cloud-native.git`
 * The project is built as set of maven modules. Each maven module is Spring Boot application and is packaged as a jar.
 * Do a maven build of the application by running command `mvn clean install` from the root folder of the project. If tests need to be skipped, run the command `mvn clean install -Dmaven.test.skip=true`
 
@@ -425,16 +425,28 @@ The below are the list of local service API endpoints of all the microservices.
 | Method       	| `GET`       
 
 
-#### Test ESPM application locally
-To test ESPM application [Postman REST Client](https://www.getpostman.com/apps) can be used. There a Postman collection which is [provided](./documentation/postman-collections/ESPM-LOCAL.postman_collection.json), it has all the request URLs and sample request body payloads(in case of POST request).
+#### Test the ESPM Application Locally
+To test the ESPM application, [Postman REST Client](https://www.getpostman.com/apps) can be used. A Postman collection which is provided [here](./documentation/postman-collections/ESPM-Local.postman_collection.json) has all the request URLs and sample request body payloads (in case of a POST request).
 
 ## Running the application on Cloud Foundry
 
 To run the application on Cloud Foundry you need an account on SAP Cloud Platform Cloud Foundry Environment or signup for a [SAP Cloud Platform Cloud Foundry Environment trial account](https://cloudplatform.sap.com/try.html)
 *Please note that in SAP Cloud Platform Cloud Foundry Environment,  for a trial account, there is limited resource and you get a RAM of 2 GB which is not sufficient to run the complete ESPM application.*  
-To run the complete ESPM application, one will need around 5.5 GB of RAM. Each of the 5 Spring boot applications (Product Service, Customer Service, Sales Service, Worker and Tax Service) needs 1 GB of RAM and Gateway (based on Node.js) which also contains UI for the application, needs around 512 MB.
 
+Check if the Cloud Foundry Space you will be deploying the application has the following entitlements:
 
+| Service                                  | Plan       | Number of Instances |
+|------------------------------------------|------------|:-------------------:|
+| Destination                              | lite       |          1          |
+| Enterprise Messaging                     | default    |          1          |
+| SAP HANA Schemas & HDI Containers        | schema     |          1          |
+| Authorization and Trust Management(XSUAA)| application|          2          |
+
+To run the complete ESPM application, one will need around 5.5 GB of RAM. Each of the 5 Spring boot applications (Product Service, Customer Service, Sales Service, Worker and Tax Service) needs 1 GB of RAM and Gateway (based on Node.js) which also contains UI for the application, needs around 512 MB. The optimal way to run application is
+* Signup for SAP Cloud Platform Neo trial account by following [these steps](https://cloudplatform.sap.com/try.html)
+* Run Tax service in [SAP Cloud Platform Neo Environment](./tax-service#running-on-sap-cloud-platfrom-neo-environment)
+
+* The recommended way to consume the Tax service would be via a [Destination Service](https://help.sap.com/viewer/cca91383641e40ffbe03bdc78f00f681/Cloud/en-US/7e306250e08340f89d6c103e28840f30.html).  
 
 
 ### Database Creation
@@ -446,37 +458,30 @@ To run the complete ESPM application, one will need around 5.5 GB of RAM. Each o
 
 
 ### Security Implementation
-* Run command `cf marketplace` and check the service and plan names  for XSUAA backing service. Check if service `xsuaa` and plan `application` exists.
 
-* Create XSUAA service instance with `application` plan by running the command `cf create-service xsuaa application espm-xsuaa -c xs-security.json`
+* Run command `cf marketplace` and check the service and plan names for the Authorization and Trust Management (XSUAA) service. Check if service `xsuaa` and plan `application` exists.
+
+* Create a service instance of the Authorization and Trust Management service with `application` plan by running the command `cf create-service xsuaa application espm-xsuaa -c xs-security.json`
+
+* Create a service instance of the Authorization and Trust Management service with `application` plan by running the command `cf create-service xsuaa application espm-xsuaa-tax -c xs-security-tax.json`
 
 #### Setup Role collections
 
-The ESPM application defines a role template called as `Retailer` in the xs-security.json. This role template is to define a role collection called as `Retailer`. This Retailer role collection is required by a user to accept Sales Orders. Creation of Sales Orders can be done by anonymous users. More information on adding roles to role collection is [here](https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/7596a0bdab4649ac8a6f6721dc72db19.html) .
-
-To create `Retailer` role collection follow the steps below
-
- - In your Cloud Foundry account, in the left pane select Role collections under the Security tab.
-
- - Add a new Role collection named, "Retailer"
-
- - Click on the newly created "Retailer "role collection and add new Role.
-
- - Select the application identifier name similar to the one you have given in the xs-security.json file.
-
- - Select the role template and assign the Role you have created in the previous step.
+The ESPM application defines a role template called as `Retailer` and a role collection called as `Retailer-RoleCollection` in the application security description (xs-security.json). Users need this Retailer role collection to accept sales orders. Creation of sales orders can be done by anonymous users. For more information about adding roles to role collection, see [Add Roles to Role Collections](https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/fe750543788a40b79a49854590ad0b11.html) in the documentation for SAP Cloud Platform.
 
 #### Assign Role to the user
 
-We need to assign the role which we have created in the previous step to the user. More information on assigning role collection is [here](https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/9e1bf57130ef466e8017eab298b40e5e.html) .
+We need to assign the role which we have created in the previous step to the user. For more information about assigning role collections, see [Assign Role Collections](https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/9e1bf57130ef466e8017eab298b40e5e.html) in the documentation for SAP Cloud Platform.
 
- - In your account, in the left pane select "Trust Configuration" under the Security tab.
+ - In your Subaccount, navigate to Security > Trust Configuration.
 
  - Click on the default IDP service.
 
- - Enter username/email and click on the add Assignment button.
+ - Enter the e-mail address of the user and choose Show Assignments.
 
- - Select the Role as "Retailer" to assign it to the user.
+ - Choose Assign Role Collection
+
+ - Select the role Retailer to assign it to the user.
  
  
 ### Enterprise Messaging Service Creation
@@ -526,7 +531,10 @@ We need to assign the role which we have created in the previous step to the use
 
 * *[Optional] if one has a non-trial SAP Cloud Platform Cloud Foundry account with 5.5GB of RAM or more, espm-gateway can be deployed via command `cf push espm-gateway` from CLI.*
 
-* When the UI is deployed, you will be presented with a screen where you can enter using the email address provided for a customer. The views themselves are rather simple and use databinding extensively to avoid writing lots of code. You can do the operations like, view details of the customer, display shopping cart, display sales order, create cart, delete cart, create sales order.
+* When the UI is deployed, you will be presented with a screen where you can enter using the email address provided for a customer. The views themselves are rather simple and use databinding extensively to avoid writing lots of code. You can do the operations like, view details of the customer, display shopping cart, display sales order, create cart, delete cart, create sales order. After deploying the application make sure to map the route to access the application.
+
+   `cf map-route <your app router> DOMAIN --hostname <subdomain ID for your subaccount><the part after ^(.*) and before the first domain dot in manifest.yml / TENANT_HOST_PATTERN`
+
 
 ### Build and Deploy ESPM Application as an MTA using CF deploy service
 
@@ -541,7 +549,8 @@ As you can see, the service names for enterprise-messaging is kept as enterprise
 To Deploy MTAR, run the command:
 
 	cf deploy cloud-espm-cf.mtar
-
+	
+Note: Edit URL of the PROD_SERVICE and TAX_SERVICE in manifest by using command `cf set-env APP_NAME ENV_VAR_NAME ENV_VAR_VALUE`
 
 ## Accessing the Cloud Foundry API Endpoints
 
@@ -592,21 +601,54 @@ The below are the list of local service API endpoints of all the microservices.
 | |Get Product by Product ID|
 |-|-|
 | Endpoint URL 	| https://<unique_id>-espm-product-svc.cfapps.sap.hana.ondemand.com/product.svc/api/v1/products/{productId}	 	|
-| Method       	| `GET`       
+| Method       	| `GET`  
+
+
+In order to access the below endpoint, the user needs retailer role and token has to be passed in the header.
+
+Execute the below command and make note of url, clientid, clientsecret.
+
+`cf env <unique_id>-espm-product-svc`
+
+
+| |Get New access Token |
+|-|-|
+| Access token URL 	| `<url>/oauth/token`			 |
+| Client ID       	| `<clientid>`                                        |
+| Client Secret       	| `<clientsecret>`                                                                 |
+| Grant Type         	| `Client Credentials`          
 
 
 | |Get Stock by Product ID|
 |-|-|
 | Endpoint URL 	| https://<unique_id>-espm-product-svc.cfapps.sap.hana.ondemand.com/product.svc/api/v1/stocks/{productId}	 	|
 | Method       	| `GET`       
-
+| Header       	| `Content-Type:application/json` , `Authorization:Bearer <Get New Access Token>`                                |
 
 *The stock is updated by quantity specified. e.g. if the current quantity is 50 and in the body for update stock request quantity is provided as 20 the quantity will be updated to 70*
+
+Below URL requires the retailer role to be added to user and hence if you are executing the same from postman, make sure you have the role, and inorder to get the Access token with scopes of `Retailer` role execute the following request from postman.
+
+| |Access token with scopes of `Retailer` role|
+|-|-|
+| Endpoint URL 	| Access token URL		 
+| Header       	| `Content-Type:application/x-www-form-urlencoded`                                     |
+| Method       	| `POST`                                                                 |
+| Body        	| `x-www-form-urlencoded` 
+
+The payload of the request needs to have following form-url-encoded values:
+
+grant_type: set to password to define that the client and user credentials method has to be used for the token determination
+username: set user name of authorized user
+password: password of the authorized user
+client_id: the client id determined for the application
+client_secret: the client secret determined for the application
+response_type: set to token to indicate than an access token is requested   
 
 | |Update Stock by Product ID|
 |-|-|
 | Endpoint URL 	| https://<unique_id>-espm-product-svc.cfapps.sap.hana.ondemand.com/product.svc/api/v1/stocks/{productId}		 
-| Header       	| `Content-Type:application/json`                                        |
+| Header       	| `Content-Type:application/json`   , `Authorization:Bearer <Access token with scopes of Retailer role>`                                     |
 | Method       	| `PUT`                                                                 |
 | Body        	| `{"productId": "HT-1000","quantity": 20}`     
 
@@ -621,7 +663,7 @@ Execute the below command and make note of url, clientid, clientsecret.
 
 | |Get New access Token |
 |-|-|
-| Access token URL 	| `<url>`			 |
+| Access token URL 	| `<url>/oauth/token`			 |
 | Client ID       	| `<clientid>`                                        |
 | Client Secret       	| `<clientsecret>`                                                                 |
 | Grant Type         	| `Client Credentials`     

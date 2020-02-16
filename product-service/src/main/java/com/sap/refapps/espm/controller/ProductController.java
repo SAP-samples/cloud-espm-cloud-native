@@ -19,8 +19,8 @@ import com.sap.refapps.espm.model.Stock;
 import com.sap.refapps.espm.service.ProductService;
 
 /**
- * This class is a controller class of product service 
- * which is responsible for handling all endpoints.
+ * This class is a controller class of product service which is responsible for
+ * handling all endpoints.
  *
  */
 @RestController
@@ -36,13 +36,13 @@ public class ProductController {
 	 * To get all products
 	 * 
 	 * @return list of product
-	 * @throws InterruptedException 
+	 * @throws InterruptedException
 	 */
 	@GetMapping("/products")
 	public ResponseEntity<Iterable<Product>> getAllProducts() throws InterruptedException {
 		final Iterable<Product> products;
 		try {
-			//To slow it down and get effects of rate limiting
+			// To slow it down and get effects of rate limiting
 			Thread.sleep(1000);
 			products = productService.getAllProducts();
 			if (products != null)
@@ -93,6 +93,7 @@ public class ProductController {
 	@PutMapping("/stocks/{id}")
 	public ResponseEntity<?> checkAndUpdateStock(@RequestBody Stock stock,
 			@PathVariable(value = "id") final String productId) {
+		stock.setProductId(productId);
 		if (!productService.isProductExists(stock.getProductId())) {
 			return errorMessage("Invalid product id : " + stock.getProductId(), HttpStatus.NOT_FOUND);
 		}

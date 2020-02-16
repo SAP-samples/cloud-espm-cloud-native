@@ -4,8 +4,7 @@ import javax.persistence.*;
 import java.math.BigDecimal;
 
 /**
- * This is the Stock entity class 
- * which defines the data model for stock.
+ * This is the Stock entity class which defines the data model for stock.
  *
  */
 @Entity
@@ -32,6 +31,11 @@ public class Stock {
 
 	public void setQuantity(BigDecimal quantity) {
 		this.quantity = quantity;
+	}
+
+	@Override
+	public String toString() {
+		return "{" + "productId'" + productId + '\'' + ", Quantity'" + quantity + '\'' + '}';
 	}
 
 }

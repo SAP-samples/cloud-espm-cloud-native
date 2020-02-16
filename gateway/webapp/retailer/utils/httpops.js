@@ -48,16 +48,17 @@ sap.ui.define(['jquery.sap.global'], function(jQuery) {
 	 		return def.promise();			
 		},
 		
-		putAsync: function(url) {
+		putAsync: function(url, note) {
 	 		var def = jQuery.Deferred();
 	
 	 		jQuery.ajax({
 	 			url: url,
 	 			async: true,
 	 			contentType: "application/json",
-	 			data: "sales order shipped",
+	 			data: note,
 	 			method: "PUT",
 	 			dataType: "text",
+	 		 
 	 			success: function (data, status, jqXHR) {
 	 				def.resolve(data);
 	 			},

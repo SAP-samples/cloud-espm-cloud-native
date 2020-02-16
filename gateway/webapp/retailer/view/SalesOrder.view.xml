@@ -23,7 +23,13 @@
 										<ObjectListItem press="handleListItemPress" type="Active" 
 											numberUnit="{customer>currencyCode}" 
 											number="{path: 'customer>grossAmount'}" 
-											title="{customer>salesOrderId}" >
+											title="{customer>salesOrderId}" 
+											>
+											<firstStatus>
+												<ObjectStatus
+													text="{customer>lifecycleStatusName}"
+													status="Success" />
+											</firstStatus>
 										</ObjectListItem>
 									</items>
 								</List>

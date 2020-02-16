@@ -1,6 +1,5 @@
 package com.sap.refapps.espm.controller;
 
-import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8;
 import static org.springframework.http.MediaType.TEXT_PLAIN;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
@@ -13,6 +12,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -68,7 +68,7 @@ public class ProductControllerTest {
     	requestBuilder = buildGetRequest(PRODUCT_API+"/2");
     	mockMvc.perform(requestBuilder)
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(APPLICATION_JSON_UTF8))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(content().json(PRODUCT_JSON));
     }
     
@@ -83,7 +83,7 @@ public class ProductControllerTest {
     	requestBuilder = buildGetRequest(PRODUCT_API);
     	mockMvc.perform(requestBuilder)
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(APPLICATION_JSON_UTF8))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(content().json(PRODUCTS_JSON));
     }
     
@@ -112,7 +112,7 @@ public class ProductControllerTest {
     	requestBuilder = buildGetRequest(STOCK_API+"/2");
     	mockMvc.perform(requestBuilder)
 	    	 .andExpect(status().isOk())
-	         .andExpect(content().contentType(APPLICATION_JSON_UTF8))
+	         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
 	         .andExpect(content().json(STOCK_JSON));
     }
     
@@ -140,7 +140,7 @@ public class ProductControllerTest {
     public void updateStockByInValidProductId() throws Exception{
     	requestBuilder = buildPutRequest(STOCK_API+"/3");
     	mockMvc.perform(requestBuilder
-    			.contentType(APPLICATION_JSON_UTF8)
+    			.contentType(MediaType.APPLICATION_JSON)
     			.content(UPDATE_STOCK_JSON_VALID_QUANTITY))
     		    .andExpect(status().isNotFound())
 		        .andExpect(content().contentType(TEXT_PLAIN))
@@ -157,7 +157,7 @@ public class ProductControllerTest {
     public void updateStockByValidProductIdAndValidQuantity() throws Exception{
     	requestBuilder = buildPutRequest(STOCK_API+"/2");
     	mockMvc.perform(requestBuilder
-    			.contentType(APPLICATION_JSON_UTF8)
+    			.contentType(MediaType.APPLICATION_JSON)
     			.content(UPDATE_STOCK_JSON_VALID_QUANTITY))
     		    .andExpect(status().isOk())
 		        .andExpect(content().contentType(TEXT_PLAIN))
@@ -174,7 +174,7 @@ public class ProductControllerTest {
     public void updateStockByValidProductIdAndMaxQuantity() throws Exception{
     	requestBuilder = buildPutRequest(STOCK_API+"/2");
     	mockMvc.perform(requestBuilder
-    			.contentType(APPLICATION_JSON_UTF8)
+    			.contentType(MediaType.APPLICATION_JSON)
     			.content(UPDATE_STOCK_JSON_MAX_QUANTITY))
     		    .andExpect(status().isBadRequest())
     		    .andExpect(content().contentType(TEXT_PLAIN))
@@ -191,7 +191,7 @@ public class ProductControllerTest {
     public void updateStockByValidProductIdAndMinQuantity() throws Exception{
     	requestBuilder = buildPutRequest(STOCK_API+"/1");
     	mockMvc.perform(requestBuilder
-    			.contentType(APPLICATION_JSON_UTF8)
+    			.contentType(MediaType.APPLICATION_JSON)
     			.content(UPDATE_STOCK_JSON_MIN_QUANTITY))
     		    .andExpect(status().isBadRequest())
 		        .andExpect(content().contentType(TEXT_PLAIN))

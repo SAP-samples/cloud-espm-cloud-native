@@ -23,13 +23,6 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
-
-		<!-- h2database -->
-		<dependency>
-			<groupId>com.h2database</groupId>
-			<artifactId>h2</artifactId>
-			<scope>test</scope>
-		</dependency>
 		
 		<!-- PostgreSQL -->
 		<dependency>
@@ -88,12 +81,6 @@
 			<artifactId>resilience4j-timelimiter</artifactId>
 			<version>${resilience4j.version}</version>
 		</dependency>
-		
-        <!-- netty handler -->
-		<dependency> 
-			<groupId>io.netty</groupId>
-			<artifactId>netty-handler</artifactId>
-		</dependency>
 
 		<dependency>
 			<groupId>com.sap.cloud.servicesdk.xbem</groupId>
@@ -115,6 +102,13 @@
 			<groupId>com.sap.cloud.security.xsuaa</groupId>
 			<artifactId>xsuaa-spring-boot-starter</artifactId>
 			<version>${sap.cloud.security.version}</version>
+		</dependency>
+		
+		<!-- h2database -->
+		<dependency>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+			<scope>test</scope>
 		</dependency>
 
 	</dependencies>

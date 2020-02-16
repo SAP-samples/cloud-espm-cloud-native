@@ -74,7 +74,7 @@ public class EMListner {
 		connection = connectionFactory.createConnection();
 		session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
 
-		queue = session.createQueue("queue:"+ System.getenv("QUEUE_NAME"));
+		queue = session.createQueue("queue:" + System.getenv("QUEUE_NAME"));
 		consumer = session.createConsumer(queue);
 
 		consumer.setMessageListener(message -> {

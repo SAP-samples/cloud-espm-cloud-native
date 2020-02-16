@@ -1,0 +1,19 @@
+{
+	"xsappname": "espm-cloud-native-uaa-tax",
+	"scopes": [
+		{
+			"name": "$XSAPPNAME.Access",
+			"description": "access tax service ",
+			"grant-as-authority-to-apps": ["$XSAPPNAME(application,espm-cloud-native-uaa)"]
+		}
+	],
+	"role-templates": [
+		{
+			"name": "taxservice",
+			"description": "access tax service ",
+			"scope-references": [
+				"$XSAPPNAME.Access"
+			]
+		}
+	]
+}

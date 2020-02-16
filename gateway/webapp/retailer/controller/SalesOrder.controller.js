@@ -93,25 +93,30 @@ sap.ui.define([
 					function (oAction) { 
 						if (MessageBox.Action.OK === oAction) {
 							var oCustomerModel = that.getView().byId("detailPageId").getModel("customer");
-							oCustomerModel.updateSalesOrder(salesOrderId, "S")
+							oCustomerModel.updateSalesOrder(salesOrderId, "S", "Sales order Shipped")
 							.then(function() {
 								BusyIndicator.hide();
 								that.getView().byId("detailPageId").setVisible(true);
 								var objectAttributes = that.getView().byId("detailObjectHeader").getAttributes();
 								objectAttributes[2].setText("Shipped");
-								MessageToast.show("Products Successfully shipped");
+								MessageToast.show("Product Successfully shipped");
 							})
 							.fail(function(error) {
 								BusyIndicator.hide();
-								MessageToast.show("Products cannot be shipped");
+								var oCustomerModel = that.getView().byId("detailPageId").getModel("customer");
+								oCustomerModel.updateSalesOrder(salesOrderId, "C", "Product not found/Out of stock")
+								that.getView().byId("detailPageId").setVisible(true);
+								var objectAttributes = that.getView().byId("detailObjectHeader").getAttributes();
+								objectAttributes[2].setText("Cancelled");
+								MessageToast.show("Product cannot be shipped - Out of Stock");
 							});
 						} 
 						}, 
 						bundle.getText("sales.approveDialogTitle") ); 
-			}else if (lifecyclestatus == 'R'){
-				MessageToast.show("Rejected Sales Orders cannot be shipped");
+			}else if (lifecyclestatus == 'R' || lifecyclestatus == 'C'){
+				MessageToast.show("Rejected Sales Order cannot be shipped");
 			}else{
-				MessageToast.show("Only new Sales Orders can be shipped");
+				MessageToast.show("Only new Sales Order can be shipped");
 			}
 			
 					
@@ -130,7 +135,7 @@ sap.ui.define([
 				function (oAction) { 
 					if (MessageBox.Action.OK === oAction) {
 						var oCustomerModel = that.getView().byId("detailPageId").getModel("customer");
-						oCustomerModel.updateSalesOrder(salesOrderId, "R")
+						oCustomerModel.updateSalesOrder(salesOrderId, "R", "Sales order Rejected by Retailer")
 						.then(function() {
 							BusyIndicator.hide();
 							that.getView().byId("detailPageId").setVisible(true);
@@ -146,9 +151,9 @@ sap.ui.define([
 					}, 
 					bundle.getText("sales.rejectDialogTitle") ); 
 			}else if (lifecyclestatus == 'S'){
-				MessageToast.show("Shipped Sales Orders cannot be rejected");
+				MessageToast.show("Shipped Sales Order cannot be rejected");
 			}else{
-				MessageToast.show("Only new Sales Orders can be rejected");
+				MessageToast.show("Only new Sales Order can be rejected");
 			}
 		},
 		

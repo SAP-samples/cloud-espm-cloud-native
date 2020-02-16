@@ -6,10 +6,23 @@
   },
   "routes": [
 	{
-	  "source": "^/product.svc/api/(.*)",
+	  "source": "^/product.svc/api/v1/products/(.*)",
 	  "destination": "product-service",
 	  "csrfProtection": false,
-	  "httpMethods": ["GET","PUT"]
+	  "httpMethods": ["GET"]
+	},
+	{
+	  "source": "^/product.svc/api/v1/stocks/(.*)",
+	  "destination": "product-service",
+	  "csrfProtection": false,
+	  "httpMethods": ["GET"]
+	},
+	{
+	  "source": "^/product.svc/api/v1/stocks/(.*)",
+	  "destination": "product-service",
+	  "csrfProtection": false,
+	  "scope": "$XSAPPNAME.Update",
+	  "httpMethods": ["PUT"]
 	},
 	{
 	  "source": "^/customer.svc/api/(.*)",

@@ -93,7 +93,7 @@ public class TaxService {
 	public Tax calculateTaxFromAmount(BigDecimal amount){
 		Tax tax = new Tax();
 		//if amount is less than 500
-		if(amount.compareTo(BigDecimal.valueOf(499.00)) <= 0){
+		if(amount.compareTo(BigDecimal.valueOf(499.99)) <= 0){
 			taxAmount = taxCalculator(amount,hmap.get("SLAB1"));
 
 			tax.setTaxAmount(taxAmount);
@@ -102,7 +102,7 @@ public class TaxService {
 
 		//if amount is greater than equal to 500 and less than equal to 1000
 
-		if(amount.compareTo(BigDecimal.valueOf(500.00)) >= 0 && amount.compareTo(BigDecimal.valueOf(999.00)) <= 0){
+		if(amount.compareTo(BigDecimal.valueOf(500.00)) >= 0 && amount.compareTo(BigDecimal.valueOf(999.99)) <= 0){
 
 			taxAmount = taxCalculator(amount,hmap.get("SLAB2"));
 
@@ -111,7 +111,7 @@ public class TaxService {
 		}
 
 		//if amount is greater than equal to 500 and less than equal to 1000
-		if(amount.compareTo(BigDecimal.valueOf(1000.00)) >= 0 && amount.compareTo(BigDecimal.valueOf(1999.00)) <= 0){
+		if(amount.compareTo(BigDecimal.valueOf(1000.00)) >= 0 && amount.compareTo(BigDecimal.valueOf(1999.99)) <= 0){
 			taxAmount = taxCalculator(amount,hmap.get("SLAB3"));
 			tax.setTaxAmount(taxAmount);
 			tax.setTaxPercentage(hmap.get("SLAB3"));

@@ -28,10 +28,11 @@ import org.springframework.transaction.jta.JtaTransactionManager;
 public class EspmJpaConfig extends JpaBaseConfiguration {
 
 	protected EspmJpaConfig(DataSource dataSource, JpaProperties properties,
-			ObjectProvider<JtaTransactionManager> jtaTransactionManager,
-			ObjectProvider<TransactionManagerCustomizers> transactionManagerCustomizers) {
-		super(dataSource, properties, jtaTransactionManager, transactionManagerCustomizers);
+			ObjectProvider<JtaTransactionManager> jtaTransactionManager) {
+		super(dataSource, properties, jtaTransactionManager);
 	}
+	
+	
 	
 	
 	 /* (non-Javadoc)
