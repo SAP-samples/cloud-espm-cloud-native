@@ -459,6 +459,12 @@ To run the complete ESPM application, one will need around 5.5 GB of RAM. Each o
 
 ### Security Implementation
 
+* Some of the security features implemented in the application are given below
+
+ - 1. Inclusion of xs-security.json with “Retailer” role.
+ - 2. Setup of oauth resource server to enhance the spring-security for jwt token authentication by configuring a resource server in Sales Service and product service.
+ - 3. App to App communication for Business user is implemented in Create Sales Order (sales-service) and Update Stock by Product ID (product-service). Sales Service and Product Service are bound to same xsuaa. We propagate Business User from Sales Service to Product Service for Stock check.
+ - 4. App to App communication for Technical user is implemented between sales-service and tax-service using client-credential flow. Sales service and Tax service are bound to different xsuaa.
 * Run command `cf marketplace` and check the service and plan names for the Authorization and Trust Management (XSUAA) service. Check if service `xsuaa` and plan `application` exists.
 
 * Create a service instance of the Authorization and Trust Management service with `application` plan by running the command `cf create-service xsuaa application espm-xsuaa -c xs-security.json`
@@ -639,11 +645,17 @@ Below URL requires the retailer role to be added to user and hence if you are ex
 The payload of the request needs to have following form-url-encoded values:
 
 grant_type: set to password to define that the client and user credentials method has to be used for the token determination
+
 username: set user name of authorized user
+
 password: password of the authorized user
+
 client_id: the client id determined for the application
+
 client_secret: the client secret determined for the application
+
 response_type: set to token to indicate than an access token is requested   
+
 
 | |Update Stock by Product ID|
 |-|-|
