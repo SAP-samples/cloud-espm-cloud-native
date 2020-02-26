@@ -459,17 +459,23 @@ To run the complete ESPM application, one will need around 5.5 GB of RAM. Each o
 
 ### Security Implementation
 
-* Some of the security features implemented in the application are given below
+The security in the ESPM appplication is based on [Spring Security](https://spring.io/projects/spring-security-oauth). Spring applications using the Spring-security libraries can integrate with the SAP Cloud Platfrom Authorization and Trust Management Service as described [here](https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/be97ec4a799c4135884c62610fea2a8f.html). ESPM Application implements App to App communication so that two microservices can securely communicate with each other.  This application showcases how to implement the same using two  different ways 
 
- - 1. Inclusion of xs-security.json with “Retailer” role.
- - 2. Setup of oauth resource server to enhance the spring-security for jwt token authentication by configuring a resource server in Sales Service and product service.
- - 3. App to App communication for Business user is implemented in Create Sales Order (sales-service) and Update Stock by Product ID (product-service). Sales Service and Product Service are bound to same xsuaa. We propagate Business User from Sales Service to Product Service for Stock check.
- - 4. App to App communication for Technical user is implemented between sales-service and tax-service using client-credential flow. Sales service and Tax service are bound to different xsuaa.
-* Run command `cf marketplace` and check the service and plan names for the Authorization and Trust Management (XSUAA) service. Check if service `xsuaa` and plan `application` exists.
+	1. Propagating a Business User 
+	
+	2. Technical User.
+	
+Below steps describe how Authentication and Authorization is implemented in ESPM application. 
 
-* Create a service instance of the Authorization and Trust Management service with `application` plan by running the command `cf create-service xsuaa application espm-xsuaa -c xs-security.json`
+ -  Include a [Application Security Descriptor](https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/150b04d647cd4b42835411c1787a8b11.html) file (xs-security.json) to the project. A role “Retailer” is defined within the Application Security Descriptor. Only a person assigned the Retailer role will be able to access Retailer UI of the ESPM Application to process the Sales Orders
+ - Configure scope checks for validating jwt tokens. This is done in Sales Service and Product Service by extending the [WebSecurityConfigurerAdapter class](https://docs.spring.io/spring-security/site/docs/current/api/org/springframework/security/config/annotation/web/configuration/WebSecurityConfigurerAdapter.html).
+ - App to App communication for Business user is implemented in CreateSalesOrder (sales-service) and UpdateStockbyProductID (product-service) services . As a pre requsite the  Sales Service and Product Service should be bound to same xsuaa instance. When a Retailer logs in to Accept a Sales Order created by a Customer, the Business User is propagated from Sales Service to Product Service for a Stock check before accepting a Sales Order. This ensures that enough stock is available before a Sales Order is accepted and only a user with Retailer role has the permission to do a stock check.
+ -  App to App communication for Technical user is implemented between sales-service and tax-service using client-credential flow. Sales service and Tax service are bound to different xsuaa instances. Sales Service to instance espm-xsuaa and Tax Service to espm-xsuaa-tax as described below.
+ - Run command `cf marketplace` and check the service and plan names for the Authorization and Trust Management (XSUAA) service. Check if service `xsuaa` and plan `application` exists.
 
-* Create a service instance of the Authorization and Trust Management service with `application` plan by running the command `cf create-service xsuaa application espm-xsuaa-tax -c xs-security-tax.json`
+- Create a service instance of the Authorization and Trust Management service with `application` plan by running the command `cf create-service xsuaa application espm-xsuaa -c xs-security.json`. This instance is to be bound to Product Service, Sale Service and API Gateway
+
+- Create a service instance of the Authorization and Trust Management service with `application` plan by running the command `cf create-service xsuaa application espm-xsuaa-tax -c xs-security-tax.json`. This instance is to be bound to Tax Service
 
 #### Setup Role collections
 
