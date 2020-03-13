@@ -37,7 +37,7 @@
   - [Requirements](#requirements)
     - [Message server](#message-server)
     - [SQL Database Server](#sql-database-server)
-  - [Running the ESPM application locally](#running-the-espm-application-locally)
+  - [Deploying the ESPM application locally](#deploying-the-espm-application-locally)
       - [Customer Service](#customer-service-1)
       - [Product Service](#product-service-1)
       - [Worker](#worker)
@@ -50,7 +50,7 @@
       - [Sales Service](#sales-service-2)
       - [Tax Service (External Service)](#tax-service-external-service)
       - [Test the ESPM Application Locally](#test-the-espm-application-locally)
-  - [Running the application on Cloud Foundry](#running-the-application-on-cloud-foundry)
+  - [Deploying the ESPM application on Cloud Foundry](#deploying-the-espm-application-on-cloud-foundry)
     - [Security Implementation](#security-implementation)
     - [Configuring Enterprise Messaging](#configuring-enterprise-messaging)
     - [Tax Service Application Deployment](#tax-service-application-deployment)
@@ -196,7 +196,7 @@ cf install-plugin multiapps
 
 cf add-plugin-repo CF-Community https://plugins.cloudfoundry.org
 
-## Running the ESPM application locally
+## Deploying the ESPM application locally
 
 * Download the project from GitHub or Open the Gitbash/cmd (if you have Git installed) and clone the project by using the command
   `git clone https://github.com/SAP-samples/cloud-espm-cloud-native.git`
@@ -443,7 +443,7 @@ The below are the list of local service API endpoints of all the microservices.
 #### Test the ESPM Application Locally
 To test the ESPM application, [Postman REST Client](https://www.getpostman.com/apps) can be used. A Postman collection which is provided [here](./documentation/postman-collections/ESPM-Local.postman_collection.json) has all the request URLs and sample request body payloads (in case of a POST request).
 
-## Running the application on Cloud Foundry
+## Deploying the ESPM application on Cloud Foundry
 
 To run the application on Cloud Foundry you need an account on SAP Cloud Platform Cloud Foundry Environment Productive account.
 *Please note that in SAP Cloud Platform Cloud Foundry Environment,  for a trial account, there is limited resource and you get a RAM of 2 GB which is not sufficient to run the complete ESPM application.*  
@@ -629,11 +629,13 @@ For more details about creating a queue, check [here](https://help.sap.com/viewe
 ![Alt text](./documentation/images/EM.png "Enterprise Messaging")
 
 ### Acessing the application UI
-* Launch url for webshop application https://myorg-gateway.cfapps.eu10.hana.ondemand.com/webapp/webshop/index.html  (if your account is in the Region Europe (Frankfurt) )
+* From CLI run command `cf apps`
+* Note down the url for application espm-gateway. This would be appear as <unique-id>-espm-gateway.cfapps.eu10.hana.ondemand.com (if you deploy the application in a SAP CP sub account is in the Region Europe (Frankfurt) )
+* Launch url for webshop application https://<unique-id>-espm-gateway.cfapps.eu10.hana.ondemand.com/webapp/webshop/index.html  
   
-* You will be presented with a screen where you can enter using the email address provided for a customer. The views themselves are rather simple and use databinding extensively to avoid writing lots of code. You can do the operations like, view details of the customer, display shopping cart, display sales order, create cart, delete cart, create sales order. 
+* You will be presented with a screen where you can enter using the email address provided for a customer. The views themselves are rather simple and use databinding extensively to avoid writing lots of code. You can do the operations like, view details of the customer, display shopping cart, display sales order, create cart, delete cart, create sales order. Try to create a Sales Order with Product ID HT-1000 or HT-1001.
 
-* Launch url for retailer application https://myorg-gateway.cfapps.eu10.hana.ondemand.com/webapp/retailer/index.html  (if your account is in the Region Europe (Frankfurt) )
+* Launch url for retailer application https://<unique-id>-espm-gateway.cfapps.eu10.hana.ondemand.com/webapp/retailer/index.html  (if your account is in the Region Europe (Frankfurt) )
 
 * You will be presented with a screen where Ship/ Reject a Sales Order. 
 
