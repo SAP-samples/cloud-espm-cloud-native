@@ -1,0 +1,34 @@
+_schema-version: "2.0.0"
+ID: cloud-espm-cloud-native-tax
+version: 1.1.0
+parameters:
+  enable-parallel-deployments: true
+
+modules:
+  - name: espm-tax-svc
+    type: java.tomcat
+    path: .
+    build-parameters:
+      builder: maven
+      build-result: "target/tax-service.jar"
+      timeout: 60m
+      buildpack: https://github.com/cloudfoundry/java-buildpack.git
+    properties:
+      TARGET_RUNTIME: tomcat
+      SPRING_PROFILES_DEFAULT: cf
+    requires:
+      - name: espm-xsuaa-tax
+    parameters:
+      memory: 1G
+    provides:
+      - name: tax-service
+        properties:
+          tax-url: "${default-url}"
+          
+resources:  
+  - name: espm-xsuaa-tax
+    parameters:
+      path: ./xs-security-tax.json
+      service-plan: application
+      service: xsuaa
+    type: org.cloudfoundry.managed-service

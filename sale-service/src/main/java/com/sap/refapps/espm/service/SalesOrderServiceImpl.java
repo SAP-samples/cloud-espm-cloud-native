@@ -95,6 +95,8 @@ public class SalesOrderServiceImpl implements SalesOrderService{
 	private HashMap<String, String> taxUrlCache = new HashMap<>(1);
 
 	private final HttpHeaders headers = new HttpHeaders();
+	
+	private final String taxEndPointSuffix = "/api/v1/calculate/tax?amount=";
 
 	@Autowired(required = false)
 	private MessagingServiceJmsConnectionFactory factory;
@@ -187,7 +189,7 @@ public class SalesOrderServiceImpl implements SalesOrderService{
 	}
 
 	private Tax taxServiceFallback(BigDecimal amount) {
-		logger.info("Tax service is down. So a default tax will be set to the amount : {}", amount);
+		logger.info("Tax service is down or tax destination is not available. So a default tax will be set to the amount : {}", amount);
 		final Tax tax = new Tax();
 		tax.setTaxPercentage(00.00);
 		tax.setTaxAmount(new BigDecimal(00.00));
@@ -280,18 +282,24 @@ public class SalesOrderServiceImpl implements SalesOrderService{
 	private Tax supplyTax(BigDecimal amount) {
 
 		Tax tax;
-		taxUri = getTaxUri();
-		
-		if (taxUri == "" || taxUri == null) {
-			taxUri = getTaxUrlFromDestinationService();
-			taxUrlCache.put("TAX_URI", taxUri);
-		}
+		taxUri = taxUrlCache.get("TAX_URI");
 
+		 if (taxUri == null) {
+
+             taxUri = getTaxUri();
+
+             taxUrlCache.put("TAX_URI", taxUri);
+
+		 }
+	
 		if (taxUri == "") {
-			taxUri = getTaxUri();
+			logger.info("Calling fall back Tax calculation as Tax destination is not found");
+			tax = taxServiceFallback(amount);
+		}
+		else {
+	
 			URI uri = URI.create(taxUri + amount);
-			tax = this.restTemplate.getForObject(uri, Tax.class);
-		} else{
+			//tax = this.restTemplate.getForObject(uri, Tax.class);
 			OAuth2TokenResponse clientCredentialsTokenResponse = null;
 			try {
 				clientCredentialsTokenResponse = tokenFlows.clientCredentialsTokenFlow().execute();
@@ -302,17 +310,16 @@ public class SalesOrderServiceImpl implements SalesOrderService{
 			headers.set("Authorization", "Bearer " + appToken);
 			HttpEntity entity = new HttpEntity(headers);
 			try {
-				taxUri = getTaxUrlFromDestinationService();
+				// If Tax URI does not work check again in the destination if the URL in destination has changed.
+				taxUri = getTaxUri();
 				taxUrlCache.put("TAX_URI", taxUri);
-				URI uri = URI.create(taxUri + amount);
+				uri = URI.create(taxUri + amount);
 				ResponseEntity<Tax> responseEntity = restTemplate.exchange(uri, HttpMethod.GET, entity, Tax.class);
 				tax = responseEntity.getBody();
 
 			} catch (HttpClientErrorException e) {
 				logger.info("Retrying to connect to the tax service...");
-				taxUri = getTaxUrlFromDestinationService();
-				taxUrlCache.put("TAX_URI", taxUri);
-				URI uri = URI.create(taxUri + amount);
+				uri = URI.create(taxUri + amount);
 				ResponseEntity<Tax> responseEntity = restTemplate.exchange(uri, HttpMethod.GET, entity, Tax.class);
 				tax = responseEntity.getBody();
 			}
@@ -326,10 +333,13 @@ public class SalesOrderServiceImpl implements SalesOrderService{
 	}
 
 	private String getTaxUri() {
-
+		String taxUrlDest = getTaxUrlFromDestinationService()+taxEndPointSuffix;
+		logger.info("***********Tax microservice endpoint is {}********",taxUrlDest);
 		final String taxUri = Arrays.stream(environment.getActiveProfiles())
-				.anyMatch(env -> (env.equalsIgnoreCase("cloud"))) ? this.environment.getProperty("TAX_SERVICE")
-						: taxServiceEndPoint;
+
+                .anyMatch(env -> (env.equalsIgnoreCase("cloud"))) ? taxUrlDest
+
+                                        : taxServiceEndPoint;
 
 		return taxUri;
 	}

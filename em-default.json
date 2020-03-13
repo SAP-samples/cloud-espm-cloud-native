@@ -23,8 +23,8 @@
         }
     },
     "version": "1.1.0",
-    "emname": "espm-em-refapps",
-    "namespace": "refapps/espm/1"
+    "emname": "espm-em",
+    "namespace": "<yourorgname>/<yourmessageclientname>/<uniqueID>"
 } 
   
  
