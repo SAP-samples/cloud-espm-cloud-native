@@ -471,6 +471,10 @@ Create SAP HANA Service instance with plan 64standard as described [here](https:
         database_id: <database_guid>
 ```
 
+The ESPM application has a dependency to Tax Service Application which is a mock external service and needs to be separately deployed. Tax service is bound to its own instance of the Authorization and Trust Management service(XSUAA).
+
+*Please note that the ESPM application and Tax Service application should be deployed on the same CF space*
+
 ### Security Implementation
 
 The security implementation in the ESPM application is based on [Spring Security](https://spring.io/projects/spring-security-oauth). Spring applications using the Spring-security libraries can integrate with the SAP Cloud Platfrom Authorization and Trust Management Service as described [here](https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/be97ec4a799c4135884c62610fea2a8f.html). ESPM Application implements App to App communication so that two microservices can securely communicate with each other.  This application showcases how to implement the same using two  different ways
@@ -501,6 +505,7 @@ The Tax Service Application can be deployed in two ways
 * CF Manifest
 * Deploy service
 
+*Please note that the ESPM application and Tax Service application shoudl be deployed on the same CF space*
 #### CF Manifest
 
 * Create a service instance of the Authorization and Trust Management service with `application` plan by running the command `cf create-service xsuaa application espm-xsuaa-tax -c xs-security-tax.json`. This instance is to be bound to Tax Service
