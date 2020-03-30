@@ -2,18 +2,18 @@
 
   ## Description
 
-  Enterprise Sales and Procurement Model (ESPM) Cloud Native is a reference application to showcase how resilience patterns can be implemented in a Cloud Native application. It is built based on microservices architecture principles. Each microservice is built as a [Spring Boot](https://spring.io/projects/spring-boot) application. The current scope of the application showcases the below resilience patterns.
-  * Retry
-  * Timeout
-  * Circuit Breaker
-  * Bounded Queue
-  * Shed Load
-  * Unit Isolation
+  **Enterprise Sales and Procurement Model** (ESPM) **Cloud Native** is a reference application to showcase how **Resilience patterns** can be implemented in a Cloud Native application. It is built based on microservices architecture principles. Each microservice is built as a [Spring Boot](https://spring.io/projects/spring-boot) application. The current scope of the application showcases the below resilience patterns.
+  * *Retry*
+  * *Timeout*
+  * *Circuit Breaker*
+  * *Bounded Queue*
+  * *Shed Load*
+  * *Unit Isolation*
 
   These patterns are showcased through implementing a business scenario of an eCommerce site that sells electronic products. The eCommerce site supports two personas
 
-  1. A Customers, who can order products
-  2. A Retailer who can then accept the sales orders created by customers. The Retailer can also update the product stock information.
+  1. A Customer, who can order Products
+  2. A Retailer who can then accept the Sales Orders created by the customer. The Retailer can also update the Product Stock information.
 
 
   ## Table of Contents
@@ -87,23 +87,24 @@
 
 
 The ESPM applications consists of five microservices and one external service.
-1. Customer Service - This service process customer and shopping cart information
-2. Product Service - This service can be used to process products and stock information
-3. Sales Services - Sales Orders are processed by this service. Each time a sales order is created, it’s not directly inserted into the database, but inserted into a queue. A background process called worker picks the message from queue and inserts to the database. The rationale behind this approach is explained later in the document. For read operation on sales order, its directly read from the database.
-4. Worker - Background process which picks the Sales Order from the queue and inserts it into the database.
-5. Gateway - it’s an optional component and acts as entry point for the complete application. It also acts as a reverse proxy and routes the request to the appropriate microservice. The UI for the application is integrated into the Gateway module. Then UI of the application consists of two parts
+1. **Customer Service** - This service process Customer and Shopping cart information
+2. **Product Service** - This service can be used to process products and stock information
+3. **Sales Service** - Sales Orders are processed by this service. Each time a sales order is created, it’s not directly inserted into the database, but inserted into a queue. A background process called worker picks the message from queue and inserts to the database. The rationale behind this approach is explained later in the document. For read operation on sales order, its directly read from the database.
+4. **Worker** - Background process which picks the Sales Order from the queue and inserts it into the database.
+5. **Gateway** - It is an optional component and acts as entry point for the complete application. It also acts as a reverse proxy and routes the request to the appropriate microservice. The UI for the application is integrated into the Gateway module. Then UI of the application consists of two parts
 
 
-  Webshop: An application where an authenticated Customer can buy products by creating Sales Order
+   *Webshop*: An application where an authenticated Customer can buy products by creating Sales Order
 
-  Retailer: An application where an authenticated and authorized Sales Manager known as Retailer can approve/reject sales orders. Only a user with retailer role will be able to access the end point.
+   *Retailer*: An application where an authenticated and authorized Sales Manager known as Retailer can approve/reject sales orders. Only a user with retailer role will be able to access the end point.
 
-6. External Tax Service - This is a service which is external to the application and used to do tax calculation. This Tax calculation service is provided, to be used along with the implementation of Circuit Breaker, Quarantine pattern. This service is also used in showcasing the app to app communication between two microservices deployed in the same subaccount, but bounded to two different Authorization and Trust Management services. For more information see  [referencing the application](https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/517895a9612241259d6941dbf9ad81cb.html#loio517895a9612241259d6941dbf9ad81cb__section_fm2_wsk_pdb) in the documentation for SAP Cloud Platform.
+6. **External Tax Service** - This is a service which is external to the application and used to do tax calculation. This Tax calculation service is provided, to be used along with the implementation of Circuit Breaker, Quarantine pattern. This service is also used in showcasing the app to app communication between two microservices deployed in the same subaccount, but bounded to two different Authorization and Trust Management services. For more information see  [referencing the application](https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/517895a9612241259d6941dbf9ad81cb.html#loio517895a9612241259d6941dbf9ad81cb__section_fm2_wsk_pdb) in the documentation for SAP Cloud Platform.
 
 
 A [Domain Driven Design](https://en.wikipedia.org/wiki/Domain-driven_design) approach was used to decide the capabilities of each microservices. The Customer and Cart entities are part of the Customer Microservice and Product and Stock entities are part of the Product Service. To keep things simple there is only one entity in Sales Service which is the Sales Order entity. In real world scenarios, Sales Entity might have Sales Order Header and Sales Order Line Items Entity and more. The Product and Customer service has its own database while Sale and worker shares the same database.
 
-Each of the resilience patterns has been fit into architecture of the ESPM Application to showcase how they can make an application resilient during potential failures. These are some of the potential places where the pattern could be applied. There could be more points in the application where the pattern could have been applied to make it more resilient.
+***Each of the resilience patterns has been fit into architecture of the ESPM Application to showcase how they can make an application resilient during potential failures.*** 
+These are some of the potential places where the pattern could be applied. There could be more points in the application where the pattern could have been applied to make it more resilient.
 
 #### Retry
 In a distributed environment some resources may not be reachable or unavailable due to network latency or network glitches. A simple retry might cause the execution of a task to succeed which would have failed, if no retry was attempted. This pattern is showcased by wrapping the database calls in Product and Customer Service with a retry. This ensures that if the database is not momentarily reachable a retry will ensure that the task succeeds.
@@ -123,6 +124,7 @@ This pattern focuses on handling the rate at which requests are coming and rejec
 
 #### Unit Isolation
 The focus of this pattern is on the design of the failure unit. A failure unit is the entity of an application that can fail without overall availability of the entire application being affected.  The microservices architecture paradigm itself brings in a level of unit isolation while applying methodology of domain driven design to define the units.
+
 
 ## REST API
 
@@ -319,6 +321,14 @@ Follow steps below to run each microservice of ESPM one by one. Please ensure th
   ~~~
 * Test the Sale Service by running the url http://localhost:9993/sale.svc/api/v1/salesOrders/
 
+| Lifecycle |  Life Cycle Status Name | Note |
+|--|--|--|
+| N | New |	When the Sales Order is created  |
+| I | In Progress | |
+| C | Cancelled | When the product is Out Of Stock |
+| S | Shipped | When the Sales Order is Shipped |
+| R | Rejected | When the Sales Order is Rejected by Retailer |
+| D | Delivered | |
 
 #### Gateway
 
@@ -486,9 +496,11 @@ The security implementation in the ESPM application is based on [Spring Security
 Below steps describe how Authentication and Authorization is implemented in ESPM application.
 
  -  Include a [Application Security Descriptor](https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/150b04d647cd4b42835411c1787a8b11.html) file (xs-security.json) to the project. This file can be found in the root folder of the project. A role “Retailer” is defined within the Application Security Descriptor. Only a person assigned the Retailer role will be able to access Retailer UI of the ESPM Application to process the Sales Orders
+ 
  - Configure scope checks for validating jwt tokens. This is done in Sales Service and Product Service by extending the [WebSecurityConfigurerAdapter class](https://docs.spring.io/spring-security/site/docs/current/api/org/springframework/security/config/annotation/web/configuration/WebSecurityConfigurerAdapter.html).
- - App to App communication for Business user is implemented in createSalesOrder method of class com.sap.refapps.espm.controller.SalesOrderController in sale-service microservice and UpdateStockbyProductID method in com.sap.refapps.espm.controller.ProductController class  of product-service microservice . As a pre requsite the  sale-service and product-service should be bound to same xsuaa instance. When a Retailer logs in to Accept a Sales Order created by a Customer, the Business User is propagated from sale-service to product-service for a Stock check before accepting a Sales Order. This ensures that enough stock is available before a Sales Order is accepted and only a user with Retailer role has the permission to do a stock check.
- -  App to App communication for Technical user is implemented between sale-service and tax-service using client-credential flow. sale-service and tax-service are bound to different xsuaa instances. sale-service to instance espm-xsuaa and tax-service to espm-xsuaa-tax.
+ - App to App communication for Business user is implemented in createSalesOrder method of class `com.sap.refapps.espm.controller.SalesOrderController ` in sale-service microservice and UpdateStockbyProductID method in `com.sap.refapps.espm.controller.ProductController` class  of product-service microservice . 
+ - As a pre requsite the  sale-service and product-service should be bound to same xsuaa instance. When a Retailer login to Accept a Sales Order created by a Customer, the Business User is propagated from sale-service to product-service for a Stock check before accepting a Sales Order. This ensures that enough stock is available before a Sales Order is accepted and only a user with Retailer role has the permission to do a stock check.
+ -  App to App communication for Technical user is implemented between sale-service and tax-service using **client-credential flow**. Sale-service and Tax-service are bound to different XSUAA instances. Sale-service is bound to instance ***espm-xsuaa*** and tax-service is bound to instance  ***espm-xsuaa-tax***.
 
 ### Configuring Enterprise Messaging
 
@@ -506,6 +518,7 @@ The Tax Service Application can be deployed in two ways
 * Deploy service
 
 *Please note that the ESPM application and Tax Service application shoudl be deployed on the same CF space*
+
 #### CF Manifest
 
 * Create a service instance of the Authorization and Trust Management service with `application` plan by running the command `cf create-service xsuaa application espm-xsuaa-tax -c xs-security-tax.json`. This instance is to be bound to Tax Service
@@ -635,14 +648,49 @@ For more details about creating a queue, check [here](https://help.sap.com/viewe
 
 ### Acessing the application UI
 * From CLI run command `cf apps`
-* Note down the url for application espm-gateway. This would be appear as <unique-id>-espm-gateway.cfapps.eu10.hana.ondemand.com (if you deploy the application in a SAP CP sub account is in the Region Europe (Frankfurt) )
-* Launch url for webshop application https://<unique-id>-espm-gateway.cfapps.eu10.hana.ondemand.com/webapp/webshop/index.html  
-  
-* You will be presented with a screen where you can enter using the email address provided for a customer. The views themselves are rather simple and use databinding extensively to avoid writing lots of code. You can do the operations like, view details of the customer, display shopping cart, display sales order, create cart, delete cart, create sales order. Try to create a Sales Order with Product ID HT-1000 or HT-1001.
-
-* Launch url for retailer application https://<unique-id>-espm-gateway.cfapps.eu10.hana.ondemand.com/webapp/retailer/index.html  (if your account is in the Region Europe (Frankfurt) )
-
+* Note down the URL for application espm-gateway. This would be appearing as xxxxx-espm-gateway.cfapps.eu10.hana.ondemand.com (if you deploy the application in an SAP CP sub account is in the Region Europe (Frankfurt))
+* Launch URL for ***Webshop*** application https://xxxxx-espm-gateway.cfapps.eu10.hana.ondemand.com/webapp/webshop/index.html  
+* You will be redirected to authenticate to your user.
+![Alt text](./documentation/images/login.png "Login")
+* You will be presented with a screen where you can enter using the email address provided for a customer. The views themselves are rather simple and use databinding extensively to avoid writing lots of code. 
+* Continue with paul.burke@itelo.info
+![Alt text](./documentation/images/customer.png "Customer")
+* You can do the operations like, view details of the customer, display shopping cart, display sales order, create cart, delete cart, create sales order. 
+![Alt text](./documentation/images/initialview.png "view")
+* Try to create cart by clicking on create cart and type “N” in the pop-up.
+![Alt text](./documentation/images/createcart.png "createcart")
+* Notice that the status of the created shopping cart is “pending”
+![Alt text](./documentation/images/shoppingcart.png "shoppingcart")
+* Try to create a Sales Order by clicking on the product in shopping cart, A pop-up will be shown with create order, delete cart or cancel the operation
+* Choose Create Order
+![Alt text](./documentation/images/createorder.png "createorder")
+* *Sales order Successfully created* will be displayed.
+![Alt text](./documentation/images/ordercreated.png "ordercreated")
+* Navigate to sales order to see the created sales order by clicking on Sales Orders tab.
+![Alt text](./documentation/images/salesorders.png "salesorders")
+* Status of the Sales Order can be New, Rejected, Cancelled and Shipped. Notice that the status of the newly created Sales Order from Cart is “New”. 
+* We can approve/reject the Sales Order from a ***Retailer View***. Launch url for retailer application https://xxxxx-espm-gateway.cfapps.eu10.hana.ondemand.com/webapp/retailer/index.html  (if your account is in the Region Europe (Frankfurt) )
+![Alt text](./documentation/images/retailer.png "retailer")
+* Click on *Approve Sales Orders*.
 * You will be presented with a screen where Ship/ Reject a Sales Order. 
+![Alt text](./documentation/images/newsales.png "newsales")
+* Click on “New” sales order and see the details of the product and click on “Ship”
+* You can see that the status of the sales order changed to Shipped/Rejected depending on the Stock.
+![Alt text](./documentation/images/shipsales.png "shipsales")
+* Click on Ok.
+![Alt text](./documentation/images/shipped.png "shipped")
+* Click on Reject in a new Sales order and When you reject the Sales Order, the status changed to Rejected.
+* Following are the four different Status code.
+
+| Lifecycle |  Life Cycle Status Name | Note |
+|--|--|--|
+| N | New |	When the Sales Order is created  |
+| C | Cancelled | When the product is Out Of Stock |
+| S | Shipped | When the Sales Order is Shipped |
+| R | Rejected | When the Sales Order is Rejected by Retailer |
+
+![Alt text](./documentation/images/allstatus.png "allstatus")
+
 
 ### Accessing the application API Endpoints
 
@@ -730,18 +778,17 @@ Below URL requires the retailer role to be added to user and hence if you are ex
 
 The payload of the request needs to have following form-url-encoded values:
 
-grant_type: set to password to define that the client and user credentials method has to be used for the token determination
+*grant_type*: set to password to define that the client and user credentials method has to be used for the token determination
 
-username: set user name of authorized user
+*username*: set user name of authorized user
 
-password: password of the authorized user
+*password*: password of the authorized user
 
-client_id: the client id determined for the application
+*client_id*: the client id determined for the application
 
-client_secret: the client secret determined for the application
+*client_secret*: the client secret determined for the application
 
-response_type: set to token to indicate than an access token is requested   
-
+*response_type*: set to token to indicate than an access token is requested   
 
 | |Update Stock by Product ID|
 |-|-|
@@ -845,7 +892,7 @@ Similarly to see this pattern in action in the Product Service, follow the below
 
 ### Bounded Queue
 The Sales service along with Worker implements the Bounded Queue pattern. To achieve reliable messaging, [Consumer Acknowledgement and Publisher Confirms](https://www.rabbitmq.com/confirms.html). This ensures that messages are not lost and delivered reliably to consumers. To see the pattern in action, follow these steps-
-	* Hit the Sales Service by running the url `http://localhost:9993/sale.svc/api/v1/salesOrders/` and POST the sales data.
+* Hit the Sales Service by running the url `http://localhost:9993/sale.svc/api/v1/salesOrders/` and POST the sales data.
 	  For e.g.:
 	  `{
 	    "customerEmail": "customer@gmail.com",
@@ -854,12 +901,12 @@ The Sales service along with Worker implements the Bounded Queue pattern. To ach
 	    "grossAmount": 1000,
 	    "quantity": 2
 	  }`
-	* Go to the folder where PostgreSQL is installed and navigate to the bin folder and stop the database by running this command `pg_ctl.exe -D "C:\Program Files\PostgreSQL\10\data" stop` in your terminal/command line.
-	* Again POST some data using `http://localhost:9993/sale.svc/api/v1/salesOrders/` , as Bounded Queue mechanism has been implemented, it will insert the sales order in Queue instead of throwing an error and returns an acknowledgement in the console. e.g.
+	  
+* Go to the folder where PostgreSQL is installed and navigate to the bin folder and stop the database by running this command `pg_ctl.exe -D "C:\Program Files\PostgreSQL\10\data" stop` in your terminal/command line.
+* Again POST some data using `http://localhost:9993/sale.svc/api/v1/salesOrders/` , as Bounded Queue mechanism has been implemented, it will insert the sales order in Queue instead of throwing an error and returns an acknowledgement in the console. e.g.
 	`The message with correlation ID 8f698df8-d5e1-484a-8743-23f5875c1d71 was acknowledged by the broker`
-	* Go to the folder where PostgreSQL is installed and navigate to the bin folder and start the database by running this command `pg_ctl.exe -D "C:\Program Files\PostgreSQL\10\data" start` in your terminal/command line.
-	* Now as the database is up, the Worker will pick the job from queue and push it into database, verify it by hitting `http://localhost:9993/sale.svc/api/v1/salesOrders/` .
-
+* Go to the folder where PostgreSQL is installed and navigate to the bin folder and start the database by running this command `pg_ctl.exe -D "C:\Program Files\PostgreSQL\10\data" start` in your terminal/command line.
+* Now as the database is up, the Worker will pick the job from queue and push it into database, verify it by hitting `http://localhost:9993/sale.svc/api/v1/salesOrders/`
 
 ### Unit Isolation
 ESPM has a  microservice based architecture, where all the services are independent of each other  and have been isolated against each other here by bringing in Unit Isolation.
@@ -868,9 +915,9 @@ ESPM has a  microservice based architecture, where all the services are independ
 ### Circuit Breaker
 In ESPM this pattern is showcased via sale service. This service needs to compute the tax amount for a Sales Order. This is done by hitting an external [Tax Service](./tax-service). If the Tax Service is unreachable, instead of throwing an error, a fallback mechanism executes the logic and default tax value is returned. Resilience 4j library is used to implement Circuit breaker patterns.
 To see the pattern in action follow these steps-
-	* Navigate to tax-service folder
-	* Run the application [Locally as Spring Boot Application](./tax-service/README.md#running-locally-as-spring-boot-application)
-	* Hit the Sales Service by running the url `http://localhost:9993/sale.svc/api/v1/salesOrders/` and POST the sales data.
+* Navigate to tax-service folder
+* Run the application [Locally as Spring Boot Application](./tax-service/README.md#running-locally-as-spring-boot-application)
+*  Hit the Sales Service by running the url `http://localhost:9993/sale.svc/api/v1/salesOrders/` and POST the sales data.
 	  For e.g.:
 	  `{
 	    "customerEmail": "customer@gmail.com",
@@ -879,11 +926,11 @@ To see the pattern in action follow these steps-
 	    "grossAmount": 1000,
 	    "quantity": 2
 	  }`
-	* Now hit the Sales Service by running the url `http://localhost:9993/sale.svc/api/v1/salesOrders/email/customer@gmail.com` and check whether it returns the data, which includes 2 additional attributes `netAmount` & `taxAmount`.
-	* Now Stop the Tax Service which is running locally, which means that the Tax Service endpoint will be unreachable.
-	* Again, POST some data using `http://localhost:9993/sale.svc/api/v1/salesOrders/`.
-	* Normally, this POST method should fail as the endpoint of Tax Service is unreachable but as Circuit Breaker pattern is implemented, instead of throwing error, a fallback mechanism is executed which in turn gives default tax value when the Tax Service is down.
-	* Now when you start your Tax Service, endpoint becomes reachable and normal flow is resumed.
+* Now hit the Sales Service by running the url `http://localhost:9993/sale.svc/api/v1/salesOrders/email/customer@gmail.com` and check whether it returns the data, which includes 2 additional attributes `netAmount` & `taxAmount`.
+* Now Stop the Tax Service which is running locally, which means that the Tax Service endpoint will be unreachable.
+* Again, POST some data using `http://localhost:9993/sale.svc/api/v1/salesOrders/`.
+* Normally, this POST method should fail as the endpoint of Tax Service is unreachable but as Circuit Breaker pattern is implemented, instead of throwing error, a fallback mechanism is executed which in turn gives default tax value when the Tax Service is down.
+* Now when you start your Tax Service, endpoint becomes reachable and normal flow is resumed.
 
 
 ### Shed Load
