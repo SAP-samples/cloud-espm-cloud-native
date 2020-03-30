@@ -1,5 +1,6 @@
 {
 	"xsappname": "espm-cloud-native-uaa-tax",
+	"tenant-mode": "dedicated",
 	"scopes": [
 		{
 			"name": "$XSAPPNAME.Access",

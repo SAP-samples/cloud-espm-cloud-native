@@ -1,5 +1,6 @@
 {
 	"xsappname": "espm-cloud-native-uaa",
+	"tenant-mode": "dedicated",
 	"authorities":["$ACCEPT_GRANTED_AUTHORITIES"],
 	"scopes": [
 		{
@@ -31,7 +32,7 @@
 	"role-collections": [
     	{
         	"name": "Retailer-RoleCollection",
-        	"description": "retailer roles for espm dragonblood",
+        	"description": "retailer roles for espm cloud native",
         	"role-template-references": [
             "$XSAPPNAME.Retailer"
         	]

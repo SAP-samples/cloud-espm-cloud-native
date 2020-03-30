@@ -13,6 +13,8 @@ import java.util.UUID;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.cloudfoundry.com.fasterxml.jackson.core.JsonProcessingException;
@@ -49,6 +51,7 @@ import com.sap.refapps.espm.model.SalesOrder;
 import com.sap.refapps.espm.model.Tax;
 import javax.jms.JMSException;
 import com.sap.refapps.espm.service.SalesOrderService;
+import com.sap.refapps.espm.service.SalesOrderServiceImpl;
 
 /**
  * This class is a controller class of sales service which is responsible for
@@ -56,12 +59,12 @@ import com.sap.refapps.espm.service.SalesOrderService;
  *
  */
 @RestController
-@PropertySource(ignoreResourceNotFound = true, value = "classpath:manifest.yml")
 @RequestMapping("sale.svc/api/v1/salesOrders")
 public class SalesOrderController {
 	@Value("${product.service}")
 	private String productServiceEndPoint;
 	protected static final String V1_PATH = "/v1/salesOrders";
+	private static final Logger logger = LoggerFactory.getLogger(SalesOrderController.class);
 
 	private final HttpHeaders headers = new HttpHeaders();
 
@@ -207,9 +210,10 @@ public class SalesOrderController {
 	}
 
 	private String geProductServiceUri() {
-
+		String prodUrl = this.environment.getProperty("PROD_SERVICE")+"/product.svc/api/v1/stocks/";
+		logger.info("***********Sale microservice endpoint is {}********",prodUrl);
 		final String productserviceUri = Arrays.stream(environment.getActiveProfiles())
-				.anyMatch(env -> (env.equalsIgnoreCase("cloud"))) ? this.environment.getProperty("PROD_SERVICE")
+				.anyMatch(env -> (env.equalsIgnoreCase("cloud"))) ? prodUrl
 						: productServiceEndPoint;
 
 		return productserviceUri;

@@ -6,7 +6,7 @@
 
     <groupId>com.sap.refapps.espm</groupId>
     <artifactId>tax-service</artifactId>
-    <version>1.0.0</version>
+    <version>1.1.0</version>
     <packaging>${packaging.type}</packaging>
     
     <parent>
