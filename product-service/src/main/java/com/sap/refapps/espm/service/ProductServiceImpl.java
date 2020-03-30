@@ -37,9 +37,13 @@ public class ProductServiceImpl implements ProductService {
 	 * @see com.sap.refapps.espm.service.ProductService#getAllProducts()
 	 */
 	public Iterable<Product> getAllProducts() throws DataAccessException {
-
-		Iterable<Product> products = productRepository.findAll();
-		return products;
+		try {
+			Iterable<Product> products = productRepository.findAll();
+			return products;
+		} catch(DataAccessException e) {
+			logger.error("Retrying to connect to the database...");
+			throw e;
+		}
 	}
 
 	/*

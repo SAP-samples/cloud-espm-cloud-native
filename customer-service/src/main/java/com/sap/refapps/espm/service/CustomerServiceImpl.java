@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
+import org.postgresql.util.PSQLException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,13 +53,18 @@ public class CustomerServiceImpl implements CustomerService {
 	 * @see com.sap.refapps.espm.service.CustomerService#getCustomer(java.lang.String)
 	 */
 	@Override
-	public Customer getCustomerByEmailAddress(String emailAddress) throws DataAccessException {
-		Customer customer = customerRepository.findCustomerByEmailAddress(emailAddress);
-		return customer;
+	public Customer getCustomerByEmailAddress(String emailAddress) {
+		try {
+			Customer customer = customerRepository.findCustomerByEmailAddress(emailAddress);
+			return customer;
+		} catch (DataAccessException e) {
+			logger.error("Retrying to connect to the database...");
+			throw e;
+		}
 	}
 	
 	@Override
-	public Customer getCustomerById(String customerId) throws DataAccessException {
+	public Customer getCustomerById(String customerId) {
 		Customer customer = customerRepository.findCustomerById(customerId);
 		return customer;
 	}
