@@ -799,13 +799,23 @@ Execute the below command and make note of url, clientid, clientsecret.
 
 ### Retry
 Retry patterns is implemented in Customer and Product Service to retry interactions with the database. The database might not be reachable momentarily due to network latency. But a simple retry might ensure that the next request might succeed. This ensures that the operation does not fail.
- To see these patterns in action, follow these steps-
-* Hit the Customer Service by running the url `http://localhost:9991/customer.svc/api/v1/customers/viola.gains@itelo.info` and check whether it returns the data
-* Go to the folder where PostgreSQL is installed and navigate to the bin folder and stop the database by running this command `pg_ctl.exe -D "C:\Program Files\PostgreSQL\10\data" stop` in your terminal/command line
-* Again hit the url `http://localhost:9991/customer.svc/api/v1/customers/viola.gains@itelo.info`. As Retry  mechanism has been implemented, it will retry for 2 times before it shows HTTP 503.
-* Go to the folder where PostgreSQL is installed and navigate to the bin folder and start the database by running this command `pg_ctl.exe -D "C:\Program Files\PostgreSQL\10\data" start` in your terminal/command line
-* Now when you hit the url `http://localhost:9991/customer.svc/api/v1/customers/viola.gains@itelo.info`, you can see the data.
+To see this pattern in action in the Customer Service, follow these steps-
+* Open POSTMAN and send a GET request to fetch customer details by email address in customer service by using the given endpoint `http://localhost:9991/customer.svc/api/v1/customers/viola.gains@itelo.info`. It should return proper data if the database is up and running.
+* Go to the folder where PostgreSQL is installed and navigate to the bin folder and stop the database by running this command `pg_ctl.exe -D "C:\Program Files\PostgreSQL\10\data" stop` in your terminal/command line.
+* Switch to POSTMAN and send a GET request again by using the endpoint `http://localhost:9991/customer.svc/api/v1/customers/viola.gains@itelo.info`. Open command line and check the application logs. Since the database is down you may find connection errors in the stack trace.
+* To veirfy whether spring-retry is working or not, search for the log `Retrying to connect to the database...` as shown in the below screenshot. There should be 2 occurances of the given log as the retry pattern in configured to make a max of 2 attempts to connect to the database when the database is down.
+![Alt text](./documentation/images/CustomerService-RetryLog.jpg)
+* Now re-start the database by running the command: `pg_ctl.exe -D "C:\Program Files\PostgreSQL\10\data" start`.
+* Switch to POSTMAN and send a GET request again by using the endpoint `http://localhost:9991/customer.svc/api/v1/customers/viola.gains@itelo.info`. You should find proper data.
 
+Similarly to see this pattern in action in the Product Service, follow the below steps:
+* Open POSTMAN and send a GET request to fetch all products in product service by using the given endpoint `http://localhost:9992/product.svc/api/v1/products/`. It should return all the products if the database is up and running.
+* Go to the folder where PostgreSQL is installed and navigate to the bin folder and stop the database by running this command `pg_ctl.exe -D "C:\Program Files\PostgreSQL\10\data" stop` in your terminal/command line.
+* Switch to POSTMAN and send a GET request again by using the endpoint `http://localhost:9992/product.svc/api/v1/products/`. Open command line and check the application logs. Since the database is down you may find connection errors in the stack trace.
+* To veirfy whether spring-retry is working or not, search for the log `Retrying to connect to the database...` as shown in the below screenshot. There should be 2 occurances of the given log as the retry pattern in configured to make a max of 2 attempts to connect to the database when the database is down.
+![Alt text](./documentation/images/ProductService_RetryLog.jpg)
+* Now re-start the database by running the command: `pg_ctl.exe -D "C:\Program Files\PostgreSQL\10\data" start`.
+* Switch to POSTMAN and send a GET request again by using the endpoint `http://localhost:9992/product.svc/api/v1/products/`. You should find proper data.
 
 ### Timeout
  This pattern is implemented in Sales Service along with Circuit Breaker pattern. It's used to ensure that any request from Sales Service to Tax service does not wait indefinitely but times out after a preconfigured time for 1.2 seconds and a fall back is used for Tax calculation. To see these patterns in action, follow these steps
