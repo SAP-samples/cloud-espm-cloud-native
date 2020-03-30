@@ -75,7 +75,7 @@
     - [Bounded Queue](#bounded-queue-1)
     - [Unit Isolation](#unit-isolation-1)
     - [Circuit Breaker](#circuit-breaker-1)
-    - [Shed Load](#shed-load)
+    - [Shed Load](#shed-load-1)
   - [Known issues](#known-issues)
   - [Support](#support)
   - [License](#license)
@@ -103,7 +103,7 @@ The ESPM applications consists of five microservices and one external service.
 
 A [Domain Driven Design](https://en.wikipedia.org/wiki/Domain-driven_design) approach was used to decide the capabilities of each microservices. The Customer and Cart entities are part of the Customer Microservice and Product and Stock entities are part of the Product Service. To keep things simple there is only one entity in Sales Service which is the Sales Order entity. In real world scenarios, Sales Entity might have Sales Order Header and Sales Order Line Items Entity and more. The Product and Customer service has its own database while Sale and worker shares the same database.
 
-***Each of the resilience patterns has been fit into architecture of the ESPM Application to showcase how they can make an application resilient during potential failures.*** 
+***Each of the resilience patterns has been fit into architecture of the ESPM Application to showcase how they can make an application resilient during potential failures.***
 These are some of the potential places where the pattern could be applied. There could be more points in the application where the pattern could have been applied to make it more resilient.
 
 #### Retry
@@ -496,9 +496,9 @@ The security implementation in the ESPM application is based on [Spring Security
 Below steps describe how Authentication and Authorization is implemented in ESPM application.
 
  -  Include a [Application Security Descriptor](https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/150b04d647cd4b42835411c1787a8b11.html) file (xs-security.json) to the project. This file can be found in the root folder of the project. A role “Retailer” is defined within the Application Security Descriptor. Only a person assigned the Retailer role will be able to access Retailer UI of the ESPM Application to process the Sales Orders
- 
+
  - Configure scope checks for validating jwt tokens. This is done in Sales Service and Product Service by extending the [WebSecurityConfigurerAdapter class](https://docs.spring.io/spring-security/site/docs/current/api/org/springframework/security/config/annotation/web/configuration/WebSecurityConfigurerAdapter.html).
- - App to App communication for Business user is implemented in createSalesOrder method of class `com.sap.refapps.espm.controller.SalesOrderController ` in sale-service microservice and UpdateStockbyProductID method in `com.sap.refapps.espm.controller.ProductController` class  of product-service microservice . 
+ - App to App communication for Business user is implemented in createSalesOrder method of class `com.sap.refapps.espm.controller.SalesOrderController ` in sale-service microservice and UpdateStockbyProductID method in `com.sap.refapps.espm.controller.ProductController` class  of product-service microservice .
  - As a pre requsite the  sale-service and product-service should be bound to same xsuaa instance. When a Retailer login to Accept a Sales Order created by a Customer, the Business User is propagated from sale-service to product-service for a Stock check before accepting a Sales Order. This ensures that enough stock is available before a Sales Order is accepted and only a user with Retailer role has the permission to do a stock check.
  -  App to App communication for Technical user is implemented between sale-service and tax-service using **client-credential flow**. Sale-service and Tax-service are bound to different XSUAA instances. Sale-service is bound to instance ***espm-xsuaa*** and tax-service is bound to instance  ***espm-xsuaa-tax***.
 
@@ -557,9 +557,9 @@ Destination will be used by ESPM Application to consume the Tax Service which is
 * From the SAP CP Cockpit go to your Sub Account and click Destination
 
 * Create a new destination by clicking `New Destination`  and filling with the properties as shown below. (URL of tax service running on SAP Cloud Platform Cloud Foundry.)
-![Alt text](./documentation/images/tax-service-properties.png "Adding Destination") 
+![Alt text](./documentation/images/tax-service-properties.png "Adding Destination")
 
-### Build and Deploy ESPM Application 
+### Build and Deploy ESPM Application
 
 #### Using CF manifest
 * In the root folder of project edit the manifest.yml file and update `<unique_id>` with some unique value for each applications host name
@@ -570,7 +570,7 @@ Destination will be used by ESPM Application to consume the Tax Service which is
 * Do a maven build of complete application from command line by running command `mvn clean install` from the projects root folder.
 
 * Create an instance of the destination service by using the command `cf create-service destination lite espm-destination`
-  
+
 * Create new enterprise messaging service using the command:
 
 `cf cs enterprise-messaging default espm-em -c em-default.json`
@@ -652,10 +652,10 @@ For more details about creating a queue, check [here](https://help.sap.com/viewe
 * Launch URL for ***Webshop*** application https://xxxxx-espm-gateway.cfapps.eu10.hana.ondemand.com/webapp/webshop/index.html  
 * You will be redirected to authenticate to your user.
 ![Alt text](./documentation/images/login.png "Login")
-* You will be presented with a screen where you can enter using the email address provided for a customer. The views themselves are rather simple and use databinding extensively to avoid writing lots of code. 
+* You will be presented with a screen where you can enter using the email address provided for a customer. The views themselves are rather simple and use databinding extensively to avoid writing lots of code.
 * Continue with paul.burke@itelo.info
 ![Alt text](./documentation/images/customer.png "Customer")
-* You can do the operations like, view details of the customer, display shopping cart, display sales order, create cart, delete cart, create sales order. 
+* You can do the operations like, view details of the customer, display shopping cart, display sales order, create cart, delete cart, create sales order.
 ![Alt text](./documentation/images/initialview.png "view")
 * Try to create cart by clicking on create cart and type “N” in the pop-up.
 ![Alt text](./documentation/images/createcart.png "createcart")
@@ -668,11 +668,11 @@ For more details about creating a queue, check [here](https://help.sap.com/viewe
 ![Alt text](./documentation/images/ordercreated.png "ordercreated")
 * Navigate to sales order to see the created sales order by clicking on Sales Orders tab.
 ![Alt text](./documentation/images/salesorders.png "salesorders")
-* Status of the Sales Order can be New, Rejected, Cancelled and Shipped. Notice that the status of the newly created Sales Order from Cart is “New”. 
+* Status of the Sales Order can be New, Rejected, Cancelled and Shipped. Notice that the status of the newly created Sales Order from Cart is “New”.
 * We can approve/reject the Sales Order from a ***Retailer View***. Launch url for retailer application https://xxxxx-espm-gateway.cfapps.eu10.hana.ondemand.com/webapp/retailer/index.html  (if your account is in the Region Europe (Frankfurt) )
 ![Alt text](./documentation/images/retailer.png "retailer")
 * Click on *Approve Sales Orders*.
-* You will be presented with a screen where Ship/ Reject a Sales Order. 
+* You will be presented with a screen where Ship/ Reject a Sales Order.
 ![Alt text](./documentation/images/newsales.png "newsales")
 * Click on “New” sales order and see the details of the product and click on “Ship”
 * You can see that the status of the sales order changed to Shipped/Rejected depending on the Stock.
@@ -901,7 +901,7 @@ The Sales service along with Worker implements the Bounded Queue pattern. To ach
 	    "grossAmount": 1000,
 	    "quantity": 2
 	  }`
-	  
+
 * Go to the folder where PostgreSQL is installed and navigate to the bin folder and stop the database by running this command `pg_ctl.exe -D "C:\Program Files\PostgreSQL\10\data" stop` in your terminal/command line.
 * Again POST some data using `http://localhost:9993/sale.svc/api/v1/salesOrders/` , as Bounded Queue mechanism has been implemented, it will insert the sales order in Queue instead of throwing an error and returns an acknowledgement in the console. e.g.
 	`The message with correlation ID 8f698df8-d5e1-484a-8743-23f5875c1d71 was acknowledged by the broker`
