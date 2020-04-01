@@ -33,6 +33,7 @@ import org.springframework.cloud.cloudfoundry.com.fasterxml.jackson.core.JsonPro
 import org.springframework.cloud.cloudfoundry.com.fasterxml.jackson.databind.DeserializationFeature;
 import org.springframework.cloud.cloudfoundry.com.fasterxml.jackson.databind.JsonNode;
 import org.springframework.cloud.cloudfoundry.com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.context.annotation.Profile;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -69,8 +70,9 @@ import com.sap.cloud.security.xsuaa.tokenflows.XsuaaTokenFlows;
  * This is the implementation class for the sales order service
  *
  */
+@Profile("cloud")
 @Service
-public class SalesOrderServiceImpl implements SalesOrderService{
+public class CloudSalesOrderService implements SalesOrderService{
 
 	private XsuaaTokenFlows tokenFlows;
 
@@ -78,7 +80,7 @@ public class SalesOrderServiceImpl implements SalesOrderService{
 
 	private final RestTemplate restTemplate;
 
-	private static final Logger logger = LoggerFactory.getLogger(SalesOrderServiceImpl.class);
+	private static final Logger logger = LoggerFactory.getLogger(CloudSalesOrderService.class);
 
 	@Value("${tax.service}")
 	private String taxServiceEndPoint;
@@ -114,7 +116,7 @@ public class SalesOrderServiceImpl implements SalesOrderService{
 	 * @param rest
 	 */
 	@Autowired
-	public SalesOrderServiceImpl(final SalesOrderRepository salesOrderRepository, final RestTemplate rest,
+	public CloudSalesOrderService(final SalesOrderRepository salesOrderRepository, final RestTemplate rest,
 			XsuaaTokenFlows tokenFlows) {
 		this.salesOrderRepository = salesOrderRepository;
 		this.restTemplate = rest;

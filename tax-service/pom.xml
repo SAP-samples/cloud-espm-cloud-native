@@ -7,7 +7,7 @@
     <groupId>com.sap.refapps.espm</groupId>
     <artifactId>tax-service</artifactId>
     <version>1.1.0</version>
-    <packaging>${packaging.type}</packaging>
+    <packaging>jar</packaging>
     
     <parent>
         <groupId>org.springframework.boot</groupId>
@@ -20,6 +20,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>1.8</java.version>
+        <maven-jar-plugin.version>3.1.1</maven-jar-plugin.version>
     </properties>
 
     <dependencies>
@@ -34,6 +35,18 @@
 	   		<artifactId>xsuaa-spring-boot-starter</artifactId>
 	   		<version>2.3.2</version>
 		</dependency>
+		
+		<!-- Spring cloud serivce connector -->
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-spring-service-connector</artifactId>
+		</dependency>
+
+		<!-- Spring cloudfoundry connector -->
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-cloudfoundry-connector</artifactId>
+		</dependency>
     </dependencies>
 
     <build>
@@ -45,60 +58,5 @@
             </plugin>
         </plugins>
     </build>
-
-    <profiles>
-    	<profile>
-            <id>local</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-            <properties>
-                <packaging.type>jar</packaging.type>
-            </properties>
-        </profile>
-
-        <profile>
-            <id>cf</id>
-            <activation>
-                <activeByDefault>false</activeByDefault>
-            </activation>
-            <properties>
-                <packaging.type>jar</packaging.type>
-            </properties>
-            <dependencies>
-                <dependency>
-                    <groupId>org.springframework.boot</groupId>
-                    <artifactId>spring-boot-starter-tomcat</artifactId>
-                    <scope>provided</scope>
-                </dependency>
-            </dependencies>
-        </profile>
-
-        <profile>
-            <id>neo</id>
-            <activation>
-                <activeByDefault>false</activeByDefault>
-            </activation>
-            <properties>
-                <packaging.type>war</packaging.type>
-            </properties>
-            <dependencies>
-                <dependency>
-                    <groupId>org.springframework.boot</groupId>
-                    <artifactId>spring-boot-starter-tomcat</artifactId>
-                    <scope>provided</scope>
-                </dependency>
-                <dependency>
-                    <groupId>org.springframework.boot</groupId>
-                    <artifactId>spring-boot-starter-logging</artifactId>
-                    <scope>provided</scope>
-                </dependency>
-            </dependencies>
-            <build>
-                <finalName>ROOT</finalName>
-            </build>
-         </profile>
-
-    </profiles>
 
 </project>

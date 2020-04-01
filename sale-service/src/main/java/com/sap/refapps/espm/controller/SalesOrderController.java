@@ -51,7 +51,7 @@ import com.sap.refapps.espm.model.SalesOrder;
 import com.sap.refapps.espm.model.Tax;
 import javax.jms.JMSException;
 import com.sap.refapps.espm.service.SalesOrderService;
-import com.sap.refapps.espm.service.SalesOrderServiceImpl;
+import com.sap.refapps.espm.service.CloudSalesOrderService;
 
 /**
  * This class is a controller class of sales service which is responsible for

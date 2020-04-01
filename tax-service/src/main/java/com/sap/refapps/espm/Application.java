@@ -2,12 +2,13 @@ package com.sap.refapps.espm;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 
+import com.sap.refapps.espm.config.TaxApplicationContextInitializer;
 import com.sap.refapps.espm.service.TaxService;
 
 /**
@@ -16,21 +17,12 @@ import com.sap.refapps.espm.service.TaxService;
  * tax service application.
  *
  */
-@SpringBootApplication
+@SpringBootApplication(exclude = {SecurityAutoConfiguration.class})
 @EnableAutoConfiguration(exclude = {org.springframework.boot.autoconfigure.gson.GsonAutoConfiguration.class})
 public class Application extends SpringBootServletInitializer implements CommandLineRunner {
 
 	@Autowired
 	private TaxService taxService;
-	
-    /* (non-Javadoc)
-     * @see org.springframework.boot.web.servlet.support.SpringBootServletInitializer#configure(org.springframework.boot.builder.SpringApplicationBuilder)
-     */
-    @Override
-    protected SpringApplicationBuilder configure(SpringApplicationBuilder application)
-    {
-        return application.sources(Application.class);
-    }
 
     /**
      * This is main method.
@@ -38,7 +30,9 @@ public class Application extends SpringBootServletInitializer implements Command
      * @param args
      */
     public static void main(String ... args){
-        SpringApplication.run(Application.class, args);
+    	new SpringApplicationBuilder(Application.class)
+		.initializers(new TaxApplicationContextInitializer())
+		.run(args);
     }
 
 	/* (non-Javadoc)
