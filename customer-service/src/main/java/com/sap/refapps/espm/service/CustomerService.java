@@ -46,7 +46,8 @@ public interface CustomerService {
 	@Retryable(value = { DataAccessException.class }, backoff = @Backoff(delay = 2000), maxAttempts = 2)
 	Customer getCustomerByEmailAddress(String emailAddress) throws DataAccessException;
 	
-	Customer getCustomerById(String customerId);
+	@Retryable(value = { DataAccessException.class }, backoff = @Backoff(delay = 2000), maxAttempts = 2)
+	Customer getCustomerById(String customerId) throws DataAccessException;
 
 	/**
 	 * It deletes the item based on item id.

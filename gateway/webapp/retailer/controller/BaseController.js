@@ -6,7 +6,7 @@ sap.ui.define([
 
 	return Controller.extend("sap.ui.demo.nav.controller.BaseController", {
 
-		getRouter : function () {
+		getRouter: function () {
 			return sap.ui.core.UIComponent.getRouterFor(this);
 		},
 

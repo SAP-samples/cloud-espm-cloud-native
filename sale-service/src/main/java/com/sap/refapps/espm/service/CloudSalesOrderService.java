@@ -46,6 +46,9 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
+import com.sap.cloud.security.xsuaa.client.OAuth2TokenResponse;
+import com.sap.cloud.security.xsuaa.tokenflows.TokenFlowException;
+import com.sap.cloud.security.xsuaa.tokenflows.XsuaaTokenFlows;
 import com.sap.cloud.servicesdk.xbem.extension.sapcp.jms.MessagingServiceJmsConnectionFactory;
 import com.sap.refapps.espm.model.SalesOrder;
 import com.sap.refapps.espm.model.SalesOrderRepository;
@@ -62,17 +65,13 @@ import io.github.resilience4j.timelimiter.TimeLimiter;
 import io.github.resilience4j.timelimiter.TimeLimiterConfig;
 import io.vavr.control.Try;
 
-import com.sap.cloud.security.xsuaa.client.OAuth2TokenResponse;
-import com.sap.cloud.security.xsuaa.tokenflows.TokenFlowException;
-import com.sap.cloud.security.xsuaa.tokenflows.XsuaaTokenFlows;
-
 /**
  * This is the implementation class for the sales order service
  *
  */
 @Profile("cloud")
 @Service
-public class CloudSalesOrderService implements SalesOrderService{
+public class CloudSalesOrderService implements SalesOrderService {
 
 	private XsuaaTokenFlows tokenFlows;
 
@@ -97,7 +96,7 @@ public class CloudSalesOrderService implements SalesOrderService{
 	private HashMap<String, String> taxUrlCache = new HashMap<>(1);
 
 	private final HttpHeaders headers = new HttpHeaders();
-	
+
 	private final String taxEndPointSuffix = "/api/v1/calculate/tax?amount=";
 
 	@Autowired(required = false)
@@ -191,7 +190,9 @@ public class CloudSalesOrderService implements SalesOrderService{
 	}
 
 	private Tax taxServiceFallback(BigDecimal amount) {
-		logger.info("Tax service is down or tax destination is not available. So a default tax will be set to the amount : {}", amount);
+		logger.info(
+				"Tax service is down or tax destination is not available. So a default tax will be set to the amount : {}",
+				amount);
 		final Tax tax = new Tax();
 		tax.setTaxPercentage(00.00);
 		tax.setTaxAmount(new BigDecimal(00.00));
@@ -213,12 +214,12 @@ public class CloudSalesOrderService implements SalesOrderService{
 	}
 
 	/**
-	 * This method returns a desired Tax(taxAmount, taxPercentage) value when
-	 * the TaxService is up. If the TaxService is down, it applies a combination
-	 * of following fault tolerance patterns in a sequence: TimeLimiter,
-	 * CircuitBreaker and Retry using a Callable. Furthermore, if the service is
-	 * still down, it recovers from the exception by calling a fallback method
-	 * using Try monad from the Vavr library.
+	 * This method returns a desired Tax(taxAmount, taxPercentage) value when the
+	 * TaxService is up. If the TaxService is down, it applies a combination of
+	 * following fault tolerance patterns in a sequence: TimeLimiter, CircuitBreaker
+	 * and Retry using a Callable. Furthermore, if the service is still down, it
+	 * recovers from the exception by calling a fallback method using Try monad from
+	 * the Vavr library.
 	 * 
 	 * @param amount
 	 * @return
@@ -286,22 +287,21 @@ public class CloudSalesOrderService implements SalesOrderService{
 		Tax tax;
 		taxUri = taxUrlCache.get("TAX_URI");
 
-		 if (taxUri == null) {
+		if (taxUri == null) {
 
-             taxUri = getTaxUri();
+			taxUri = getTaxUri();
 
-             taxUrlCache.put("TAX_URI", taxUri);
+			taxUrlCache.put("TAX_URI", taxUri);
 
-		 }
-	
+		}
+
 		if (taxUri == "") {
 			logger.info("Calling fall back Tax calculation as Tax destination is not found");
 			tax = taxServiceFallback(amount);
-		}
-		else {
-	
+		} else {
+
 			URI uri = URI.create(taxUri + amount);
-			//tax = this.restTemplate.getForObject(uri, Tax.class);
+			// tax = this.restTemplate.getForObject(uri, Tax.class);
 			OAuth2TokenResponse clientCredentialsTokenResponse = null;
 			try {
 				clientCredentialsTokenResponse = tokenFlows.clientCredentialsTokenFlow().execute();
@@ -312,7 +312,8 @@ public class CloudSalesOrderService implements SalesOrderService{
 			headers.set("Authorization", "Bearer " + appToken);
 			HttpEntity entity = new HttpEntity(headers);
 			try {
-				// If Tax URI does not work check again in the destination if the URL in destination has changed.
+				// If Tax URI does not work check again in the destination if the URL in
+				// destination has changed.
 				taxUri = getTaxUri();
 				taxUrlCache.put("TAX_URI", taxUri);
 				uri = URI.create(taxUri + amount);
@@ -325,23 +326,23 @@ public class CloudSalesOrderService implements SalesOrderService{
 				ResponseEntity<Tax> responseEntity = restTemplate.exchange(uri, HttpMethod.GET, entity, Tax.class);
 				tax = responseEntity.getBody();
 			}
-	}
-	logger.info("Tax service endpoint is {}",taxUri);
-	logger.info("Tax service is called to calculate tax for amount : {}",amount);
-	logger.info("Tax amount is : {}",tax.getTaxAmount());
+		}
+		logger.info("Tax service endpoint is {}", taxUri);
+		logger.info("Tax service is called to calculate tax for amount : {}", amount);
+		logger.info("Tax amount is : {}", tax.getTaxAmount());
 
-	return tax;
+		return tax;
 
 	}
 
 	private String getTaxUri() {
-		String taxUrlDest = getTaxUrlFromDestinationService()+taxEndPointSuffix;
-		logger.info("***********Tax microservice endpoint is {}********",taxUrlDest);
+		String taxUrlDest = getTaxUrlFromDestinationService() + taxEndPointSuffix;
+		logger.info("***********Tax microservice endpoint is {}********", taxUrlDest);
 		final String taxUri = Arrays.stream(environment.getActiveProfiles())
 
-                .anyMatch(env -> (env.equalsIgnoreCase("cloud"))) ? taxUrlDest
+				.anyMatch(env -> (env.equalsIgnoreCase("cloud"))) ? taxUrlDest
 
-                                        : taxServiceEndPoint;
+						: taxServiceEndPoint;
 
 		return taxUri;
 	}

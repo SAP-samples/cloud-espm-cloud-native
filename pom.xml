@@ -32,6 +32,7 @@
 		<module>customer-service</module>
 		<module>sale-service</module>
 		<module>worker</module>
+		<module>gateway</module>
 	</modules>
 
 	<dependencyManagement>

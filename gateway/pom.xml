@@ -3,7 +3,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<groupId>com.sap.refapps.espm</groupId>
 	<artifactId>gateway</artifactId>
-	<version>1.0.0</version>
+	<version>1.1.0</version>
 	<modelVersion>4.0.0</modelVersion>
 	<packaging>pom</packaging>
 	<build>
@@ -11,7 +11,7 @@
 			<plugin>
 				<groupId>com.github.eirslett</groupId>
 				<artifactId>frontend-maven-plugin</artifactId>
-				<version>1.6</version>
+    			<version>1.6</version>
 				<executions>
 					<execution>
 						<id>install node and npm</id>
@@ -20,8 +20,8 @@
 							<goal>install-node-and-npm</goal>
 						</goals>
 						<configuration>
-							<nodeVersion>v6.3.1</nodeVersion>
-							<npmVersion>3.10.3</npmVersion>
+							<nodeVersion>v12.16.1</nodeVersion>
+							<npmVersion>6.13.4</npmVersion>
 						</configuration>
 					</execution>
 					<execution>

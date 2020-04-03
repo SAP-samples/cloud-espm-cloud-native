@@ -3,6 +3,9 @@
   "version": "0.0.1",
   "description": "UI for the ESPM Resilience project",
   "private": true,
+  "devDependencies": {
+    "@sap/grunt-sapui5-bestpractice-build": "1.4.2"
+  },
   "dependencies": {
     "@sap/approuter": "6.5.0"
   },

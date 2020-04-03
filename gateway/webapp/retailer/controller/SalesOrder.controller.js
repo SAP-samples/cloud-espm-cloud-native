@@ -13,9 +13,9 @@ sap.ui.define([
 		 * Can be used to modify the View before it is displayed, to bind event handlers and do other one-time initialization.
 		 * @memberOf com.sap.espm.retailer.view.SalesOrder
 		 */
-			onInit: function() {
-		
-			},
+		onInit: function () {
+
+		},
 
 		/**
 		 * Similar to onAfterRendering, but this hook is invoked before the controller's View is re-rendered
@@ -31,9 +31,9 @@ sap.ui.define([
 		 * This hook is the same one that SAPUI5 controls get after being rendered.
 		 * @memberOf com.sap.espm.retailer.view.SalesOrder
 		 */
-			onAfterRendering: function() {
-				
-			},
+		onAfterRendering: function () {
+
+		},
 
 		/**
 		 * Called when the Controller is destroyed. Use this one to free resources and finalize activities.
@@ -42,130 +42,130 @@ sap.ui.define([
 		//	onExit: function() {
 		//
 		//	}
-		
-		listUpdateFinished: function(){
-			
-			this.getView().byId("detailPageId").setVisible(false);  
+
+		listUpdateFinished: function () {
+
+			this.getView().byId("detailPageId").setVisible(false);
 		},
-		
-		handleListItemPress: function(event){
-			
+
+		handleListItemPress: function (event) {
+
 			this.getView().byId("detailPageId").setVisible(true);
-			
+
 			var context = event.getSource().getBindingContextPath();
 			var salesModel = new sap.ui.model.json.JSONModel(this.getView().getModel("customer").getProperty(context));
-			this.byId("detailPageId").setModel(salesModel,"sales"); 
+			this.byId("detailPageId").setModel(salesModel, "sales");
 			var oCustomerModel = this.getView().getModel('customer');
-			var customerEmail = oCustomerModel.getProperty(context+'/customerEmail');
-            oCustomerModel.loadCustomer(customerEmail);
-            var customer = oCustomerModel.getProperty('/customer');
+			var customerEmail = oCustomerModel.getProperty(context + '/customerEmail');
+			oCustomerModel.loadCustomer(customerEmail);
+			var customer = oCustomerModel.getProperty('/customer');
 			this.getView().byId("customerForm").bindElement('customer>/customer');
-			
-			if(this.getView().getModel("device").oData.isPhone){
- 				this.byId("splitContId").to(this.byId("detailPageId"));
- 			}
-			
+
+			if (this.getView().getModel("device").oData.isPhone) {
+				this.byId("splitContId").to(this.byId("detailPageId"));
+			}
+
 		},
-		
-		handleSearch : function (evt) 
-		{ // create model filter 
-			
-			var filters = []; 
-			var query = evt.getParameter("query"); 
-			if (query && query.length > 0) { 
-				var filter = new sap.ui.model.Filter("SalesOrderId", sap.ui.model.FilterOperator.Contains, query); 
-				filters.push(filter); } // update list binding 
-			var list = this.getView().byId("list"); 
-			var binding = list.getBinding("items"); 
-			binding.filter(filters); 
-			
+
+		handleSearch: function (evt) { // create model filter 
+
+			var filters = [];
+			var query = evt.getParameter("query");
+			if (query && query.length > 0) {
+				var filter = new sap.ui.model.Filter("SalesOrderId", sap.ui.model.FilterOperator.Contains, query);
+				filters.push(filter);
+			} // update list binding 
+			var list = this.getView().byId("list");
+			var binding = list.getBinding("items");
+			binding.filter(filters);
+
 		},
-		handleApprove: function(event){
+		handleApprove: function (event) {
 			var model = this.getView().byId("detailPageId").getModel("sales")
 			var salesOrderId = model.oData.salesOrderId;
 			var lifecyclestatus = model.oData.lifecycleStatus;
-			var bundle = this.getView().getModel("i18n").getResourceBundle(); 
+			var bundle = this.getView().getModel("i18n").getResourceBundle();
 			var objectAttributes = this.getView().byId("detailObjectHeader").getAttributes();
 			var lifecycleStatusName = objectAttributes[2].getText();
 			var that = this;
-			if(lifecyclestatus == 'N' && lifecycleStatusName == "New" ){
-			MessageBox.confirm( bundle.getText("sales.approveDialogMsg"), 
-					function (oAction) { 
+			if (lifecyclestatus == 'N' && lifecycleStatusName == "New") {
+				MessageBox.confirm(bundle.getText("sales.approveDialogMsg"),
+					function (oAction) {
 						if (MessageBox.Action.OK === oAction) {
 							var oCustomerModel = that.getView().byId("detailPageId").getModel("customer");
 							oCustomerModel.updateSalesOrder(salesOrderId, "S", "Sales order Shipped")
-							.then(function() {
-								BusyIndicator.hide();
-								that.getView().byId("detailPageId").setVisible(true);
-								var objectAttributes = that.getView().byId("detailObjectHeader").getAttributes();
-								objectAttributes[2].setText("Shipped");
-								MessageToast.show("Product Successfully shipped");
-							})
-							.fail(function(error) {
-								BusyIndicator.hide();
-								var oCustomerModel = that.getView().byId("detailPageId").getModel("customer");
-								oCustomerModel.updateSalesOrder(salesOrderId, "C", "Product not found/Out of stock")
-								that.getView().byId("detailPageId").setVisible(true);
-								var objectAttributes = that.getView().byId("detailObjectHeader").getAttributes();
-								objectAttributes[2].setText("Cancelled");
-								MessageToast.show("Product cannot be shipped - Out of Stock");
-							});
-						} 
-						}, 
-						bundle.getText("sales.approveDialogTitle") ); 
-			}else if (lifecyclestatus == 'R' || lifecyclestatus == 'C'){
+								.then(function () {
+									BusyIndicator.hide();
+									that.getView().byId("detailPageId").setVisible(true);
+									var objectAttributes = that.getView().byId("detailObjectHeader").getAttributes();
+									objectAttributes[2].setText("Order Shipped");
+									MessageToast.show("Product Successfully shipped");
+								})
+								.fail(function (error) {
+									BusyIndicator.hide();
+									var oCustomerModel = that.getView().byId("detailPageId").getModel("customer");
+									oCustomerModel.updateSalesOrder(salesOrderId, "C", "Product is Out of stock")
+									that.getView().byId("detailPageId").setVisible(true);
+									var objectAttributes = that.getView().byId("detailObjectHeader").getAttributes();
+									objectAttributes[2].setText("Out of Stock");
+									MessageToast.show("Product cannot be shipped - Out of Stock");
+								});
+						}
+					},
+					bundle.getText("sales.approveDialogTitle"));
+			} else if (lifecyclestatus == 'R' || lifecyclestatus == 'C') {
 				MessageToast.show("Rejected Sales Order cannot be shipped");
-			}else{
+			} else {
 				MessageToast.show("Only new Sales Order can be shipped");
 			}
-			
-					
+
+
 		},
-		
-		handleReject: function(){
+
+		handleReject: function () {
 			var model = this.getView().byId("detailPageId").getModel("sales")
 			var salesOrderId = model.oData.salesOrderId;
 			var lifecyclestatus = model.oData.lifecycleStatus;
-			var bundle = this.getView().getModel("i18n").getResourceBundle(); 
+			var bundle = this.getView().getModel("i18n").getResourceBundle();
 			var objectAttributes = this.getView().byId("detailObjectHeader").getAttributes();
 			var lifecycleStatusName = objectAttributes[2].getText();
 			var that = this;
-			if(lifecyclestatus == 'N' && lifecycleStatusName == "New" ){
-				MessageBox.confirm( bundle.getText("sales.rejectDialogMsg"), 
-				function (oAction) { 
-					if (MessageBox.Action.OK === oAction) {
-						var oCustomerModel = that.getView().byId("detailPageId").getModel("customer");
-						oCustomerModel.updateSalesOrder(salesOrderId, "R", "Sales order Rejected by Retailer")
-						.then(function() {
-							BusyIndicator.hide();
-							that.getView().byId("detailPageId").setVisible(true);
-							var objectAttributes = that.getView().byId("detailObjectHeader").getAttributes();
-							objectAttributes[2].setText("Returned");
-							MessageToast.show(bundle.getText("sales.rejectDialogSuccessMsg"));
-						})
-						.fail(function(error) {
-							BusyIndicator.hide();
-							MessageToast.show(bundle.getText("sales.rejectFailed"));
-						});
-					} 
-					}, 
-					bundle.getText("sales.rejectDialogTitle") ); 
-			}else if (lifecyclestatus == 'S'){
+			if (lifecyclestatus == 'N' && lifecycleStatusName == "New") {
+				MessageBox.confirm(bundle.getText("sales.rejectDialogMsg"),
+					function (oAction) {
+						if (MessageBox.Action.OK === oAction) {
+							var oCustomerModel = that.getView().byId("detailPageId").getModel("customer");
+							oCustomerModel.updateSalesOrder(salesOrderId, "R", "Sales order Rejected by Retailer")
+								.then(function () {
+									BusyIndicator.hide();
+									that.getView().byId("detailPageId").setVisible(true);
+									var objectAttributes = that.getView().byId("detailObjectHeader").getAttributes();
+									objectAttributes[2].setText("Rejected by Retailer");
+									MessageToast.show(bundle.getText("sales.rejectDialogSuccessMsg"));
+								})
+								.fail(function (error) {
+									BusyIndicator.hide();
+									MessageToast.show(bundle.getText("sales.rejectFailed"));
+								});
+						}
+					},
+					bundle.getText("sales.rejectDialogTitle"));
+			} else if (lifecyclestatus == 'S') {
 				MessageToast.show("Shipped Sales Order cannot be rejected");
-			}else{
+			} else {
 				MessageToast.show("Only new Sales Order can be rejected");
 			}
 		},
-		
-		onNavBack: function(){
+
+		onNavBack: function () {
 			window.history.go(-1);
 		},
-		
-		handleNavButtonPress: function(){
-     		var oSplitCont = this.byId("splitContId");
-     		var oMaster = oSplitCont.getMasterPages()[0];
-     		oSplitCont.toMaster(oMaster);
-  		}
+
+		handleNavButtonPress: function () {
+			var oSplitCont = this.byId("splitContId");
+			var oMaster = oSplitCont.getMasterPages()[0];
+			oSplitCont.toMaster(oMaster);
+		}
 
 
 	});
