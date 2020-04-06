@@ -966,4 +966,4 @@ Please use GitHub [issues](https://github.com/SAP-samples/cloud-espm-cloud-nativ
 ## License
 
 Copyright (c) 2018 SAP SE or an SAP affiliate company. All rights reserved.
-This project is licensed under the SAP Sample Code License Agreement except as noted otherwise in the [LICENSE](SAP_Sample_Code_License_Agreementv1.0.docx) file.
+This project is licensed under the SAP Sample Code License Agreement except as noted otherwise in the [LICENSE](https://github.com/SAP-samples/cloud-espm-cloud-native/blob/master/LICENSE) file.
