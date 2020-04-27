@@ -7,15 +7,9 @@ import java.math.MathContext;
 import java.net.URI;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.time.Duration;
-import java.util.Arrays;
 import java.util.Base64;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Optional;
-import java.util.concurrent.Callable;
-import java.util.concurrent.CompletableFuture;
-import java.util.function.Supplier;
 
 import javax.jms.Connection;
 import javax.jms.JMSException;
@@ -34,7 +28,6 @@ import org.springframework.cloud.cloudfoundry.com.fasterxml.jackson.databind.Des
 import org.springframework.cloud.cloudfoundry.com.fasterxml.jackson.databind.JsonNode;
 import org.springframework.cloud.cloudfoundry.com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.context.annotation.Profile;
-import org.springframework.core.env.Environment;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -53,41 +46,22 @@ import com.sap.cloud.servicesdk.xbem.extension.sapcp.jms.MessagingServiceJmsConn
 import com.sap.refapps.espm.model.SalesOrder;
 import com.sap.refapps.espm.model.SalesOrderRepository;
 import com.sap.refapps.espm.model.Tax;
+import com.sap.refapps.espm.util.ResilienceHandler;
 import com.sap.refapps.espm.util.SalesOrderLifecycleStatusEnum;
 import com.sap.refapps.espm.util.SalesOrderLifecycleStatusNameEnum;
 
-import io.github.resilience4j.circuitbreaker.CircuitBreaker;
-import io.github.resilience4j.circuitbreaker.CircuitBreakerConfig;
-import io.github.resilience4j.circuitbreaker.CircuitBreakerRegistry;
-import io.github.resilience4j.retry.Retry;
-import io.github.resilience4j.retry.RetryConfig;
-import io.github.resilience4j.timelimiter.TimeLimiter;
-import io.github.resilience4j.timelimiter.TimeLimiterConfig;
-import io.vavr.control.Try;
-
 /**
- * This is the implementation class for the sales order service
+ * Implementation class for the sales order service, deployable in cloud environment.
  *
  */
 @Profile("cloud")
 @Service
-public class CloudSalesOrderService implements SalesOrderService {
-
-	private XsuaaTokenFlows tokenFlows;
-
-	private final SalesOrderRepository salesOrderRepository;
-
-	private final RestTemplate restTemplate;
+public class CloudSalesOrderService extends AbstractSalesOrderService {
 
 	private static final Logger logger = LoggerFactory.getLogger(CloudSalesOrderService.class);
 
-	@Value("${tax.service}")
-	private String taxServiceEndPoint;
-
 	@Value("${tax.destinationName}")
 	private String taxDestination;
-
-	private Iterable<SalesOrder> salesOrder;
 
 	private String taxUri;
 
@@ -96,19 +70,13 @@ public class CloudSalesOrderService implements SalesOrderService {
 	private HashMap<String, String> taxUrlCache = new HashMap<>(1);
 
 	private final HttpHeaders headers = new HttpHeaders();
+	
+	private final String taxEndPointSuffix = "tax.svc/api/v1/calculate/tax?amount=";
 
-	private final String taxEndPointSuffix = "/api/v1/calculate/tax?amount=";
-
+	private final static String DESTINATION_PATH = "/destination-configuration/v1/destinations/";
+	
 	@Autowired(required = false)
-	private MessagingServiceJmsConnectionFactory factory;
-
-	@Autowired(required = false)
-	private QueueDispatcherService queueDispatcherService;
-
-	final static String DESTINATION_PATH = "/destination-configuration/v1/destinations/";
-
-	@Autowired
-	private Environment environment;
+	private MessagingServiceJmsConnectionFactory jmsConnectionFactory;
 
 	/**
 	 * @param salesOrderRepository
@@ -116,10 +84,8 @@ public class CloudSalesOrderService implements SalesOrderService {
 	 */
 	@Autowired
 	public CloudSalesOrderService(final SalesOrderRepository salesOrderRepository, final RestTemplate rest,
-			XsuaaTokenFlows tokenFlows) {
-		this.salesOrderRepository = salesOrderRepository;
-		this.restTemplate = rest;
-		this.tokenFlows = tokenFlows;
+			final ResilienceHandler resilienceHandler, final XsuaaTokenFlows xsuaaTokenFlows) {
+		super(salesOrderRepository, rest, resilienceHandler, xsuaaTokenFlows);
 		mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 	}
 
@@ -149,168 +115,34 @@ public class CloudSalesOrderService implements SalesOrderService {
 	}
 
 	@Override
-	public boolean insert(SalesOrder salesOrder, String profile) {
-
-		final BigDecimal netAmount;
-		Date now = new Date();
-		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-
-		// create MathContext object with 4 precision
-		MathContext mc = new MathContext(15);
-		final Tax tax = getTax(salesOrder.getGrossAmount());
-		netAmount = tax.getTaxAmount().add(salesOrder.getGrossAmount(), mc);
-		salesOrder.setLifecycleStatus(SalesOrderLifecycleStatusEnum.N.toString());
-		salesOrder.setLifecycleStatusName(SalesOrderLifecycleStatusNameEnum.N.toString());
-		salesOrder.setNetAmount(netAmount);
-		salesOrder.setTaxAmount(tax.getTaxAmount());
-		salesOrder.setQuantityUnit("EA");
-		salesOrder.setCreatedAt(dateFormat.format(now));
-		return queueDispatcherService.dispatch(salesOrder, salesOrder.getSalesOrderId());
-	}
-
-	@Override
-	public Iterable<SalesOrder> getAll() {
-		salesOrder = salesOrderRepository.getAllSalesOrders();
-		return salesOrder;
-	}
-
-	@Override
-	public Iterable<SalesOrder> getByEmail(String customerEmail) {
-		salesOrder = salesOrderRepository.getAllSalesOrderForCustomer(customerEmail);
-		return salesOrder;
-	}
-
-	@Override
-	public SalesOrder getById(String salesOrderId) {
-		return salesOrderRepository.findSalesOrderById(salesOrderId);
-	}
-
-	private Tax getTax(BigDecimal amount) {
-		return applyCircuitBreaker(amount);
-	}
-
-	private Tax taxServiceFallback(BigDecimal amount) {
-		logger.info(
-				"Tax service is down or tax destination is not available. So a default tax will be set to the amount : {}",
-				amount);
-		final Tax tax = new Tax();
-		tax.setTaxPercentage(00.00);
-		tax.setTaxAmount(new BigDecimal(00.00));
-		return tax;
-	}
-
-	@Override
-	public void updateStatus(String salesOrderId, String lifecyleStatus, String note) {
-		Optional<SalesOrder> optionalSalesOrder = salesOrderRepository.findById(salesOrderId);
-
-		if (optionalSalesOrder.isPresent()) {
-			SalesOrder salesOrder = optionalSalesOrder.get();
-			salesOrder.setNote(note);
-			salesOrder.setLifecycleStatus(SalesOrderLifecycleStatusEnum.valueOf(lifecyleStatus).toString());
-			salesOrder.setLifecycleStatusName(SalesOrderLifecycleStatusNameEnum.valueOf(lifecyleStatus).toString());
-			salesOrderRepository.save(salesOrder);
-		}
-
-	}
-
-	/**
-	 * This method returns a desired Tax(taxAmount, taxPercentage) value when the
-	 * TaxService is up. If the TaxService is down, it applies a combination of
-	 * following fault tolerance patterns in a sequence: TimeLimiter, CircuitBreaker
-	 * and Retry using a Callable. Furthermore, if the service is still down, it
-	 * recovers from the exception by calling a fallback method using Try monad from
-	 * the Vavr library.
-	 * 
-	 * @param amount
-	 * @return
-	 */
-	private Tax applyCircuitBreaker(BigDecimal amount) {
-
-		CircuitBreaker circuitBreaker = configureCircuitBreaker();
-		TimeLimiter timeLimiter = configureTimeLimiter();
-		Retry retry = configureRetry();
-
-		Supplier<CompletableFuture<Tax>> futureSupplier = () -> CompletableFuture.supplyAsync(() -> supplyTax(amount));
-		Callable<Tax> callable = TimeLimiter.decorateFutureSupplier(timeLimiter, futureSupplier);
-		callable = CircuitBreaker.decorateCallable(circuitBreaker, callable);
-		callable = Retry.decorateCallable(retry, callable);
-
-		// Executing the decorated callable and recovering from any exception by
-		// calling the fallback method
-		Try<Tax> result = Try.ofCallable(callable).recover(throwable -> taxServiceFallback(amount));
-		return result.get();
-	}
-
-	/**
-	 * Creating a circuitbreaker using custom configuration
-	 * 
-	 * @return
-	 */
-	private CircuitBreaker configureCircuitBreaker() {
-		CircuitBreakerConfig circuitBreakerConfig = CircuitBreakerConfig.custom().failureRateThreshold(20)
-				.waitDurationInOpenState(Duration.ofMillis(3000)).ringBufferSizeInClosedState(10)
-				.ringBufferSizeInHalfOpenState(5).build();
-		CircuitBreakerRegistry circuitBreakerRegistry = CircuitBreakerRegistry.of(circuitBreakerConfig);
-		CircuitBreaker circuitBreaker = circuitBreakerRegistry.circuitBreaker("taxservice");
-		return circuitBreaker;
-	}
-
-	/**
-	 * Creating a TimeLimiter using custom configuration
-	 * 
-	 * @return
-	 */
-	private TimeLimiter configureTimeLimiter() {
-		TimeLimiterConfig timeLimiterConfig = TimeLimiterConfig.custom().timeoutDuration(Duration.ofMillis(1000))
-				.cancelRunningFuture(false).build();
-		TimeLimiter timeLimiter = TimeLimiter.of(timeLimiterConfig);
-		return timeLimiter;
-	}
-
-	/**
-	 * Creating a Retry using custom configuration
-	 * 
-	 * @return
-	 */
-	private Retry configureRetry() {
-		RetryConfig retryConfig = RetryConfig.custom().maxAttempts(3).waitDuration(Duration.ofMillis(5000)).build();
-		Retry retry = Retry.of("taxservice", retryConfig);
-		return retry;
-	}
-
-	/**
-	 * @param amount
-	 * @return
-	 */
-	private Tax supplyTax(BigDecimal amount) {
+	public Tax supplyTax(BigDecimal amount) {
 
 		Tax tax;
 		taxUri = taxUrlCache.get("TAX_URI");
 
 		if (taxUri == null) {
-
 			taxUri = getTaxUri();
-
 			taxUrlCache.put("TAX_URI", taxUri);
-
 		}
 
 		if (taxUri == "") {
 			logger.info("Calling fall back Tax calculation as Tax destination is not found");
-			tax = taxServiceFallback(amount);
+			tax = resilienceHandler.applyResiliencePatterns(amount);
+			
 		} else {
-
 			URI uri = URI.create(taxUri + amount);
-			// tax = this.restTemplate.getForObject(uri, Tax.class);
 			OAuth2TokenResponse clientCredentialsTokenResponse = null;
+
 			try {
-				clientCredentialsTokenResponse = tokenFlows.clientCredentialsTokenFlow().execute();
-			} catch (TokenFlowException e1) {
-				logger.error("Couldnt get client credentials token: {}", e1.getMessage());
+				clientCredentialsTokenResponse = xsuaaTokenFlows.clientCredentialsTokenFlow().execute();
+			} catch (TokenFlowException e) {
+				logger.error("Couldn't get client credentials token: {}", e.getMessage());
 			}
+
 			String appToken = clientCredentialsTokenResponse.getAccessToken();
 			headers.set("Authorization", "Bearer " + appToken);
 			HttpEntity entity = new HttpEntity(headers);
+
 			try {
 				// If Tax URI does not work check again in the destination if the URL in
 				// destination has changed.
@@ -332,19 +164,13 @@ public class CloudSalesOrderService implements SalesOrderService {
 		logger.info("Tax amount is : {}", tax.getTaxAmount());
 
 		return tax;
-
 	}
 
 	private String getTaxUri() {
-		String taxUrlDest = getTaxUrlFromDestinationService() + taxEndPointSuffix;
-		logger.info("***********Tax microservice endpoint is {}********", taxUrlDest);
-		final String taxUri = Arrays.stream(environment.getActiveProfiles())
-
-				.anyMatch(env -> (env.equalsIgnoreCase("cloud"))) ? taxUrlDest
-
-						: taxServiceEndPoint;
-
-		return taxUri;
+		
+		String taxUrl = getTaxUrlFromDestinationService() + taxEndPointSuffix;
+		logger.info("***********Tax microservice endpoint is {}********",taxUrl);
+		return taxUrl;
 	}
 
 	private String getTaxUrlFromDestinationService() {
@@ -395,7 +221,7 @@ public class CloudSalesOrderService implements SalesOrderService {
 
 	private synchronized void sendMessage(final String messageString) throws JMSException {
 
-		final Connection connection = factory.createConnection();
+		final Connection connection = jmsConnectionFactory.createConnection();
 		connection.start();
 		final Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
 		final Queue queue = session.createQueue("queue:" + System.getenv("QUEUE_NAME"));
