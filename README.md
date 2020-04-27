@@ -535,7 +535,7 @@ The Tax Service Application can be deployed in two ways
        and filling with the properties as shown below. (URL of tax service running on SAP Cloud Platform Neo or SAP Cloud Platform Cloud Foundry.)
        <br>.
 
-       ![Alt text](./documentation/images/tax-service-properties.png "Adding Destination")<br>
+       ![Alt text](./documentation/images/tax-service-destination.png "Adding Destination")<br>
        * The implementation of destination services is in [SalesOrderServiceImpl](./sale-service/src/main/java/com/sap/refapps/espm/service/SalesOrderServiceImpl.java#L214) class.
 
 #### Deploy Service
@@ -557,7 +557,7 @@ Destination will be used by ESPM Application to consume the Tax Service which is
 * From the SAP CP Cockpit go to your Sub Account and click Destination
 
 * Create a new destination by clicking `New Destination`  and filling with the properties as shown below. (URL of tax service running on SAP Cloud Platform Cloud Foundry.)
-![Alt text](./documentation/images/tax-service-properties.png "Adding Destination")
+![Alt text](./documentation/images/tax-service-destination.png "Adding Destination")
 
 ### Build and Deploy ESPM Application
 
