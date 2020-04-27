@@ -174,7 +174,7 @@ For Running locally:
 * On the first run a qpid-broker a default config.json will be generated in your user directory
   * On windows C:\users\<username>\Appdata\roaming\Qpid\config.json
   * On Linux/Mac /Users/<username>/config.json
-* add the property "secureOnlyMechanisms": [], in the config.json file to disable SSL, as indicated in [sample file](https://github.com/SAP/cloud-espm-cloud-native/blob/master/cfg/config.json) line 9. Please do not use the sample file but update your own config.json file with this property.
+* add the property "secureOnlyMechanisms": [], in the config.json file to disable SSL, as indicated in [sample file](https://github.com/SAP-samples/cloud-espm-cloud-native/blob/master/documentation/config.json#L9). Please do not use the sample file but update your own config.json file with this property.
 * Stop Qpid server and start it again
 * The default Qpid user is <b>guest</b> and password is also <b>guest</b>
 
@@ -451,7 +451,7 @@ The below are the list of local service API endpoints of all the microservices.
 
 
 #### Test the ESPM Application Locally
-To test the ESPM application, [Postman REST Client](https://www.getpostman.com/apps) can be used. A Postman collection which is provided [here](./documentation/postman-collections/ESPM-Local.postman_collection.json) has all the request URLs and sample request body payloads (in case of a POST request).
+To test the ESPM application, [Postman REST Client](https://www.getpostman.com/apps) can be used. A Postman collection which is provided [here](./documentation/postman-collections/ESPM-LOCAL.postman_collection.json) has all the request URLs and sample request body payloads (in case of a POST request).
 
 ## Deploying the ESPM application on Cloud Foundry
 
@@ -500,7 +500,7 @@ Below steps describe how Authentication and Authorization is implemented in ESPM
  - Configure scope checks for validating jwt tokens. This is done in Sales Service and Product Service by extending the [WebSecurityConfigurerAdapter class](https://docs.spring.io/spring-security/site/docs/current/api/org/springframework/security/config/annotation/web/configuration/WebSecurityConfigurerAdapter.html).
  - App to App communication for Business user is implemented in createSalesOrder method of class `com.sap.refapps.espm.controller.SalesOrderController ` in sale-service microservice and UpdateStockbyProductID method in `com.sap.refapps.espm.controller.ProductController` class  of product-service microservice .
  - As a pre requsite the  sale-service and product-service should be bound to same xsuaa instance. When a Retailer login to Accept a Sales Order created by a Customer, the Business User is propagated from sale-service to product-service for a Stock check before accepting a Sales Order. This ensures that enough stock is available before a Sales Order is accepted and only a user with Retailer role has the permission to do a stock check.
- -  App to App communication for Technical user is implemented between sale-service and tax-service using **client-credential flow**. Sale-service and Tax-service are bound to different XSUAA instances. Sale-service is bound to instance ***espm-xsuaa*** and tax-service is bound to instance  ***espm-xsuaa-tax***.
+ -  App to App communication for Technical user is implemented between sale-service and tax-service using **client-credential flow**. Sale-service and Tax-service are bound to different XSUAA instances. Sale-service is bound to instance **espm-xsuaa**(which uses xs-security.json) and tax-service is bound to instance **espm-xsuaa-tax**(which uses xs-security-tax.json). The tax service grants a scope to sales-service using a property **"grant-as-authority-to-apps"** in xs-security-tax.json. This propery has a value **["$XSAPPNAME(application,espm-cloud-native-uaa)"]** where espm-cloud-native-uaa is the xs-appname of espm-xsuaa service. And it is also necessay that the sales service accepts the granted authorities. This is achieved by the property **"$ACCEPT_GRANTED_AUTHORITIES"** in xs-security.json. This ensures that the tax service trusts sales service and hence technical user communication between the two services are achieved using client credentials flow. For more information refer to section  [referencing the application](https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/517895a9612241259d6941dbf9ad81cb.html#loio517895a9612241259d6941dbf9ad81cb__section_fm2_wsk_pdb) in the documentation for SAP Cloud Platform.
 
 ### Configuring Enterprise Messaging
 
@@ -508,7 +508,7 @@ Below steps describe how Authentication and Authorization is implemented in ESPM
   e.g `"namespace": "myorg/espm/1"`
  For more details, check [here](https://help.sap.com/viewer/bf82e6b26456494cbdd197057c09979f/Cloud/en-US/d0483a9e38434f23a4579d6fcc72654b.html)
 
-* Replace the `QUEUE_NAME` for sales-svc, worker apps in [manifest.yml file](https://github.com/SAP-samples/cloud-espm-cloud-native/blob/master/manifest.yml) with the new queue name that was created based on the namespace, name provided in the previous step.
+* Replace the `QUEUE_NAME` for sales-svc, worker apps in [manifest.yml file](./manifest.yml) with the new queue name that was created based on the namespace, name provided in the previous step.
 
 
 ### Tax Service Application Deployment
@@ -536,7 +536,7 @@ The Tax Service Application can be deployed in two ways
        <br>.
 
        ![Alt text](./documentation/images/tax-service-destination.png "Adding Destination")<br>
-       * The implementation of destination services is in [SalesOrderServiceImpl](./sale-service/src/main/java/com/sap/refapps/espm/service/SalesOrderServiceImpl.java#L214) class.
+       * The implementation of destination services is in [SalesOrderServiceImpl](./sale-service/src/main/java/com/sap/refapps/espm/service/CloudSalesOrderService.java#L213) class.
 
 #### Deploy Service
 
@@ -578,6 +578,11 @@ Destination will be used by ESPM Application to consume the Tax Service which is
 * Run command `cf marketplace` and check the service and plan names of HANA. Check if service with name `hana` and plan `schema` exists
 
 * Create HANA DB Service instance with `schema` plan by running command  `cf create-service hana schema espm-hana-db`.
+> Note: 
+
+> * In case you are using a different name for the HANA instance, please update the [hana configuration file](./commons/src/main/java/com/sap/refapps/espm/config/HanaDataSourceConfig.java#L23), manifest file as well with the same name. 
+
+> * It is possible to use different HANA instances for each of the microservices too, in that case, you would have to keep a copy of [hana configuration file](./commons/src/main/java/com/sap/refapps/espm/config/HanaDataSourceConfig.java#L23) in the config folder of each of the microservices with the corresponding HANA instance names. 
 
 *For simplicity all the microservices are bound to one database instance espm-hana-db. If required three database instances can be created (e.g. esmp-customer, espm-product and espm-sales) and individual microservice can be bound to them*
 
@@ -605,7 +610,8 @@ Destination will be used by ESPM Application to consume the Tax Service which is
 * In mta.yml update `QUEUE_NAME` parameter for modules  espm-sales-svc and espm-worker with value
   `"<yourorgname>/<yourmessageclientname>/<uniqueID>/salesorderqueue"`
   e.g `myorg/espm/1/salesorderqueue`
-
+  
+  > In case you are using a different name for the HANA instance, please update the [hana configuration file](./commons/src/main/java/com/sap/refapps/espm/config/HanaDataSourceConfig.java#L23), mta file as well with the same name.
 
 * From the root folder where mta.yaml is kept run the command:
 
@@ -648,8 +654,8 @@ For more details about creating a queue, check [here](https://help.sap.com/viewe
 
 ### Acessing the application UI
 * From CLI run command `cf apps`
-* Note down the URL for application espm-gateway. This would be appearing as xxxxx-espm-gateway.cfapps.eu10.hana.ondemand.com (if you deploy the application in an SAP CP sub account is in the Region Europe (Frankfurt))
-* Launch URL for ***Webshop*** application https://xxxxx-espm-gateway.cfapps.eu10.hana.ondemand.com/webapp/webshop/index.html  
+* Note down the URL for application espm-gateway. This would be appearing as <unique_id>-espm-gateway.cfapps.eu10.hana.ondemand.com (if you deploy the application in an SAP CP sub account is in the Region Europe (Frankfurt))
+* Launch URL for ***Webshop*** application https://<unique_id>-espm-gateway.cfapps.eu10.hana.ondemand.com/webapp/webshop/index.html  
 * You will be redirected to authenticate to your user.
 ![Alt text](./documentation/images/login.png "Login")
 * You will be presented with a screen where you can enter using the email address provided for a customer. The views themselves are rather simple and use databinding extensively to avoid writing lots of code.
@@ -913,7 +919,7 @@ ESPM has a  microservice based architecture, where all the services are independ
 
 
 ### Circuit Breaker
-In ESPM this pattern is showcased via sale service. This service needs to compute the tax amount for a Sales Order. This is done by hitting an external [Tax Service](./tax-service). If the Tax Service is unreachable, instead of throwing an error, a fallback mechanism executes the logic and default tax value is returned. Resilience 4j library is used to implement Circuit breaker patterns.
+In ESPM this pattern is showcased via sale service. This service needs to compute the tax amount for a Sales Order. This is done by hitting an external [Tax Service](./tax-service). If the Tax Service is unreachable, instead of throwing an error, a fallback mechanism executes the logic and default tax value is returned. Resilience4j library is used to implement Circuit breaker patterns.
 To see the pattern in action follow these steps-
 * Navigate to tax-service folder
 * Run the application [Locally as Spring Boot Application](./tax-service/README.md#running-locally-as-spring-boot-application)
