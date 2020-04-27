@@ -565,7 +565,7 @@ Destination will be used by ESPM Application to consume the Tax Service which is
 * In the root folder of project edit the manifest.yml file and update `<unique_id>` with some unique value for each applications host name
 * update `QUEUE_NAME` parameter for applications  espm-sales-svc and espm-worker with value
   `"<yourorgname>/<yourmessageclientname>/<uniqueID>/salesorderqueue"`
-  e.g `myorg\espm\1\salesorderqueue`
+  e.g `myorg/espm/1/salesorderqueue`
 
 * Do a maven build of complete application from command line by running command `mvn clean install` from the projects root folder.
 
@@ -604,7 +604,7 @@ Destination will be used by ESPM Application to consume the Tax Service which is
 
 * In mta.yml update `QUEUE_NAME` parameter for modules  espm-sales-svc and espm-worker with value
   `"<yourorgname>/<yourmessageclientname>/<uniqueID>/salesorderqueue"`
-  e.g `myorg\espm\1\salesorderqueue`
+  e.g `myorg/espm/1/salesorderqueue`
 
 
 * From the root folder where mta.yaml is kept run the command:
@@ -871,7 +871,7 @@ Similarly to see this pattern in action in the Product Service, follow the below
 * Run the Sale Service
 * Create a Sales Order with following data using Postman
   Method : Post
-  URL : http://http://localhost:9993/sale.svc/api/v1/salesOrders
+  URL : http://localhost:9993/sale.svc/api/v1/salesOrders
   Header: `Content-Type : application/json`
   Body: `{"customerEmail": "customer1@gmail.com", "productId": "HT-1005", "currencyCode": "DLR", "grossAmount": 5000, "quantity": 2 }`
 
@@ -880,14 +880,14 @@ Similarly to see this pattern in action in the Product Service, follow the below
 * Stop the Tax Services which is running on SAP Cloud Platfrom Neo or on Cloud Foundry.
 * Create a Sales Order with following data  
 ` Method : POST `    
-  `URL : http://http://localhost:9993/sale.svc/api/v1/salesOrders`       
+  `URL : http://localhost:9993/sale.svc/api/v1/salesOrders`       
   `Header: Content-Type : application/json`  
   `Body: {"customerEmail": "customer2@gmail.com", "productId": "HT-1005", "currencyCode": "DLR", "grossAmount": 5000, "quantity": 2 } `
 * The requests succeed, but takes more than 1.2 seconds this is because, since Tax service was down, the Sale Service after sending request for Tax calculation, waited for 1.2 seconds. Due to Time Out configuration and due to the Circuit Breaker implementation, it falls back to default Tax calculation implementation
 * Hit get request on Sales Services
 
   `Method : GET`
-  `URL : http://http://localhost:9993/sale.svc/api/v1/salesOrders`
+  `URL : http://localhost:9993/sale.svc/api/v1/salesOrders`
 * In the response it can be seen that the sales order is created with email id `customer1@gmail.com`. The first sales order created while Tax service was up will have a non-zero value for `taxAmount` field, while for the sales order created with email id `customer2@gmail.com` will have `taxAmount` as zero as the fallback `taxAmount` is set to zero
 
 ### Bounded Queue
