@@ -10,7 +10,6 @@ import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.orm.jpa.JpaBaseConfiguration;
 import org.springframework.boot.autoconfigure.orm.jpa.JpaProperties;
-import org.springframework.boot.autoconfigure.transaction.TransactionManagerCustomizers;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.instrument.classloading.InstrumentationLoadTimeWeaver;
@@ -31,10 +30,7 @@ public class EspmJpaConfig extends JpaBaseConfiguration {
 			ObjectProvider<JtaTransactionManager> jtaTransactionManager) {
 		super(dataSource, properties, jtaTransactionManager);
 	}
-	
-	
-	
-	
+
 	 /* (non-Javadoc)
 	 * @see org.springframework.boot.autoconfigure.orm.jpa.JpaBaseConfiguration#createJpaVendorAdapter()
 	 */
