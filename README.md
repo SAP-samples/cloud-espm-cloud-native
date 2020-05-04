@@ -590,6 +590,8 @@ Destination will be used by ESPM Application to consume the Tax Service which is
 
 - Create a service instance of the Authorization and Trust Management service with `application` plan by running the command `cf create-service xsuaa application espm-xsuaa -c xs-security.json`. This instance is to be bound to Product Service, Sale Service and API Gateway
 
+>note: In case you are changing the xsappname in xs-security.json, Please update it in [xs-security-tax.json](https://github.com/SAP-samples/cloud-espm-cloud-native/blob/master/tax-service/xs-security-tax.json#L8) as well. This is because tax service authorizes only an app with the xsappname mentioned here.   
+
 * Deploy Worker on to Cloud Foundry from the project root folder by running command `cf push <unique_id>-espm-worker` from CLI
 
 * Deploy Sale Service  on to Cloud Foundry from the project root folder by running command `cf push espm-sales-svc` from CLI.
