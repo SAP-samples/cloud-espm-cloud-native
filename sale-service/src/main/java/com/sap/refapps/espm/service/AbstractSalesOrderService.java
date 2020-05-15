@@ -39,8 +39,6 @@ public abstract class AbstractSalesOrderService implements SalesOrderService {
 	
 	protected final RestTemplate restTemplate;
 	
-	protected XsuaaTokenFlows xsuaaTokenFlows;
-	
 	/**
 	 * @param salesOrderRepository
 	 * @param restTemplate
@@ -51,20 +49,6 @@ public abstract class AbstractSalesOrderService implements SalesOrderService {
 		this.salesOrderRepository = salesOrderRepository;
 		this.restTemplate = restTemplate;
 		this.resilienceHandler = resilienceHandler;
-	}
-	
-	/**
-	 * @param salesOrderRepository
-	 * @param restTemplate
-	 * @param resilienceHandler
-	 * @param xsuaaTokenFlows
-	 */
-	public AbstractSalesOrderService(final SalesOrderRepository salesOrderRepository, final RestTemplate restTemplate,
-			final ResilienceHandler resilienceHandler, final XsuaaTokenFlows xsuaaTokenFlows) {
-		this.salesOrderRepository = salesOrderRepository;
-		this.restTemplate = restTemplate;
-		this.resilienceHandler = resilienceHandler;
-		this.xsuaaTokenFlows = xsuaaTokenFlows;
 	}
 	
 	@Override

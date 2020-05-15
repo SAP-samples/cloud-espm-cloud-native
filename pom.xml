@@ -17,6 +17,7 @@
 		<version.xbem.client>2.0.1</version.xbem.client>
 		<maven-jar-plugin.version>3.1.1</maven-jar-plugin.version>
 		<sap.cloud.security.version>2.3.2</sap.cloud.security.version>
+		<apache.httpclient.version>4.5.8</apache.httpclient.version>
 		<resilience4j.version>0.15.0</resilience4j.version>
 	</properties>
 	<parent>

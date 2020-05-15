@@ -39,7 +39,10 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
+import com.sap.cloud.security.xsuaa.client.ClientCredentials;
+import com.sap.cloud.security.xsuaa.client.DefaultOAuth2TokenService;
 import com.sap.cloud.security.xsuaa.client.OAuth2TokenResponse;
+import com.sap.cloud.security.xsuaa.client.XsuaaDefaultEndpoints;
 import com.sap.cloud.security.xsuaa.tokenflows.TokenFlowException;
 import com.sap.cloud.security.xsuaa.tokenflows.XsuaaTokenFlows;
 import com.sap.cloud.servicesdk.xbem.extension.sapcp.jms.MessagingServiceJmsConnectionFactory;
@@ -84,8 +87,8 @@ public class CloudSalesOrderService extends AbstractSalesOrderService {
 	 */
 	@Autowired
 	public CloudSalesOrderService(final SalesOrderRepository salesOrderRepository, final RestTemplate rest,
-			final ResilienceHandler resilienceHandler, final XsuaaTokenFlows xsuaaTokenFlows) {
-		super(salesOrderRepository, rest, resilienceHandler, xsuaaTokenFlows);
+			final ResilienceHandler resilienceHandler) {
+		super(salesOrderRepository, rest, resilienceHandler);
 		mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 	}
 
@@ -132,11 +135,27 @@ public class CloudSalesOrderService extends AbstractSalesOrderService {
 		} else {
 			URI uri = URI.create(taxUri + amount);
 			OAuth2TokenResponse clientCredentialsTokenResponse = null;
-
 			try {
+				//client credentials flow
+				final DestinationService configuration = getDestinationServiceDetails("xsuaa");
+				String clientSecret = configuration.clientsecret;
+				String clientId = configuration.clientid;
+				String url = configuration.url;
+				final XsuaaDefaultEndpoints xsuaaDefaultEndpoints = new XsuaaDefaultEndpoints(url);
+				final ClientCredentials clientCredentials = new ClientCredentials(clientId, clientSecret);
+				final DefaultOAuth2TokenService defaultOAuth2TokenService = new DefaultOAuth2TokenService();
+				
+				//XsuaaTokenFlows are used to get access to token flow builders which inturn is used for getting a technical user token.
+				XsuaaTokenFlows xsuaaTokenFlows = new XsuaaTokenFlows(
+						defaultOAuth2TokenService,
+						xsuaaDefaultEndpoints, clientCredentials);
 				clientCredentialsTokenResponse = xsuaaTokenFlows.clientCredentialsTokenFlow().execute();
 			} catch (TokenFlowException e) {
 				logger.error("Couldn't get client credentials token: {}", e.getMessage());
+			} catch (IOException e) {
+				logger.error("No proper XSUAA Service available: {}", e.getMessage());
+			}catch(Exception e) {
+				logger.error("Please contact the administrator for details: {}", e.getMessage());
 			}
 
 			String appToken = clientCredentialsTokenResponse.getAccessToken();
@@ -175,7 +194,7 @@ public class CloudSalesOrderService extends AbstractSalesOrderService {
 
 	private String getTaxUrlFromDestinationService() {
 		try {
-			final DestinationService destination = getDestinationServiceDetails();
+			final DestinationService destination = getDestinationServiceDetails("destination");
 			final String accessToken = getOAuthToken(destination);
 			headers.set("Authorization", "Bearer " + accessToken);
 			HttpEntity entity = new HttpEntity(headers);
@@ -210,13 +229,12 @@ public class CloudSalesOrderService extends AbstractSalesOrderService {
 
 	}
 
-	private DestinationService getDestinationServiceDetails() throws IOException {
+	private DestinationService getDestinationServiceDetails(String node) throws IOException {
 		final String destinationService = System.getenv("VCAP_SERVICES");
 		final JsonNode root = mapper.readTree(destinationService);
-		final JsonNode destinations = root.get("destination").get(0).get("credentials");
+		final JsonNode destinations = root.get(node).get(0).get("credentials");
 		final DestinationService destination = mapper.treeToValue(destinations, DestinationService.class);
 		return destination;
-
 	}
 
 	private synchronized void sendMessage(final String messageString) throws JMSException {

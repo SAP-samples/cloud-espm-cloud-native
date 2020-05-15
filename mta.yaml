@@ -5,6 +5,28 @@ parameters:
   enable-parallel-deployments: true
 
 modules:
+  # the parent and the commons module needs to be build, 
+  # but not deployed as these are not microservices. They contain the libraries, helper classes
+  - name: parent
+    type: java.tomcat
+    path: .
+    build-parameters:
+      builder: custom
+      supported-platforms: []
+      commands:
+        - mvn -N install
+      timeout: 60m
+  
+  - name: commons
+    type: java.tomcat
+    path: commons
+    build-parameters:
+      builder: custom
+      supported-platforms: []
+      commands:
+        - mvn clean install
+      timeout: 60m
+      
   - name: espm-product-svc
     type: java.tomcat
     path: product-service

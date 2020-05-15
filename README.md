@@ -2,7 +2,7 @@
 
   ## Description
 
-  **Enterprise Sales and Procurement Model** (ESPM) **Cloud Native** is a reference application to showcase how **Resilience patterns** can be implemented in a Cloud Native application. It is built based on microservices architecture principles. Each microservice is built as a [Spring Boot](https://spring.io/projects/spring-boot) application. The current scope of the application showcases the below resilience patterns.
+  **Enterprise Sales and Procurement Model** (ESPM) **Cloud Native** is a reference application to showcase how **Resilience patterns** can be implemented in a Cloud Native application. It’s built based on microservices architecture principles. Each microservice is built as a [Spring Boot](https://spring.io/projects/spring-boot) application. The current scope of the application showcases the below resilience patterns.
   * *Retry*
   * *Timeout*
   * *Circuit Breaker*
@@ -10,7 +10,7 @@
   * *Shed Load*
   * *Unit Isolation*
 
-  These patterns are showcased through implementing a business scenario of an eCommerce site that sells electronic products. The eCommerce site supports two personas
+  These patterns are showcased through implementing a business scenario of an eCommerce site that sells electronic products. The eCommerce site supports two personas.
 
   1. A Customer, who can order Products
   2. A Retailer who can then accept the Sales Orders created by the customer. The Retailer can also update the Product Stock information.
@@ -64,7 +64,7 @@
     - [Setup Role collections](#setup-role-collections)
     - [Assign Role to the user](#assign-role-to-the-user)
     - [Enterprise Message Queue creation](#enterprise-message-queue-creation)
-    - [Acessing the application UI](#acessing-the-application-ui)
+    - [Accessing the application UI](#acessing-the-application-ui)
     - [Accessing the application API Endpoints](#accessing-the-application-api-endpoints)
       - [Customer Service](#customer-service-3)
       - [Product Service](#product-service-3)
@@ -86,22 +86,22 @@
 ![Alt text](./documentation/images/ESPM-CN.JPG "Architecture")
 
 
-The ESPM applications consists of five microservices and one external service.
+The ESPM application consists of five microservices and one external service.
 1. **Customer Service** - This service process Customer and Shopping cart information
 2. **Product Service** - This service can be used to process products and stock information
 3. **Sales Service** - Sales Orders are processed by this service. Each time a sales order is created, it’s not directly inserted into the database, but inserted into a queue. A background process called worker picks the message from queue and inserts to the database. The rationale behind this approach is explained later in the document. For read operation on sales order, its directly read from the database.
 4. **Worker** - Background process which picks the Sales Order from the queue and inserts it into the database.
-5. **Gateway** - It is an optional component and acts as entry point for the complete application. It also acts as a reverse proxy and routes the request to the appropriate microservice. The UI for the application is integrated into the Gateway module. Then UI of the application consists of two parts
+5. **Gateway** - It’s an optional component and acts as entry point for the complete application. It also acts as a reverse proxy and routes the request to the appropriate microservice. The UI for the application is integrated into the Gateway module. Then UI of the application consists of two parts
 
 
    *Webshop*: An application where an authenticated Customer can buy products by creating Sales Order
 
    *Retailer*: An application where an authenticated and authorized Sales Manager known as Retailer can approve/reject sales orders. Only a user with retailer role will be able to access the end point.
 
-6. **External Tax Service** - This is a service which is external to the application and used to do tax calculation. This Tax calculation service is provided, to be used along with the implementation of Circuit Breaker, Quarantine pattern. This service is also used in showcasing the app to app communication between two microservices deployed in the same subaccount, but bounded to two different Authorization and Trust Management services. For more information see  [referencing the application](https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/517895a9612241259d6941dbf9ad81cb.html#loio517895a9612241259d6941dbf9ad81cb__section_fm2_wsk_pdb) in the documentation for SAP Cloud Platform.
+6. **External Tax Service** - This is a service which is external to the application and used to do tax calculation. This Tax calculation service is provided, to be used along with the implementation of Circuit Breaker, Quarantine pattern. This service is also used in showcasing the app-to-app communication between two microservices deployed in the same subaccount, but bounded to two different Authorization and Trust Management services. For more information, see [referencing the application](https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/517895a9612241259d6941dbf9ad81cb.html#loio517895a9612241259d6941dbf9ad81cb__section_fm2_wsk_pdb) in the documentation for SAP Cloud Platform.
 
 
-A [Domain Driven Design](https://en.wikipedia.org/wiki/Domain-driven_design) approach was used to decide the capabilities of each microservices. The Customer and Cart entities are part of the Customer Microservice and Product and Stock entities are part of the Product Service. To keep things simple there is only one entity in Sales Service which is the Sales Order entity. In real world scenarios, Sales Entity might have Sales Order Header and Sales Order Line Items Entity and more. The Product and Customer service has its own database while Sale and worker shares the same database.
+A [Domain Driven Design](https://en.wikipedia.org/wiki/Domain-driven_design) approach was used to decide the capabilities of each microservices. The Customer and Cart entities are part of the Customer Microservice and Product and Stock entities are part of the Product Service. To keep things simple, there is only one entity in Sales Service which is the Sales Order entity. In real world scenarios, Sales Entity might have Sales Order Header and Sales Order Line Items Entity and more. The Product and Customer service has its own database while Sale and worker shares the same database.
 
 ***Each of the resilience patterns has been fit into architecture of the ESPM Application to showcase how they can make an application resilient during potential failures.***
 These are some of the potential places where the pattern could be applied. There could be more points in the application where the pattern could have been applied to make it more resilient.
@@ -225,7 +225,7 @@ Follow steps below to run each microservice of ESPM one by one. Please ensure th
 
   `mvn spring-boot:run`
 
-* Ensure that the following logs is found in the bottom of the console
+* Ensure that the following log is found in the bottom of the console
 
   ~~~
   INFO 35816 --- [           main] s.b.c.e.t.TomcatEmbeddedServletContainer : Tomcat started on port(s): 9991 (http)
@@ -252,7 +252,7 @@ Follow steps below to run each microservice of ESPM one by one. Please ensure th
 
   `mvn spring-boot:run`
 
-* Ensure that the following logs is found in the bottom of the console
+* Ensure that the following log is found in the bottom of the console
 
   ~~~
   INFO 35816 --- [           main] s.b.c.e.t.TomcatEmbeddedServletContainer : Tomcat started on port(s): 9992 (http)
@@ -280,7 +280,7 @@ Follow steps below to run each microservice of ESPM one by one. Please ensure th
 
   `mvn spring-boot:run`
 
-* Ensure that the following logs is found in the bottom of the console
+* Ensure that the following log is found in the bottom of the console
 
   ~~~
 
@@ -313,7 +313,7 @@ Follow steps below to run each microservice of ESPM one by one. Please ensure th
 
   `mvn spring-boot:run`
 
-* Ensure that the following logs is found in the bottom of the console
+* Ensure that the following log is found in the bottom of the console
 
   ~~~
   INFO 35816 --- [           main] s.b.c.e.t.TomcatEmbeddedServletContainer : Tomcat started on port(s): 9993 (http)
@@ -336,7 +336,7 @@ Follow steps below to run each microservice of ESPM one by one. Please ensure th
 
   `mvn clean install -pl gateway`
 
-* Gateway acts as the single-entry point into the ESPM application. Its implemented using SAP HANA XS Advanced  [Approuter](https://help.sap.com/viewer/4505d0bdaf4948449b7f7379d24d0f0d/2.0.03/en-US/0117b71251314272bfe904a2600e89c0.html) library.
+* Gateway acts as the single-entry point into the ESPM application. It's implemented using SAP HANA XS Advanced [Approuter](https://help.sap.com/viewer/4505d0bdaf4948449b7f7379d24d0f0d/2.0.03/en-US/0117b71251314272bfe904a2600e89c0.html) library.
 * Navigate to gateway folder.
 * Configure all three microservice end point by specifying the name (destination name) and local url of the microservice in the file default-env.json as shown below
 `{
@@ -346,7 +346,7 @@ Follow steps below to run each microservice of ESPM one by one. Please ensure th
   }`
 * Approuter port can be configured via PORT parameter in default-env.json. By default, the port is set to 9999
 
-* Once all microservice are running and their endpoints are specified in default-env.json, API gateway being a Node.js component can be run via the command from gateway project `.\node\npm start` to run it locally.
+* Once all microservices are running and their endpoints are specified in default-env.json, API gateway being a Node.js component can be run via the command from gateway project `.\node\npm start` to run it locally.
 * This will start gateway in the url http://localhost:9999
 * Once gateway is started all the microservice are accessible via the gateway url http://localhost:9999
 E.g. Get Customer by Email Address http://localhost:9999/customer.svc/api/v1/customers/{emailAddress}
@@ -405,7 +405,7 @@ The below are the list of local service API endpoints of all the microservices.
 | Method       	| `GET`       
 
 
-*The stock is updated by quantity specified in the payload. e.g. if the current quantity is 50 and in payload in the body for update stock request quantity is provided as 20 the quantity will be updated to 70*
+*The stock is updated by quantity specified in the payload. e.g. if the current quantity is 50 and in payload in the body for update stock request quantity is provided as 20 the quantity will be updated to 70.*
 
 | |Update Stock by Product ID|
 |-|-|
@@ -469,7 +469,7 @@ Check if the Cloud Foundry Space you will be deploying the application has the f
 | Application Runtime                      |            |          7          |
 
 Create SAP HANA Service instance with plan 64standard as described [here](https://help.sap.com/viewer/cc53ad464a57404b8d453bbadbc81ceb/Cloud/en-US/21418824b23a401aa116d9ad42dd5ba6.html). If the SAP HANA Service instance is present in another space share with your space as described [here](https://help.sap.com/viewer/cc53ad464a57404b8d453bbadbc81ceb/Cloud/en-US/390b47b7c0314d57a1829a0759a71ace.html)
-> If there are multiple instances of SAP HANA Service in the space where you plan to deploy this application, please modify the  mta.yaml as shown below. Replace <database_guid> with the [id of the databse](https://help.sap.com/viewer/cc53ad464a57404b8d453bbadbc81ceb/Cloud/en-US/93cdbb1bd50d49fe872e7b648a4d9677.html?q=guid) you would like to bind the application with :
+> If there are multiple instances of SAP HANA Service in the space where you plan to deploy this application, please modify the mta.yaml as shown below. Replace <database_guid> with the [id of the database](https://help.sap.com/viewer/cc53ad464a57404b8d453bbadbc81ceb/Cloud/en-US/93cdbb1bd50d49fe872e7b648a4d9677.html?q=guid) you would like to bind the application with :
  ```
  # Hana Schema
     - name: espm-hana-db
@@ -483,24 +483,65 @@ Create SAP HANA Service instance with plan 64standard as described [here](https:
 
 The ESPM application has a dependency to Tax Service Application which is a mock external service and needs to be separately deployed. Tax service is bound to its own instance of the Authorization and Trust Management service(XSUAA).
 
-*Please note that the ESPM application and Tax Service application should be deployed on the same CF space*
+*Please note that the ESPM application and Tax Service application should be deployed on the same CF space.*
 
 ### Security Implementation
 
-The security implementation in the ESPM application is based on [Spring Security](https://spring.io/projects/spring-security-oauth). Spring applications using the Spring-security libraries can integrate with the SAP Cloud Platfrom Authorization and Trust Management Service as described [here](https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/be97ec4a799c4135884c62610fea2a8f.html). ESPM Application implements App to App communication so that two microservices can securely communicate with each other.  This application showcases how to implement the same using two  different ways
+The security implementation in the ESPM application is based on [Spring Security](https://spring.io/projects/spring-security-oauth). Spring applications using the Spring-security libraries can integrate with the SAP Cloud Platform Authorization and Trust Management service as described [here](https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/be97ec4a799c4135884c62610fea2a8f.html). ESPM Application implements app-to-app communication so that two microservices can securely communicate with each other. This application showcases how to implement a secure communication using two  different ways:
 
-	1. Propagating a Business User
+- Propagating a Business User
+- Using a Technical User
 
-	2. Technical User.
+#### Propagating a Business User
 
-Below steps describe how Authentication and Authorization is implemented in ESPM application.
+In this approach, the business user is authenticated and his authorizations are used to call another microservice. The user is therefore known to the microservice that he is calling.
 
- -  Include a [Application Security Descriptor](https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/150b04d647cd4b42835411c1787a8b11.html) file (xs-security.json) to the project. This file can be found in the root folder of the project. A role “Retailer” is defined within the Application Security Descriptor. Only a person assigned the Retailer role will be able to access Retailer UI of the ESPM Application to process the Sales Orders
+#### Using a Technical User
 
- - Configure scope checks for validating jwt tokens. This is done in Sales Service and Product Service by extending the [WebSecurityConfigurerAdapter class](https://docs.spring.io/spring-security/site/docs/current/api/org/springframework/security/config/annotation/web/configuration/WebSecurityConfigurerAdapter.html).
- - App to App communication for Business user is implemented in createSalesOrder method of class `com.sap.refapps.espm.controller.SalesOrderController ` in sale-service microservice and UpdateStockbyProductID method in `com.sap.refapps.espm.controller.ProductController` class  of product-service microservice .
- - As a pre requsite the  sale-service and product-service should be bound to same xsuaa instance. When a Retailer login to Accept a Sales Order created by a Customer, the Business User is propagated from sale-service to product-service for a Stock check before accepting a Sales Order. This ensures that enough stock is available before a Sales Order is accepted and only a user with Retailer role has the permission to do a stock check.
- -  App to App communication for Technical user is implemented between sale-service and tax-service using **client-credential flow**. Sale-service and Tax-service are bound to different XSUAA instances. Sale-service is bound to instance **espm-xsuaa**(which uses xs-security.json) and tax-service is bound to instance **espm-xsuaa-tax**(which uses xs-security-tax.json). The tax service grants a scope to sales-service using a property **"grant-as-authority-to-apps"** in xs-security-tax.json. This propery has a value **["$XSAPPNAME(application,espm-cloud-native-uaa)"]** where espm-cloud-native-uaa is the xs-appname of espm-xsuaa service. And it is also necessay that the sales service accepts the granted authorities. This is achieved by the property **"$ACCEPT_GRANTED_AUTHORITIES"** in xs-security.json. This ensures that the tax service trusts sales service and hence technical user communication between the two services are achieved using client credentials flow. For more information refer to section  [referencing the application](https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/517895a9612241259d6941dbf9ad81cb.html#loio517895a9612241259d6941dbf9ad81cb__section_fm2_wsk_pdb) in the documentation for SAP Cloud Platform.
+In this approach, a technical user is used to access data from another microservice. The called microservice grants the calling application the necessary rights without identifying a user.
+
+
+Both methods have their use cases, depending on whether or not you need to identify the business user and grant access based on his authorizations or using a technical user is sufficient.
+
+
+#### Implementing Authentication and Authorization
+
+The steps below describe how authentication and authorization is implemented in the ESPM application.
+
+##### Business User Implementation
+
+As a pre prerequisite, the sale-service and product-service should be bound to same xsuaa instance.
+
+ 1. Add the [application security descriptor](https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/150b04d647cd4b42835411c1787a8b11.html) file (xs-security.json) to the project.
+    > This file can be found in the root folder of the project.
+ 
+ 2. Define a role **Retailer** within the application security descriptor.
+    
+    Only a person assigned the **Retailer** role will be able to access the retailer UI of the ESPM application to process the sales orders.
+
+ 3. Configure scope checks for validating jwt tokens.
+ 
+    This is done in the sale-service and product-service by extending the [WebSecurityConfigurerAdapter class](https://docs.spring.io/spring-security/site/docs/current/api/org/springframework/security/config/annotation/web/configuration/WebSecurityConfigurerAdapter.html).
+ 
+ 4. Implement app-to-app communication for the business user in the createSalesOrder method of class `com.sap.refapps.espm.controller.SalesOrderController ` in the sale-service microservice 
+ 
+ 5. Implement app-to-app communication for the business user in the UpdateStockbyProductID method in the `com.sap.refapps.espm.controller.ProductController` class of the product-service microservice.
+ 
+ When a Retailer logs in to accept a sales order created by a customer, the business user is propagated from the sale-service to product-service for a stock check before accepting a sales order. This ensures that enough stock is available before a sales order is accepted and only a user with the **Retailer** role has the permission to do a stock check.
+ 
+ ##### Technical User Implementation
+ 
+ App-to-app communication for the technical user is implemented between the sale-service and the tax-service using **client-credential flow**. The sale-service and the tax-service are bound to different XSUAA instances.
+ 
+ 1. The sale-service is bound to the instance **espm-xsuaa**(which uses xs-security.json).
+ 
+ 2. The tax-service is bound to the instance **espm-xsuaa-tax**(which uses xs-security-tax.json).
+ 
+ 3. The tax-service grants a scope to the sales-service using the property **"grant-as-authority-to-apps"** in the xs-security-tax.json. This property has the value **["$XSAPPNAME(application,espm-cloud-native-uaa)"]** where espm-cloud-native-uaa is the xs-appname of the espm-xsuaa service.
+ 
+ 4. The sales-service accepts the granted authorities. This is achieved by the property **"$ACCEPT_GRANTED_AUTHORITIES"** in the xs-security.json. This ensures that the tax-service trusts the sale-service and hence technical user communication between the two services is achieved using client credentials flow.
+ 
+ For more information, refer to section [referencing the application](https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/517895a9612241259d6941dbf9ad81cb.html#loio517895a9612241259d6941dbf9ad81cb__section_fm2_wsk_pdb) in the documentation for SAP Cloud Platform.
 
 ### Configuring Enterprise Messaging
 
@@ -513,11 +554,11 @@ Below steps describe how Authentication and Authorization is implemented in ESPM
 
 ### Tax Service Application Deployment
 
-The Tax Service Application can be deployed in two ways
+The Tax Service Application can be deployed in two ways:
 * CF Manifest
 * Deploy service
 
-*Please note that the ESPM application and Tax Service application shoudl be deployed on the same CF space*
+*Please note that the ESPM application and Tax Service application should be deployed on the same CF space.*
 
 #### CF Manifest
 
@@ -553,8 +594,8 @@ To Deploy MTAR, run the command:
 
 ### Create Destination
 
-Destination will be used by ESPM Application to consume the Tax Service which is an external service
-* From the SAP CP Cockpit go to your Sub Account and click Destination
+Destination will be used by ESPM Application to consume the Tax Service which is an external service.
+* From the SAP CP Cockpit go to your Sub Account and click Destination.
 
 * Create a new destination by clicking `New Destination`  and filling with the properties as shown below. (URL of tax service running on SAP Cloud Platform Cloud Foundry.)
 ![Alt text](./documentation/images/tax-service-destination.png "Adding Destination")
@@ -582,15 +623,15 @@ Destination will be used by ESPM Application to consume the Tax Service which is
 
 > * In case you are using a different name for the HANA instance, please update the [hana configuration file](./commons/src/main/java/com/sap/refapps/espm/config/HanaDataSourceConfig.java#L23), manifest file as well with the same name. 
 
-> * It is possible to use different HANA instances for each of the microservices too, in that case, you would have to keep a copy of [hana configuration file](./commons/src/main/java/com/sap/refapps/espm/config/HanaDataSourceConfig.java#L23) in the config folder of each of the microservices with the corresponding HANA instance names. 
+> * It’s possible to use different HANA instances for each of the microservices too, in that case, you would have to keep a copy of [hana configuration file](./commons/src/main/java/com/sap/refapps/espm/config/HanaDataSourceConfig.java#L23) in the config folder of each of the microservices with the corresponding HANA instance names. 
 
-*For simplicity all the microservices are bound to one database instance espm-hana-db. If required three database instances can be created (e.g. esmp-customer, espm-product and espm-sales) and individual microservice can be bound to them*
+*For simplicity all the microservices are bound to one database instance espm-hana-db. If required three database instances can be created (e.g. esmp-customer, espm-product and espm-sales) and individual microservice can be bound to them.*
 
  - Run command `cf marketplace` and check the service and plan names for the Authorization and Trust Management (XSUAA) service. Check if service `xsuaa` and plan `application` exists.
 
 - Create a service instance of the Authorization and Trust Management service with `application` plan by running the command `cf create-service xsuaa application espm-xsuaa -c xs-security.json`. This instance is to be bound to Product Service, Sale Service and API Gateway
 
->note: In case you are changing the xsappname in xs-security.json, Please update it in [xs-security-tax.json](https://github.com/SAP-samples/cloud-espm-cloud-native/blob/master/tax-service/xs-security-tax.json#L8) as well. This is because tax service authorizes only an app with the xsappname mentioned here.   
+>note: In case you are changing the xsappname in xs-security.json, please update it in [xs-security-tax.json](./tax-service/xs-security-tax.json#L8) as well. This is because tax service authorizes only an app with the xsappname mentioned here. 
 
 * Deploy Worker on to Cloud Foundry from the project root folder by running command `cf push <unique_id>-espm-worker` from CLI
 
@@ -632,7 +673,7 @@ To Deploy MTAR, run the command:
 
 ### Setup Role collections
 
-The ESPM application defines a role template called as `Retailer` and a role collection called as `Retailer-RoleCollection` in the application security description (xs-security.json). Users need this Retailer role collection to accept sales orders. Creation of sales orders can be done by anonymous users. For more information about adding roles to role collection, see [Add Roles to Role Collections](https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/fe750543788a40b79a49854590ad0b11.html) in the documentation for SAP Cloud Platform.
+The ESPM application defines a role template called as `Retailer` and a role collection called as `Retailer-RoleCollection` in the application security descriptor (xs-security.json). Users need this Retailer role collection to accept sales orders. Creation of sales orders can be done by anonymous users. For more information about adding roles to role collection, see [Add Roles to Role Collections](https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/fe750543788a40b79a49854590ad0b11.html) in the documentation for SAP Cloud Platform.
 
 ### Assign Role to the user
 
@@ -858,7 +899,7 @@ To see this pattern in action in the Customer Service, follow these steps-
 * Open POSTMAN and send a GET request to fetch customer details by email address in customer service by using the given endpoint `http://localhost:9991/customer.svc/api/v1/customers/viola.gains@itelo.info`. It should return proper data if the database is up and running.
 * Go to the folder where PostgreSQL is installed and navigate to the bin folder and stop the database by running this command `pg_ctl.exe -D "C:\Program Files\PostgreSQL\10\data" stop` in your terminal/command line.
 * Switch to POSTMAN and send a GET request again by using the endpoint `http://localhost:9991/customer.svc/api/v1/customers/viola.gains@itelo.info`. Open command line and check the application logs. Since the database is down you may find connection errors in the stack trace.
-* To veirfy whether spring-retry is working or not, search for the log `Retrying to connect to the database...` as shown in the below screenshot. There should be 2 occurances of the given log as the retry pattern in configured to make a max of 2 attempts to connect to the database when the database is down.
+* To verify whether spring-retry is working or not, search for the log `Retrying to connect to the database...` as shown in the below screenshot. There should be 2 occurances of the given log as the retry pattern in configured to make a max of 2 attempts to connect to the database when the database is down.
 ![Alt text](./documentation/images/CustomerService-RetryLog.jpg)
 * Now re-start the database by running the command: `pg_ctl.exe -D "C:\Program Files\PostgreSQL\10\data" start`.
 * Switch to POSTMAN and send a GET request again by using the endpoint `http://localhost:9991/customer.svc/api/v1/customers/viola.gains@itelo.info`. You should find proper data.
@@ -867,13 +908,13 @@ Similarly to see this pattern in action in the Product Service, follow the below
 * Open POSTMAN and send a GET request to fetch all products in product service by using the given endpoint `http://localhost:9992/product.svc/api/v1/products/`. It should return all the products if the database is up and running.
 * Go to the folder where PostgreSQL is installed and navigate to the bin folder and stop the database by running this command `pg_ctl.exe -D "C:\Program Files\PostgreSQL\10\data" stop` in your terminal/command line.
 * Switch to POSTMAN and send a GET request again by using the endpoint `http://localhost:9992/product.svc/api/v1/products/`. Open command line and check the application logs. Since the database is down you may find connection errors in the stack trace.
-* To veirfy whether spring-retry is working or not, search for the log `Retrying to connect to the database...` as shown in the below screenshot. There should be 2 occurances of the given log as the retry pattern in configured to make a max of 2 attempts to connect to the database when the database is down.
+* To verify whether spring-retry is working or not, search for the log `Retrying to connect to the database...` as shown in the below screenshot. There should be 2 occurrences of the given log as the retry pattern in configured to make a max of 2 attempts to connect to the database when the database is down.
 ![Alt text](./documentation/images/ProductService_RetryLog.jpg)
 * Now re-start the database by running the command: `pg_ctl.exe -D "C:\Program Files\PostgreSQL\10\data" start`.
 * Switch to POSTMAN and send a GET request again by using the endpoint `http://localhost:9992/product.svc/api/v1/products/`. You should find proper data.
 
 ### Timeout
- This pattern is implemented in Sales Service along with Circuit Breaker pattern. It's used to ensure that any request from Sales Service to Tax service does not wait indefinitely but times out after a preconfigured time for 1.2 seconds and a fall back is used for Tax calculation. To see these patterns in action, follow these steps
+ This pattern is implemented in Sales Service along with Circuit Breaker pattern. It's used to ensure that any request from Sales Service to Tax service does not wait indefinitely but times out after a preconfigured time for 1.2 seconds and a fall back is used for Tax calculation. To see these patterns in action, follow these steps:
 * Run Tax Service locally as [Spring Boot Application as mentioned](./tax-service#running-locally-as-spring-boot-application)
 * Check if the Tax service URL is configured in application.properties (/sale-service/src/main/resources folder) file as `tax.service=http://localhost:9994/tax.svc/api/v1/calculate/tax?amount=`
 * Run the Sale Service
@@ -917,7 +958,7 @@ The Sales service along with Worker implements the Bounded Queue pattern. To ach
 * Now as the database is up, the Worker will pick the job from queue and push it into database, verify it by hitting `http://localhost:9993/sale.svc/api/v1/salesOrders/`
 
 ### Unit Isolation
-ESPM has a  microservice based architecture, where all the services are independent of each other  and have been isolated against each other here by bringing in Unit Isolation.
+ESPM has a microservice-based architecture, where all the services are independent of each other  and have been isolated against each other here by bringing in Unit Isolation.
 
 
 ### Circuit Breaker
