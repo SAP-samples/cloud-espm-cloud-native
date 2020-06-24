@@ -356,6 +356,14 @@ The below are the list of local service API endpoints of all the microservices.
 
 #### Customer Service
 
+| |Create Customer|
+|-|-|
+| Endpoint URL 	| http://localhost:9991/customer.svc/api/v1/customers/			 |
+| Header       	| `Content-Type:application/json`                                        |
+| Method       	| `POST`                                                                 |
+| Body         	| `{"emailAddress": "new_customer@test.com", "phoneNumber": "0123456789", "firstName": "new", "lastName": "customer", "dateOfBirth": "19900911", "city": "Bang, KR", "postalCode": "112233", "street": "100ft Road", "houseNumber": "123", "country": "IN"}`
+
+
 | |Get Customer by Email ID|
 |-|-|
 | Endpoint URL 	| http://localhost:9991/customer.svc/api/v1/customers/{emailAddress} 	
@@ -746,6 +754,13 @@ For more details about creating a queue, check [here](https://help.sap.com/viewe
 The below are the list of local service API endpoints of all the microservices.
 
 #### Customer Service
+
+| |Create Customer|
+|-|-|
+| Endpoint URL 	| https://<unique_id>-espm-customer-svc.cfapps.eu10.hana.ondemand.com/customer.svc/api/v1/customers/ |
+| Header       	| `Content-Type:application/json`                                        |
+| Method       	| `POST`                                                                 |
+| Body         	| `{"emailAddress": "new_customer@test.com", "phoneNumber": "0123456789", "firstName": "new", "lastName": "customer", "dateOfBirth": "19900911", "city": "Bang, KR", "postalCode": "112233", "street": "100ft Road", "houseNumber": "123", "country": "IN"}`
 
 | |Get Customer by Email ID |
 |-|-|
