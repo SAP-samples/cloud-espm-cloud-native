@@ -2,8 +2,11 @@ package com.sap.refapps.espm.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.TableGenerator;
 
 /**
  * This is the Customer entity class 
@@ -16,6 +19,9 @@ public class Customer {
 
 	@Id
 	@Column(name = "CUSTOMER_ID", length = 10, unique = true)
+	@GeneratedValue(strategy = GenerationType.TABLE, generator = "CustomerIDGenerator")
+	@TableGenerator(name = "CustomerIDGenerator", table = "CUST_ID_GENERATOR", pkColumnName = "GENERATOR_NAME", 
+	pkColumnValue = "Cust", valueColumnName = "GENERATOR_VALUE", initialValue = 1000000000, allocationSize = 100)
 	private String customerId;
 
 	@Column(name = "EMAIL_ADDRESS", unique = true, nullable = false)

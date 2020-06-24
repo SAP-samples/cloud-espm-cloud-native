@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -44,6 +45,22 @@ public class CustomerController {
 	@Autowired
 	public CustomerController(final CustomerService customerservice) {
 		this.customerService = customerservice;
+	}
+	
+	/**
+	 * To add a new customer
+	 * 
+	 * @param customer
+	 * @param uriComponentsBuilder
+	 * @return
+	 */
+	@PostMapping(CustomerController.API_CUSTOMER)
+	public ResponseEntity<Customer> addCustomer(@RequestBody final Customer customer, UriComponentsBuilder uriComponentsBuilder) {
+
+		customerService.saveCustomer(customer);
+		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
+				.buildAndExpand(customer.getCustomerId()).toUri();
+		return ResponseEntity.created(uri).body(customer);
 	}
 
 	/**
