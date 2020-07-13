@@ -1,32 +1,28 @@
-<mvc:View xmlns:l="sap.ui.layout" xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" xmlns:html="http://www.w3.org/1999/xhtml" controllerName="com.sap.ESPM-UI.controller.Landing">
+<mvc:View xmlns:l="sap.ui.layout" 
+	xmlns:core="sap.ui.core" 
+	xmlns:form="sap.ui.layout.form" 
+	xmlns:u="sap.ui.unified" 
+	xmlns:mvc="sap.ui.core.mvc" 
+	xmlns="sap.m" 
+	xmlns:html="http://www.w3.org/1999/xhtml" controllerName="com.sap.espm.shop.controller.Landing">
 	<App>
 		<pages>
-			<Page title="ESPM Cloud Native">
+			<Page title="ESPM Web Shopping">
 				<content>
 					<FlexBox width="100%" id="box0" direction="Column" justifyContent="Center" alignContent="Center" alignItems="Center" fitContainer="true" backgroundDesign="Solid">
 						<items>
 							<VBox width="320px" direction="Column" id="vbox0" class="sapUiLargeMarginTop">
 								<items>
-									<Image src="images/resilience.png" width="140px" height="120px" id="imgLogo" busyIndicatorSize="Small"/>
-									<Label xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" xmlns:html="http://www.w3.org/1999/xhtml" text="Enter your email address to continue" width="100%" id="lblEmailPrompt"/>
-									<List id="txtEmailAddress">
-											<InputListItem xmlns="sap.m" type="sap.m.InputType.List" placeholder="paul.burke@itelo.info" >
-											<Select>
-												<core:Item key="txtEmailAddress" text="paul.burke@itelo.info" />
-												<core:Item key="txtEmailAddress" text="viola.gains@itelo.info" />
-												<core:Item key="txtEmailAddress" text="sally.spring@itelo.info" />
-												<core:Item key="txtEmailAddress" text="sue.bay@itelo.info" />
-												<core:Item key="txtEmailAddress" text="james.field@itelo.info" />
-											</Select>
-											</InputListItem>
-									</List>
-									<!--List id="txtEmailAddress" items="{/}" >
-                                            <InputListItem id ="listTextField" label="Email">
-											<Input placeholder="paul.burke@itelo.info" />
-											</InputListItem>
-
-									</List-->
+									<Label xmlns:core="sap.ui.core" 
+										xmlns:mvc="sap.ui.core.mvc" 
+										xmlns="sap.m" 
+										xmlns:html="http://www.w3.org/1999/xhtml" text="Enter your email address to continue" width="100%" id="lblEmailPrompt"/>
+									<form:SimpleForm editable="true" id="existingFormId">
+										<Label text="{i18n>check.email}" required="true"/>
+										<Input id="existingEmailId" type = "sap.m.InputType.Email" placeholder="paul.burke@itelo.info" change ="checkExistingEmailId" value=""/>
+									</form:SimpleForm>
 									<Button xmlns="sap.m" text="Continue" id="btnContinue" width="100%" type="Emphasized" press="onContinuePressed"/>
+									<Button xmlns="sap.m" text="Register" id="btnRegister" width="100%" type="Emphasized" press="onRegisterPressed"/>
 								</items>
 							</VBox>
 						</items>

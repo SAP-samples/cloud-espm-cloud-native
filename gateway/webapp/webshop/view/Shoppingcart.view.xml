@@ -1,0 +1,78 @@
+<mvc:View controllerName="com.sap.espm.shop.controller.Shoppingcart" 
+	xmlns:core="sap.ui.core" 
+	xmlns:html="http://www.w3.org/1999/xhtml" 
+	xmlns:mvc="sap.ui.core.mvc" 
+	xmlns="sap.m" 
+	xmlns:shop="com.sap.espm.shop.control" 
+	xmlns:table = "sap.ui.table">
+	<Page id="shoppingCartPage" navButtonPress="onNavBack" showNavButton="true" title="{i18n>cart.cartPageTitle}">
+		<headerContent>
+			<Button icon="sap-icon://cart" id="btnShoppingCartHeader" press="onShoppingCartPressed" tooltip="{i18n>cart.shoppingCart}"/>
+		</headerContent>
+		<content>
+			<HBox width="100%" class="sapUiSmallMarginTopBottom " backgroundDesign="Solid">
+				<items>
+					<Image src="images/resilience.png" width="140px" height="140px" id="idLogo" class="sapUiSmallMargin"/>
+					<VBox width="100%" direction="Column">
+						<items>
+							<Title text="{customer}, {customer>/customer/firstName}" titleStyle="H1" level="H1" class="sapUiSmallMarginBeginEnd"/>
+							<Link text="{customer>/customer/phoneNumber}" class="sapUiSmallMarginBeginEnd"/>
+							<Link text="{customer>/customer/emailAddress}" class="sapUiSmallMarginBeginEnd"/>
+						</items>
+					</VBox>
+					<VBox width="100%" direction="Column" alignContent="End" alignItems="End" class="sapUiSmallMarginBeginEnd">
+						<items>
+							<Title text="Address" titleStyle="H1" class="sapUiSmallMarginBeginEnd"/>
+							<Label text="{customer>/customer/houseNumber} {customer&gt;/customer/street}" width="100%" class="sapUiSmallMarginBeginEnd"/>
+							<Label text="{customer>/customer/city}" width="100%" class="sapUiSmallMarginBeginEnd"/>
+							<Label text="{customer>/customer/postalCode}" width="100%" class="sapUiSmallMarginBeginEnd"/>
+							<Label text="{customer>/customer/country}" width="100%" class="sapUiSmallMarginBeginEnd"/>
+						</items>
+					</VBox>
+				</items>
+			</HBox>
+			<IconTabBar expanded="{device>/isNoPhone}">
+				<items>
+					<IconTabFilter text="Sales Orders" count="{customer>/salesorders/count}" icon="sap-icon://sales-order" iconColor="Positive" id="filter1">
+						<content>
+							<List items="{customer>/salesorders/data}" noDataText="No Sales Orders">
+								<items>
+									<ObjectListItem title="{customer>productName}" type="Active" number="{ parts:[{path:'customer>grossAmount'},{path:'customer&gt;currencyCode'}], type: 'sap.ui.model.type.Currency', formatOptions: {showMeasure: false} }" numberUnit="{customer>currencyCode}">
+										<firstStatus>
+											<ObjectStatus text="{customer>lifecycleStatusName}" state="{path: 'customer>lifecycleStatus', formatter: '.formatter.lifecycleStatus'}"/>
+										</firstStatus>
+										<attributes>
+											<ObjectAttribute title="Sales Order" text="{customer>salesOrderId}"/>
+											<ObjectAttribute title="Quantity" text="{customer>quantity} {customer&gt;quantityUnit}"/>
+											<ObjectAttribute title="Created" text="{customer>createdAt}" sorter="{descending: true}"/>
+										</attributes>
+									</ObjectListItem>
+								</items>
+							</List>
+						</content>
+					</IconTabFilter>
+					<IconTabFilter text="Shopping Cart" count="{customer>/carts/count}" icon="sap-icon://cart" iconColor="Critical" id="filter2">
+						<content>
+							<List items="{customer>/carts/data}" noDataText="No Cart Items found">
+								<ObjectListItem title="{customer>name}" type="Active" press="onCartSelected" number="{customer>quantityUnit}" numberUnit="units">
+									<firstStatus>
+										<ObjectStatus text="{path: 'customer>checkOutStatus', formatter: '.formatter.checkoutStatusText' }" state="{ path: 'customer>checkOutStatus', formatter: '.formatter.checkoutStatus'}"/>
+									</firstStatus>
+									<attributes>
+										<ObjectAttribute title="Product Name" text="{customer>name}"/>
+										<ObjectAttribute title="Quantity" text="{customer>quantityUnit}"/>
+									</attributes>
+								</ObjectListItem>
+							</List>
+						</content>
+					</IconTabFilter>
+				</items>
+			</IconTabBar>
+		</content>
+		<footer>
+			<OverflowToolbar id="shoppingCartFooter">
+				<ToolbarSpacer/>
+			</OverflowToolbar>
+		</footer>
+	</Page>
+</mvc:View>

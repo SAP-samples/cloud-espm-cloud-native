@@ -193,7 +193,7 @@ public class ProductControllerTest {
     	mockMvc.perform(requestBuilder
     			.contentType(MediaType.APPLICATION_JSON)
     			.content(UPDATE_STOCK_JSON_MIN_QUANTITY))
-    		    .andExpect(status().isBadRequest())
+    		    .andExpect(status().isNoContent())
 		        .andExpect(content().contentType(TEXT_PLAIN))
 		        .andExpect(content().string("Could not update.Out of stock for product id : 1"));
     }

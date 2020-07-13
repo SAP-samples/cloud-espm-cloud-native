@@ -8,8 +8,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 /**
- * This is the Product entity class 
- * which defines the data model for product.
+ * This is the Product entity class which defines the data model for product.
  *
  */
 @Entity

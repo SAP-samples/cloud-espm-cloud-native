@@ -36,6 +36,17 @@ public class Cart {
 	@ManyToOne(fetch = FetchType.EAGER, cascade = { CascadeType.PERSIST })
 	@JoinColumn(name = "CUSTOMER_ID")
 	private Customer customer;
+	
+	@Column(name = "PRODUCT_NAME", nullable = false)
+	private String name;
+    
+   public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
 
 	public String getItemId() {
 		return itemId;

@@ -2,14 +2,11 @@ package com.sap.refapps.espm.model;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 
 /**
  * This is the SalesOrder entity class used to define the data model for sales
@@ -64,6 +61,9 @@ public class SalesOrder implements Serializable {
 	
 	@Column(name = "NOTE")
 	private String note;
+	
+	@Column(name = "PRODUCT_NAME", nullable = false)
+    private String productName;
 
 	public String getSalesOrderId() {
 		return salesOrderId;
@@ -176,4 +176,12 @@ public class SalesOrder implements Serializable {
 	public void setNote(String note) {
 		this.note = note;
 	}
+	
+	public String getProductName() {
+        return productName;
+    }
+
+    public void setProductName(String productName) {
+        this.productName = productName;
+    }
 }

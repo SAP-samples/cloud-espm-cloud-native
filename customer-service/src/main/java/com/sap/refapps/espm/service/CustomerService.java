@@ -3,10 +3,13 @@ package com.sap.refapps.espm.service;
 import java.io.IOException;
 import java.util.List;
 
+import org.eclipse.persistence.exceptions.DatabaseException;
+import org.postgresql.util.PSQLException;
 import org.springframework.dao.DataAccessException;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Retryable;
 
+import com.sap.db.jdbc.exceptions.SQLIntegrityConstraintViolationExceptionSapDB;
 import com.sap.refapps.espm.model.Cart;
 import com.sap.refapps.espm.model.Customer;
 

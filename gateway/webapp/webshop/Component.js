@@ -1,11 +1,11 @@
 sap.ui.define([
 	"sap/ui/core/UIComponent",
-	"com/sap/ESPM-UI/model/DeviceModel",
-	"com/sap/ESPM-UI/model/CustomerModel"
+	"com/sap/espm/shop/model/DeviceModel",
+	"com/sap/espm/shop/model/CustomerModel"
 ], function (UIComponent, DeviceModel, CustomerModel) {
 	"use strict";
 
-	return UIComponent.extend("com.sap.ESPM-UI.Component", {
+	return UIComponent.extend("com.sap.espm.shop.Component", {
 
 		metadata: {
 			manifest: "json"
@@ -25,7 +25,12 @@ sap.ui.define([
 
 			this.setModel(oDeviceModel, "device");
 			this.setModel(oCustomerModel, "customer");
-
+			var oData ={
+				ShoppingCart:[]
+			};
+			var oModel = new sap.ui.model.json.JSONModel(oData);
+			this.setModel(oModel,"Cart");
+			
 			// enable routing
 			this.getRouter().initialize();
 

@@ -1,0 +1,77 @@
+<mvc:View controllerName="com.sap.espm.shop.controller.Checkout" xmlns:core="sap.ui.core"  xmlns:layout="sap.ui.commons.layout" xmlns:html="http://www.w3.org/1999/xhtml"
+	xmlns:mvc="sap.ui.core.mvc" xmlns:shop="com.sap.espm.shop.control" xmlns:l="sap.ui.layout" xmlns:form="sap.ui.layout.form" xmlns:u="sap.ui.unified" xmlns="sap.m" xmlns:app="http://schemas.sap.com/sapui5/extension/sap.ui.core.CustomData/1">
+	<NavContainer id="wizardNavContainer">
+	<Page id ="checkoutContentPage" navButtonPress="onNavBack" showNavButton="true" busyIndicatorDelay="0" title="{i18n>check.titleCheckout}">
+		<headerContent>
+			<Button icon="sap-icon://cart" id="btnShoppingCartHeader"
+				press="onShoppingCartPressed" text="" tooltip="{i18n>check.cart}"/>
+		</headerContent>
+		<content>
+			<Wizard id="checkoutWizard" complete="wizardCompletedHandler">
+				<WizardStep title="{i18n>check.wizardStep1Title}" id="ProductTypeStep">
+					<Table class="sapUiResponsiveMargin" delete="onDeletePressed" growing="true" growingScrollToLoad="true" id="checkoutCartTable" items="{customer>/carts/data}"
+						mode="" noDataText="{i18n>check.noDataShoppingCart}" updateFinished="onUpdateFinished" width="auto">
+						<columns>
+							<!-- Name + Availability -->
+							<Column hAlign="Left" id="availabilityColumn" width="{= ${device>/system/phone}? '20%' : '20%'}">
+								<header><Label id="availabilityLbl" text="{i18n>check.name}" visible="{= !${device>/system/phone}}"/></header>
+							</Column>
+							
+							<!-- Quantity -->
+							<Column demandPopin="true" hAlign="Right" id="quantityColumn" minScreenWidth="Tablet" width="11%">
+								<header><Label id="quantityLbl" text="{i18n>check.quantity}"/></header>
+							</Column>					
+						</columns>
+						<ColumnListItem press="onLineItemPressed" type="Navigation" vAlign="Middle">
+							<cells>						
+								<!-- Name + Availability -->
+								<ObjectIdentifier class="sapMTableContentMargin" id="availabilityObjIdent" text="{customer>name}"/>
+								<!-- Quantity -->
+								<Text id="checkoutQuantityTxt" text="{customer>quantityUnit}" width="5rem"/>
+							</cells>
+						</ColumnListItem>
+					</Table>
+				</WizardStep>
+				<WizardStep id="creditCardStep" activate="checkCustomerInformation" title="{i18n>check.wizardStep2Title}">
+					<RadioButtonGroup valueState="" id="radioButtonGroupId" columns = "2" select="radioButtonSelected">
+						<buttons>
+							<RadioButton id="existingCustomerId" text="{i18n>check.radioHaveAccount}"/>
+						</buttons>
+					</RadioButtonGroup>
+					<form:SimpleForm editable="true" id="existingFormId">
+						<Label text="{i18n>check.email}" required="true"/>
+						<Text id="emailAddress" text="{customer>/customer/emailAddress}"/>
+					</form:SimpleForm>
+				
+				</WizardStep>
+				<WizardStep title="{i18n>check.wizardStep3Title}">
+					<form:SimpleForm editable="true" id="cardFormId">
+						<HBox alignItems="Center" justifyContent="Center" width="100%">
+							<Label text="{i18n>check.cardType}" required="true"/>
+							<RadioButton id="card_type1" groupName="cardType" selected="true" app:cardtype="american" select="onRbChange"/>
+							<Image src="images/american.png" width="100%" align="left"></Image>
+							<RadioButton id="card_type2" groupName="cardType" selected="false" app:cardtype="master" select="onRbChange"/>
+							<Image src="images/master.png" width="100%" align="left"></Image>
+							<RadioButton id="card_type3" groupName="cardType" selected="false" app:cardtype="mastero" select="onRbChange"/>
+							<Image src="images/mastero.png" width="100%" align="left"></Image>
+						</HBox>
+						<Label text="{i18n>check.nameOnCard}" required="true"/>
+						<Input id="nameId" placeholder="{i18n>check.holderName}" type ="sap.ui.model.type.String" liveChange ="validateStringInputField" value="{customer>/customer/firstName} {customer>/customer/lastName}"/>
+						<Label text="{i18n>check.cardNumber}" required="true"/>
+						<Input id="numberId" placeholder="{i18n>check.holderCardNumber}" type ="sap.ui.model.type.Integer" liveChange ="validateNumberInputField" value=""/>
+						<Label text="{i18n>check.securityCode}" required="true"/>
+						<Input id="securityId" placeholder="{i18n>check.holderSecurityId}" type ="sap.ui.model.type.Integer" liveChange ="validateNumberInputField" value=""/>
+					</form:SimpleForm>
+				</WizardStep>
+			</Wizard>
+		</content>
+			<footer>
+				<Toolbar>
+					<ToolbarSpacer/>
+						<Button text="{i18n>check.addProducts}" press="addMoreProducts"/>
+						<Button text="{i18n>check.cancel}" press="handleWizardCancel"/>
+					</Toolbar>
+				</footer>
+	</Page>
+	</NavContainer>
+</mvc:View>

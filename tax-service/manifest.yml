@@ -3,7 +3,6 @@ applications:
 - name: espm-tax-service
   host: <unique-id>-espm-tax-service
   memory: 1024M
-  host: taxservice
   instances: 1
   path: target/tax-service.jar
   env:

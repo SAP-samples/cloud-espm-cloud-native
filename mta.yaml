@@ -1,6 +1,6 @@
 _schema-version: "2.0.0"
 ID: cloud-espm-cloud-native
-version: 1.1.0
+version: 1.2.0
 parameters:
   enable-parallel-deployments: true
 
@@ -32,7 +32,7 @@ modules:
     path: product-service
     build-parameters:
       builder: maven
-      build-result: "target/product-service-1.1.0.jar"
+      build-result: "target/product-service-1.2.0.jar"
       timeout: 60m
       buildpack: https://github.com/cloudfoundry/java-buildpack.git
     properties:
@@ -46,13 +46,16 @@ modules:
       - name: product-service
         properties:
           product-url: "${default-url}"
+      - name: stock-service
+        properties:
+          product-url: "${default-url}"
           
   - name: espm-customer-svc
     type: java.tomcat
     path: customer-service
     build-parameters:
       builder: maven
-      build-result: "target/customer-service-1.1.0.jar"
+      build-result: "target/customer-service-1.2.0.jar"
       timeout: 60m
       buildpack: https://github.com/cloudfoundry/java-buildpack.git
     properties:
@@ -71,7 +74,7 @@ modules:
     path: sale-service
     build-parameters:
       builder: maven
-      build-result: "target/sale-service-1.1.0.jar"
+      build-result: "target/sale-service-1.2.0.jar"
       timeout: 60m
       buildpack: https://github.com/cloudfoundry/java-buildpack.git
     deployed-after:
@@ -103,7 +106,7 @@ modules:
     path: worker
     build-parameters:
       builder: maven
-      build-result: "target/worker-1.1.0.jar"
+      build-result: "target/worker-1.2.0.jar"
       timeout: 60m
       buildpack: https://github.com/cloudfoundry/java-buildpack.git
     properties:
@@ -139,6 +142,12 @@ modules:
         group: destinations
         properties:
           name: product-service
+          url: '~{product-url}'
+          forwardAuthToken: true
+      - name: stock-service
+        group: destinations
+        properties:
+          name: stock-service
           url: '~{product-url}'
           forwardAuthToken: true
       - name: sales-service

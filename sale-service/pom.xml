@@ -5,7 +5,7 @@
 	<parent>
 		<artifactId>espm-cn</artifactId>
 		<groupId>com.sap.refapps.espm</groupId>
-		<version>1.1.0</version>
+		<version>1.2.0</version>
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
 
@@ -16,7 +16,7 @@
 		<dependency>
 			<groupId>com.sap.refapps.espm</groupId>
 			<artifactId>commons</artifactId>
-			<version>1.1.0</version>
+			<version>1.2.0</version>
 		</dependency>
 
 		<!-- Spring boot starter web -->
@@ -62,6 +62,23 @@
 			<artifactId>spring-boot-starter-amqp</artifactId>
 		</dependency>
 
+		<!-- Cloud SDK -->
+		<dependency>
+			<groupId>com.sap.cloud.sdk.cloudplatform</groupId>
+			<artifactId>scp-cf</artifactId>
+		</dependency>
+		
+		<dependency>
+			<groupId>com.sap.cloud.sdk.s4hana</groupId>
+			<artifactId>s4hana-all</artifactId>
+		</dependency>
+		
+		<dependency>
+			<groupId>com.sap.cloud.sdk.cloudplatform</groupId>
+			<artifactId>security-servlet</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+		
 		<!-- Resilience4j CircuitBreaker -->
 		<dependency>
 			<groupId>io.github.resilience4j</groupId>

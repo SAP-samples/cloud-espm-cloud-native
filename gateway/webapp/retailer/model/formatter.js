@@ -17,6 +17,23 @@ sap.ui.define([
 			return this.getModel().getProperty("/#Review/HelpfulForCurrentUser/@sap:label") + " (" + iHelpfulCount + ")";
 		},
 
+		weightState :  function (fValue) {
+			try {
+				fValue = parseFloat(fValue);
+				if (fValue < 0) {
+					return "None";
+				} else if (fValue < 1000) {
+					return "Success";
+				} else if (fValue < 2000) {
+					return "Warning";
+				} else {
+					return "Error";
+				}
+			} catch (err) {
+				return "None";
+			}
+		},
+
 		// Formatter for Availability - Displays text or text + number
 		formatAvailabilityText: function(iAvailability) {
 			var oResourceBundle = this.getModel("i18n").getResourceBundle();
@@ -67,9 +84,9 @@ sap.ui.define([
 		 */
 		formatImage : function(value) {
 			if (value === false) {
-				return 'images/green_tick.png';
+				return '../images/green_tick.png';
 			} else {
-				return 'images/red_cross.png';
+				return '../images/red_cross.png';
 			}
 		},
 		formatShareTileData: function(sTitle) {

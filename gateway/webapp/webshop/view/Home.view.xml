@@ -1,0 +1,32 @@
+<mvc:View controllerName="com.sap.espm.shop.controller.Home" xmlns:html="http://www.w3.org/1999/xhtml" xmlns:mvc="sap.ui.core.mvc"
+	xmlns="sap.m">
+		<Page title="{i18n>home.pageTitle}">
+			<headerContent>
+					<!--To add header icons-->
+				</headerContent>
+			<content>
+				<TileContainer
+					id="container"
+					tileDelete="handleTileDelete">
+					<StandardTile
+						press="viewTilePressed"
+						icon="sap-icon://approvals"
+						type=""
+						number=""
+						numberUnit=""
+						title="{i18n>home.viewTile}"
+						info=""
+						infoState="" />
+						<StandardTile
+						press="prodTilePressed"
+						icon="sap-icon://inspection"
+						type=""
+						number=""
+						numberUnit=""
+						title="{i18n>home.prodTile}"
+						info=""
+						infoState="" />
+				</TileContainer>
+			</content>
+		</Page>
+</mvc:View>

@@ -8,6 +8,7 @@ import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Retryable;
 
 import com.sap.refapps.espm.model.Product;
+import com.sap.refapps.espm.model.ProductWithStock;
 import com.sap.refapps.espm.model.Stock;
 
 /**
@@ -41,6 +42,8 @@ public interface ProductService {
 	 * @return the stock object
 	 */
 	Stock getStockByProductId(String productId);
+		
+	Iterable<ProductWithStock> getStockForAllProducts();
 
 	/**
 	 * Returns '0' if the stock is updated successfully, 

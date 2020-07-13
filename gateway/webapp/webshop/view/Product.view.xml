@@ -1,0 +1,72 @@
+<mvc:View controllerName="com.sap.espm.shop.controller.Product" 
+	xmlns:core="sap.ui.core" 
+	xmlns:l="sap.ui.layout" 
+	xmlns:mvc="sap.ui.core.mvc" 
+	xmlns:shop="com.sap.espm.shop.control" 
+	xmlns:table="sap.ui.table" 
+	xmlns="sap.m">
+	<Label xmlns:core="sap.ui.core" 
+		xmlns:mvc="sap.ui.core.mvc" 
+		xmlns="sap.m" 
+		xmlns:html="http://www.w3.org/1999/xhtml" text=" " textAlign="Center" width="80%" id="lblgap"/>
+	<core:Icon src="sap-icon://role" size="2rem" color="Default"/>
+	<Title text=" Welcome {customer>/customer/firstName} !" titleStyle="H5" level="H5" class="sapUiTinyMarginEnd"/>
+	<Link id="txtEmailAddress" width="0.01rem" text="{customer>/customer/emailAddress}" class="sapUiTinyMarginEnd"/>
+	
+	<Page navButtonPress="onNavBack" showNavButton="true" id="productListPage" title="{i18n>home.Title}">
+		<headerContent>
+			<Button icon="sap-icon://my-sales-order" id="btnOrdersId" press="onOrdersButtonPressed" tooltip="{i18n>home.salesOrder}"/>
+			<Button icon="sap-icon://cart" id="btnProductListHeader" press="onShoppingCartPressed" text="{TotalQuanity}" tooltip="{i18n>home.cart}"/>
+		</headerContent>
+
+		<content>
+			<Table class="sapUiResponsiveMargin" growing="true" growingScrollToLoad="true" id="catalogTable" noDataText="{i18n>home.noDataProducts}" items="{path: 'customer>/products/data'}" updateFinished="onUpdateFinished" width="auto" enableBusyIndicator="true">
+				<columns>
+					<Column hAlign="Left" id="pictureColumn" width="{= !${device>/system/phone}? '9%' : '5rem'}">
+						<header>
+							<Label id="imageLbl" text="{i18n>home.image}" visible="{= !${device>/system/phone}}"/>
+						</header>
+					</Column>
+					<Column hAlign="Left" id="nameAvailabilityColumn" width="{= !${device>/system/phone}? '18%' : '80%'}">
+						<header>
+							<Label id="NameLabel" text="{i18n>home.name}" visible="{= !${device>/system/phone}}"/>
+						</header>
+					</Column>
+					<Column demandPopin="true" hAlign="Left" id="descriptionColumn" minScreenWidth="Tablet" popinDisplay="Inline" width="25%">
+						<header>
+							<Label id="descriptionLbl" text="{i18n>home.description}"/>
+						</header>
+					</Column>
+					<Column demandPopin="true" hAlign="Right" id="priceColumn" minScreenWidth="Tablet" popinDisplay="Inline" width="10%">
+						<header>
+							<Label id="priceLbl" text="{i18n>home.price}"/>
+						</header>
+					</Column>
+					<Column demandPopin="true" hAlign="Right" id="qColumn" minScreenWidth="Tablet" popinDisplay="Inline" width="10%">
+						<header>
+							<Label id="qLbl" text="{i18n>home.quantity}"/>
+						</header>
+					</Column>
+					<Column demandPopin="true" hAlign="Right" id="buttonColumn" minScreenWidth="Tablet" popinDisplay="WithoutHeader" width="15%">
+						<header>
+							<Label id="addToCart" text="{i18n>home.addToCart}" visible="{= ${device>/system/phone}}"/>
+						</header>
+					</Column>
+				</columns>
+				<ColumnListItem id="columnListItem" press="onLineItemPressed" type="Navigation" vAlign="Middle">
+					<cells>
+						<Image alt="{i18n>home.productImage}" class="sapUiSmallMarginTopBottom" decorative="false" densityAware="false" height="3rem" id="imageImage" src="images{customer>pictureUrl}" width="3rem"/>
+						<ObjectIdentifier class="sapMTableContentMargin" id="availabilityObjIdent" text="{customer>name}"/>
+						<Text class="sapMTableContentMargin" id="desctiptionTxt" maxLines="2" text="{customer>shortDescription}"/>
+						<ObjectNumber class="sapMTableContentMargin" id="priceObjNumber" number="{path: 'customer>price' }" unit="{customer>currencyCode}"/>
+						<Input id="numberId" placeholder="1" type ="sap.ui.model.type.Integer" liveChange ="validateNumberInputField" value=""/>
+						<Button class="sapMTableContentMargin" id="btnAddToCart" press="onAddToCartHomePressed" text="{i18n>home.addToCart}"/>
+					</cells>
+				</ColumnListItem>
+			</Table>
+		</content>
+		<footer>
+			<Bar/>
+		</footer>
+	</Page>
+</mvc:View>

@@ -100,18 +100,27 @@ public class CustomerController {
 	@PostMapping(CustomerController.API_CUSTOMER + "{customerId}" + CustomerController.API_CART)
 	public ResponseEntity<Cart> addCart(@PathVariable(value = "customerId") final String customerId,
 			@RequestBody final Cart cart, UriComponentsBuilder uriComponentsBuilder) throws URISyntaxException {
-		final String UUID = java.util.UUID.randomUUID().toString();
-		cart.setItemId(UUID);
-		Customer customer = customerService.getCustomerById(customerId);
-		if (customer==null)
-			return errorMessage("Customer with id: " + customerId + " is not found.", HttpStatus.NOT_FOUND);
-		cart.setCustomer(customer);
-		customerService.saveCart(cart);
-		logger.debug("Created:: " + cart);
-		UriComponents uriComponents = uriComponentsBuilder
-				.path(CustomerController.API_CUSTOMER + "{customerId}" + CustomerController.API_CART + "{id}")
-				.buildAndExpand(customerId, UUID);
-		return ResponseEntity.created(new URI(uriComponents.getPath())).body(cart);
+		
+		try  {
+			final String UUID = java.util.UUID.randomUUID().toString();
+			cart.setItemId(UUID);
+			Customer customer = customerService.getCustomerById(customerId);
+			if (customer==null)
+				return errorMessage("Customer with id: " + customerId + " is not found.", HttpStatus.NOT_FOUND);
+			cart.setCustomer(customer);
+			customerService.saveCart(cart);
+			logger.debug("Created:: " + cart);
+			UriComponents uriComponents = uriComponentsBuilder
+					.path(CustomerController.API_CUSTOMER + "{customerId}" + CustomerController.API_CART + "{id}")
+					.buildAndExpand(customerId, UUID);
+			return ResponseEntity.created(new URI(uriComponents.getPath())).body(cart);
+			
+		} catch (DataAccessException e) {
+			logger.error("Database is down");
+			return errorMessage("Database service is temporarily down. Please try again later",
+					HttpStatus.SERVICE_UNAVAILABLE);
+		}
+		
 	}
 
 	/**
@@ -140,17 +149,26 @@ public class CustomerController {
 	public ResponseEntity<?> updateCart(@RequestBody final Cart cart,
 			@PathVariable("customerId") final String customerId, @PathVariable("item_id") final String itemId) {
 		
-		Customer customer = customerService.getCustomerById(customerId);
-		if (customer==null)
-			return errorMessage("Customer with id: " + customerId + " is not found.", HttpStatus.NOT_FOUND);
-		if (!customerService.cartItemExists(itemId))
-			return errorMessage("Item with id : " + itemId + " is not found.", HttpStatus.NOT_FOUND);
-		cart.setCustomer(customer);
-		cart.setItemId(itemId);
-		customerService.saveCart(cart);
-		HttpHeaders httpHeaders = new HttpHeaders();
-		httpHeaders.setContentType(org.springframework.http.MediaType.TEXT_PLAIN);
-		return new ResponseEntity<>("Cart updated for item id : " + itemId, httpHeaders, HttpStatus.OK);
+		try {
+			
+			Customer customer = customerService.getCustomerById(customerId);
+			if (customer==null)
+				return errorMessage("Customer with id: " + customerId + " is not found.", HttpStatus.NOT_FOUND);
+			if (!customerService.cartItemExists(itemId))
+				return errorMessage("Item with id : " + itemId + " is not found.", HttpStatus.NOT_FOUND);
+			cart.setCustomer(customer);
+			cart.setItemId(itemId);
+			customerService.saveCart(cart);
+			HttpHeaders httpHeaders = new HttpHeaders();
+			httpHeaders.setContentType(org.springframework.http.MediaType.TEXT_PLAIN);
+			return new ResponseEntity<>("Cart updated for item id : " + itemId, httpHeaders, HttpStatus.OK);
+			
+		} catch (DataAccessException e) {
+			logger.error("Database is down");
+			return errorMessage("Database service is temporarily down. Please try again later",
+					HttpStatus.SERVICE_UNAVAILABLE);
+		}
+		
 	}
 
 	/**
@@ -175,5 +193,5 @@ public class CustomerController {
 	private ResponseEntity errorMessage(String message, HttpStatus status) {
 		return ResponseEntity.status(status).body(message);
 	}
-
+	
 }

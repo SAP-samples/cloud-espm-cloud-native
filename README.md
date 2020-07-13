@@ -307,7 +307,7 @@ Follow steps below to run each microservice of ESPM one by one. Please ensure th
   ```
   *The default values for the parameters mentioned above are already present in the application.properties file.*
 
-* Update the tax.service parameter with the url where tax service is running locally or on SAP Cloud Platform
+* Update the tax.service parameter with the url where tax service is running locally.
 
 * Navigate to sale-service folder and execute the command to run the application
 
@@ -363,18 +363,18 @@ The below are the list of local service API endpoints of all the microservices.
 | Method       	| `POST`                                                                 |
 | Body         	| `{"emailAddress": "new_customer@test.com", "phoneNumber": "0123456789", "firstName": "new", "lastName": "customer", "dateOfBirth": "19900911", "city": "Bang, KR", "postalCode": "112233", "street": "100ft Road", "houseNumber": "123", "country": "IN"}`
 
-
 | |Get Customer by Email ID|
 |-|-|
 | Endpoint URL 	| http://localhost:9991/customer.svc/api/v1/customers/{emailAddress} 	
 | Method       	| `GET`                                                                	|
+
 
 | |Create Cart|
 |-|-|
 | Endpoint URL 	| http://localhost:9991/customer.svc/api/v1/customers/{customerId}/carts/|
 | Header       	| `Content-Type:application/json`                                        |
 | Method       	| `POST`                                                                 |
-| Body         	| `{"productId": "HT-1000","checkOutStatus": "false","quantityUnit": 3}`     
+| Body         	| `{"productId": "HT-1000", "productName" :"Notebook Basic 15", "checkOutStatus": "false","quantityUnit": 3}`     
 
 | |Get Cart by Customer ID|
 |-|-|
@@ -386,7 +386,7 @@ The below are the list of local service API endpoints of all the microservices.
 | Endpoint URL 	| http://localhost:9991/customer.svc/api/v1/customers/{customerId}/carts/{itemId}         |
 | Header       	| `Content-Type:application/json`                                                         |
 | Method       	| `PUT`                                                                                   |
-| Body         	| `"productId": "HT-1000","quantityUnit": 10,"checkOutStatus": false}`|
+| Body         	| `"productId": "HT-1000", "productName" :"Notebook Basic 15", "quantityUnit": 10,"checkOutStatus": false}`|
 
 | |Delete Cart by Item ID|
 |-|-|
@@ -430,7 +430,7 @@ The below are the list of local service API endpoints of all the microservices.
 | Endpoint URL 	| http://localhost:9993/sale.svc/api/v1/salesOrders			 |
 | Header       	| `Content-Type:application/json`                                        |
 | Method       	| `POST`                                                                 |
-| Body         	| `{"customerEmail": "viola.gains@itelo.info","productId": "HT-1000","currencyCode": "EUR", "grossAmount":956,"quantity":4}`     
+| Body         	| `{"customerEmail": "viola.gains@itelo.info","productId": "HT-1000","productName" :"Notebook Basic 15" , "currencyCode": "EUR", "grossAmount":956,"quantity":4}`     
 
 
 | |Get Sales Order by Sales Order ID|
@@ -557,7 +557,7 @@ As a pre prerequisite, the sale-service and product-service should be bound to s
   e.g `"namespace": "myorg/espm/1"`
  For more details, check [here](https://help.sap.com/viewer/bf82e6b26456494cbdd197057c09979f/Cloud/en-US/d0483a9e38434f23a4579d6fcc72654b.html)
 
-* Replace the `QUEUE_NAME` for sales-svc, worker apps in [manifest.yml file](./manifest.yml) with the new queue name that was created based on the namespace, name provided in the previous step.
+* Replace the `QUEUE_NAME` for sales-svc, worker apps in [manifest.yml file](./manifest.yml) with the new queue name that was created based on the namespace, name provided in the previous step. 
 
 
 ### Tax Service Application Deployment
@@ -570,9 +570,9 @@ The Tax Service Application can be deployed in two ways:
 
 #### CF Manifest
 
-* Create a service instance of the Authorization and Trust Management service with `application` plan by running the command `cf create-service xsuaa application espm-xsuaa-tax -c xs-security-tax.json`. This instance is to be bound to Tax Service
-
 * Navigate to tax-service folder
+
+* Create a service instance of the Authorization and Trust Management service with `application` plan by running the command `cf create-service xsuaa application espm-xsuaa-tax -c xs-security-tax.json`. This instance is to be bound to Tax Service
 
 * Edit the manifest.yml file and update `<unique_id>` with some unique value for each tax applications host name
 
@@ -581,7 +581,7 @@ The Tax Service Application can be deployed in two ways:
    * **Destination Services (Recommended):** <br>
        * Create an instance of the destination service by using the command `cf create-service destination lite espm-destination` <br>
        * From the SCP Cockpit go to your space and open the `espm-destination` service instance in your space.. Create a new destination by clicking `New Destination`
-       and filling with the properties as shown below. (URL of tax service running on SAP Cloud Platform Neo or SAP Cloud Platform Cloud Foundry.)
+       and filling with the properties as shown below. (URL of tax service running on SAP Cloud Platform.)
        <br>.
 
        ![Alt text](./documentation/images/tax-service-destination.png "Adding Destination")<br>
@@ -598,7 +598,7 @@ This will package your application to be ready for deployment.
 
 To Deploy MTAR, run the command:
 
-	cf deploy mta_archives/cloud-espm-cloud-native-tax_1.1.0.mtar
+	cf deploy mta_archives/cloud-espm-cloud-native-tax_1.2.0.mtar
 
 ### Create Destination
 
@@ -673,8 +673,15 @@ This will package your application to be ready for deployment.
 
 To Deploy MTAR, run the command:
 
-	cf deploy mta_archives/cloud-espm-cloud-native_1.1.0.mtar
+	cf deploy mta_archives/cloud-espm-cloud-native_1.2.0.mtar
 
+>Note: If you need to undeploy the application, you will have to delete the salesOrder queue manually before doing so. 
+
+> Steps for the same:
+> 1. Go to subscriptions in cockpit.
+> 2. click on "Go to application" for Enterprise Messaging application. 
+> 3. Open the message client.
+> 4. Delete the queue   
 
 ## Running the Application
 
@@ -709,45 +716,57 @@ For more details about creating a queue, check [here](https://help.sap.com/viewe
 * Launch URL for ***Webshop*** application https://<unique_id>-espm-gateway.cfapps.eu10.hana.ondemand.com/webapp/webshop/index.html  
 * You will be redirected to authenticate to your user.
 ![Alt text](./documentation/images/login.png "Login")
-* You will be presented with a screen where you can enter using the email address provided for a customer. The views themselves are rather simple and use databinding extensively to avoid writing lots of code.
-* Continue with paul.burke@itelo.info
-![Alt text](./documentation/images/customer.png "Customer")
-* You can do the operations like, view details of the customer, display shopping cart, display sales order, create cart, delete cart, create sales order.
-![Alt text](./documentation/images/initialview.png "view")
-* Try to create cart by clicking on create cart and type “N” in the pop-up.
-![Alt text](./documentation/images/createcart.png "createcart")
-* Notice that the status of the created shopping cart is “pending”
-![Alt text](./documentation/images/shoppingcart.png "shoppingcart")
-* Try to create a Sales Order by clicking on the product in shopping cart, A pop-up will be shown with create order, delete cart or cancel the operation
-* Choose Create Order
-![Alt text](./documentation/images/createorder.png "createorder")
-* *Sales order Successfully created* will be displayed.
-![Alt text](./documentation/images/ordercreated.png "ordercreated")
-* Navigate to sales order to see the created sales order by clicking on Sales Orders tab.
-![Alt text](./documentation/images/salesorders.png "salesorders")
+![Alt text](./documentation/images/1.png "1")
+* You will be presented with a screen where you can enter using the email address provided for a customer. You can use existing customer email or you can register a new customer.
+![Alt text](./documentation/images/2.png "Customer")
+* Continue with eg: paul.burke@itelo.info / viola.gains@itelo.info
+![Alt text](./documentation/images/3.png "3")
+* View all Products details. 
+![Alt text](./documentation/images/4.png "4")
+* You can edit the number of quantity by entering the number in the column. Click on add to cart.
+![Alt text](./documentation/images/5.png "5")
+* Click on Add to cart, if quantity is not added, minimum of 1 item is taken.
+![Alt text](./documentation/images/6.png "6")
+* Click on Cart icon on top right to checkout your order.
+![Alt text](./documentation/images/7.png "7")
+* You are presented with a screen with all added cart items. Click on Step 2. You can see your logged in email.
+![Alt text](./documentation/images/8.png "8")
+* Add dummy credit card information. Please do not enter real information. You can add more products or you can cancel the checkout operation.
+![Alt text](./documentation/images/9.png "9")
+* Click on Review. You can see all the details. Click on Place Order to place the order.
+![Alt text](./documentation/images/10.png "10")
+* You can see the sales order information by clicking the top right second icon near cart icon.
 * Status of the Sales Order can be New, Rejected, Cancelled and Shipped. Notice that the status of the newly created Sales Order from Cart is “New”.
+![Alt text](./documentation/images/11.png "11")
+* Similarly, this page also shows cart details in a tab.
+![Alt text](./documentation/images/12.png "12")
+* This completes the webshopping. More, you can register yourself and follow the same process to place an order.
+![Alt text](./documentation/images/13.png "13")
+![Alt text](./documentation/images/14.png "14")
+![Alt text](./documentation/images/15.png "15")
 * We can approve/reject the Sales Order from a ***Retailer View***. Launch url for retailer application https://xxxxx-espm-gateway.cfapps.eu10.hana.ondemand.com/webapp/retailer/index.html  (if your account is in the Region Europe (Frankfurt) )
-![Alt text](./documentation/images/retailer.png "retailer")
+![Alt text](./documentation/images/16.png "16")
+* View both product and stock information in *Stock Information* page.
+![Alt text](./documentation/images/17.png "17")
 * Click on *Approve Sales Orders*.
 * You will be presented with a screen where Ship/ Reject a Sales Order.
-![Alt text](./documentation/images/newsales.png "newsales")
+![Alt text](./documentation/images/18.png "18")
 * Click on “New” sales order and see the details of the product and click on “Ship”
 * You can see that the status of the sales order changed to Shipped/Rejected depending on the Stock.
-![Alt text](./documentation/images/shipsales.png "shipsales")
-* Click on Ok.
-![Alt text](./documentation/images/shipped.png "shipped")
+![Alt text](./documentation/images/19.png "19")
+
 * Click on Reject in a new Sales order and When you reject the Sales Order, the status changed to Rejected.
 * Following are the four different Status code.
 
 | Lifecycle |  Life Cycle Status Name | Note |
 |--|--|--|
 | N | New |	When the Sales Order is created  |
-| C | Cancelled | When the product is Out Of Stock |
-| S | Shipped | When the Sales Order is Shipped |
-| R | Rejected | When the Sales Order is Rejected by Retailer |
+| C | Out of Stock | When the product is Out Of Stock |
+| S | Order Shipped | When the Sales Order is Shipped |
+| R | Rejected By Retailer | When the Sales Order is Rejected by Retailer |
 
-![Alt text](./documentation/images/allstatus.png "allstatus")
-
+* You can also search sales orders by status name.
+![Alt text](./documentation/images/20.png "20")
 
 ### Accessing the application API Endpoints
 
@@ -773,7 +792,7 @@ The below are the list of local service API endpoints of all the microservices.
 | Endpoint URL 	| https://<unique_id>-espm-customer-svc.cfapps.eu10.hana.ondemand.com/customer.svc/api/v1/customers/{customerId}/carts/|
 | Header       	| `Content-Type:application/json`                                        |
 | Method       	| `POST`                                                                 |
-| Body         	| `{"productId": "HT-1000","checkOutStatus": "false","quantityUnit": 3}`     
+| Body         	| `{"productId": "HT-1000", "name" :"Notebook Basic 15", "checkOutStatus": "false","quantityUnit": 3}`     
 
 | |Get Cart by Customer ID |
 |-|-|
@@ -786,7 +805,7 @@ The below are the list of local service API endpoints of all the microservices.
 | Endpoint URL 	| https://<unique_id>-espm-customer-svc.cfapps.eu10.hana.ondemand.com/customer.svc/api/v1/customers/{customerId}/carts/{itemId}         
 | Header       	| `Content-Type:application/json`                                                         |
 | Method       	| `PUT`                                                                                   |
-| Body         	| `{"itemId": {itemId},"productId": "HT-1000","quantityUnit": 10,"checkOutStatus": false}`|
+| Body         	| `{"itemId": {itemId},"productId": "HT-1000",  "name" :"Notebook Basic 15", "quantityUnit": 10,"checkOutStatus": false}`|
 
 
 | |Delete Cart by Item ID|
@@ -859,7 +878,7 @@ The payload of the request needs to have following form-url-encoded values:
 | Endpoint URL 	| https://<unique_id>-espm-product-svc.cfapps.eu10.hana.ondemand.com/product.svc/api/v1/stocks/{productId}		 
 | Header       	| `Content-Type:application/json`   , `Authorization:Bearer <Access token with scopes of Retailer role>`                                     |
 | Method       	| `PUT`                                                                 |
-| Body        	| `{"productId": "HT-1000","quantity": 20}`     
+| Body        	| `{"productId": "HT-1000", "quantity": 20}`     
 
 #### Sales Service
 
@@ -883,7 +902,7 @@ Execute the below command and make note of url, clientid, clientsecret.
 | Endpoint URL 	| https://<unique_id>-espm-sales-svc.cfapps.eu10.hana.ondemand.com/sale.svc/api/v1/salesOrders			 |
 | Header       	| `Content-Type:application/json`                                 |
 | Method       	| `POST`                                                                 |
-| Body         	| `{"customerEmail": "viola.gains@itelo.info","productId": "HT-1000","currencyCode": "EUR", "grossAmount":956,"quantity":4}`     
+| Body         	| `{"customerEmail": "viola.gains@itelo.info",  "productName" :"Notebook Basic 15", "productId": "HT-1000","currencyCode": "EUR", "grossAmount":956,"quantity":4}`     
 
 
 | |Get Sales Order by Sales Order ID|
@@ -937,7 +956,7 @@ Similarly to see this pattern in action in the Product Service, follow the below
   Method : Post
   URL : http://localhost:9993/sale.svc/api/v1/salesOrders
   Header: `Content-Type : application/json`
-  Body: `{"customerEmail": "customer1@gmail.com", "productId": "HT-1005", "currencyCode": "DLR", "grossAmount": 5000, "quantity": 2 }`
+  Body: `{"customerEmail": "customer1@gmail.com", "productId": "HT-1005",  "productName" :"Notebook Basic 15", "currencyCode": "DLR", "grossAmount": 5000, "quantity": 2 }`
 
 * Check if the request succeeds.
 * Check that the response time would be under 1 seconds
@@ -946,7 +965,7 @@ Similarly to see this pattern in action in the Product Service, follow the below
 ` Method : POST `    
   `URL : http://localhost:9993/sale.svc/api/v1/salesOrders`       
   `Header: Content-Type : application/json`  
-  `Body: {"customerEmail": "customer2@gmail.com", "productId": "HT-1005", "currencyCode": "DLR", "grossAmount": 5000, "quantity": 2 } `
+  `Body: {"customerEmail": "customer2@gmail.com",  "productName" :"Notebook Basic 15", "productId": "HT-1005", "currencyCode": "DLR", "grossAmount": 5000, "quantity": 2 } `
 * The requests succeed, but takes more than 1.2 seconds this is because, since Tax service was down, the Sale Service after sending request for Tax calculation, waited for 1.2 seconds. Due to Time Out configuration and due to the Circuit Breaker implementation, it falls back to default Tax calculation implementation
 * Hit get request on Sales Services
 
@@ -961,6 +980,7 @@ The Sales service along with Worker implements the Bounded Queue pattern. To ach
 	  `{
 	    "customerEmail": "customer@gmail.com",
 	    "productId": "HT-1006",
+	     "productName" :"Notebook Basic 15",
 	    "currencyCode": "DLR",
 	    "grossAmount": 1000,
 	    "quantity": 2
@@ -986,6 +1006,7 @@ To see the pattern in action follow these steps-
 	  `{
 	    "customerEmail": "customer@gmail.com",
 	    "productId": "HT-1006",
+	     "productName" :"Notebook Basic 15",
 	    "currencyCode": "DLR",
 	    "grossAmount": 1000,
 	    "quantity": 2

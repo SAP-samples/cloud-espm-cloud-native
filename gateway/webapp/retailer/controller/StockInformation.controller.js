@@ -1,151 +1,48 @@
 sap.ui.define([
-	"com/sap/ESPM-UI/controller/BaseController",
-	"com/sap/ESPM-UI/retailer/model/formatter"
-	
-], function(BaseController,formatter) {
-	"use strict";
+	"sap/ui/core/mvc/Controller",
+	"com/sap/espm/retailer/model/formatter",
+	"sap/ui/model/json/JSONModel",
+], function(Controller,formatter, JSONModel) {
+	"use strict";	
+	return Controller.extend("com.sap.espm.retailer.controller.StockInformation", {
 
-	var bindingObject;
-	
-	return BaseController.extend("com.sap.ESPM-UI.retailer.controller.StockInformation", {
-
-		formatter: formatter,
-		/**
-		 * Called when a controller is instantiated and its View controls (if available) are already created.
-		 * Can be used to modify the View before it is displayed, to bind event handlers and do other one-time initialization.
-		 * @memberOf com.sap.ESPM-UI.retailer.view.StockInformation
-		 */
+		formatter: formatter,		
 			onInit: function() {
-				
+				this.getView().byId("stocklistpage").setVisible(true);
+				var productsModel = new sap.ui.model.json.JSONModel(this.getView().getModel("espmRetailerModel"));
+				this.byId("stocklistpage").setModel(productsModel, "stocks"); 
 			},
 
-		/**
-		 * Similar to onAfterRendering, but this hook is invoked before the controller's View is re-rendered
-		 * (NOT before the first rendering! onInit() is used for that one!).
-		 * @memberOf com.sap.ESPM-UI.retailer.view.StockInformation
-		 */
-		//	onBeforeRendering: function() {
-		//
-		//	},
-
-		/**
-		 * Called when the View has been rendered (so its HTML is part of the document). Post-rendering manipulations of the HTML could be done here.
-		 * This hook is the same one that SAPUI5 controls get after being rendered.
-		 * @memberOf com.sap.ESPM-UI.retailer.view.StockInformation
-		 */
-		//	onAfterRendering: function() {
-		//
-		//	},
-
-		/**
-		 * Called when the Controller is destroyed. Use this one to free resources and finalize activities.
-		 * @memberOf com.sap.ESPM-UI.retailer.view.StockInformation
-		 */
-		//	onExit: function() {
-		//
-		//	}
+		/***
+		 * We can use This function to create the stock card dialog to add a card.
+		 * We use a fragment to isolate the dialog to make it more maintainable.
 		
-		_initializeSupplierCard: function() {
-			this._oSupplierCard = sap.ui.xmlfragment("com.sap.ESPM-UI.retailer.fragment.SupplierCard",this.getView());
-			this._oSupplierCard.bindElement({
-				path: bindingObject + "/Product/Supplier"
-			});
-			this.getView().addDependent(this._oSupplierCard);
+		_initializeStockCard: function () {
+			if (!this._oStockCard) {
+				this._oStockCard = sap.ui.xmlfragment("com.sap.espm.retailer.view.StockCard",this.getView());
+				var stockModel = new JSONModel(this.getView().getModel("espmRetailerModel"));
+				this._oStockCard.setModel(stockModel);
+				this.getView().addDependent(this._oStockCard);
+			}
 		},
+
 		onLineItemPressed: function(event){
 			
-			bindingObject = event.getSource().getBindingContextPath();
-			bindingObject = "espmRetailerModel>"+bindingObject;
-	        var oLink = event.getSource();
-			if (!this._oSupplierCard) {
-				this._initializeSupplierCard();
-			}
-			else{
-				this._oSupplierCard.bindElement({
-				path: bindingObject + "/Product/Supplier"
-				
-			});
-			
-			}
-			this._oSupplierCard.openBy(oLink.getCells()[3]);
-			
+			var context = event.getSource().getBindingContextPath();
+			var oLink = event.getSource();
+			var stocksModel = new sap.ui.model.json.JSONModel(this.getView().getModel("espmRetailerModel"));
+			var oCustomerModel = this.getView().getModel('espmRetailerModel');
+			var productid = oCustomerModel.getProperty(context + '/productId');
+			oCustomerModel.loadstockusingid(productid);
+			var stocks = oCustomerModel.getProperty('/stocks');
+			this._initializeStockCard();		
+			this._oStockCard.openBy(oLink.getCells()[2]);	
+			var oStockInputModel = this._oStockCard.getModel(stocksModel);
 		},
-		
+*/
 		onNavBack: function(){
 			window.history.go(-1);
-		},
-		
-		updateStock: function(event){
-			var bundle = this.getView().getModel("i18n").getResourceBundle(); 			
-			var updatedStockValue;
-			var getBindingPath = event.getSource().getParent().getBindingContextPath();
-			var stockString = event.getSource().getText();
-			stockString = stockString.split("/");
-			
-			var that = this;
-			var dialog = new sap.m.Dialog({
-				id:"stockDialogId",
-				title: bundle.getText("stock.minQuantity"),
-				type: 'Message',
-				content: [
-					new sap.ui.layout.form.SimpleForm({
-						id:"stockFormId",
-						content:[
-						        new sap.m.Label({text:bundle.getText("stock.minLevel")}),
-								new sap.m.Input({
-									id:"stockInputId",
-									value:stockString[1],
-									liveChange:function(oEvent){
-										updatedStockValue = oEvent.getSource().getValue();
-									}
-								}),
-								new sap.m.Label({text:bundle.getText("stock.itemsInStock")}),
-								new sap.m.Input({value:stockString[0],editable: false})
-						         
-						      ]
-					})
-				],
-				beginButton: new sap.m.Button({
-					text: bundle.getText("stock.submit"),
-					press: function () {
-						
-						var oEntry = {};
-						if(updatedStockValue){
-							oEntry.MinStock = updatedStockValue;
-						}
-						else{
-							oEntry.MinStock = stockString[1];
-						}
-						
-						var oDataModel = that.getView().getModel("espmRetailerModel");
-						
-						oDataModel.setHeaders({  
-			            "Content-Type": "application/json",
-			            "Accept": "application/json"
-			        	}); 
-						
-						oDataModel.update(getBindingPath, oEntry, null, function(){
-						 		sap.m.MessageToast.show(bundle.getText("stock.stockInformationUpdated"));
-						 	},function(){
-						 		sap.m.MessageToast.show(bundle.getText("stock.stockUpdateFailed"));});
-						dialog.close();
-					}
-				}),
-				endButton: new sap.m.Button({
-					text: bundle.getText("stock.cancel"),
-					press: function () {
-						dialog.close();
-					}
-				}),
-				afterClose: function() {
-					dialog.destroy();
-				}
-			});
- 
-			dialog.open();
-		
 		}
-
 	});
 
 });

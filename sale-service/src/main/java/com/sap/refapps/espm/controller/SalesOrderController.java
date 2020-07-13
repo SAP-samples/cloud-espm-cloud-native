@@ -17,6 +17,7 @@ import org.springframework.cloud.cloudfoundry.com.fasterxml.jackson.core.JsonPro
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
@@ -54,9 +55,9 @@ public class SalesOrderController {
 
 	@Autowired
 	private SalesOrderService salesOrderService;
-	
+
 	private SalesOrder salesorder;
-	
+
 	@Autowired
 	private Environment environment;
 	private RequestCallback requestCallback;
@@ -86,27 +87,26 @@ public class SalesOrderController {
 	/**
 	 * update sales order
 	 * 
-	 * @param salesOrderId,
-	 *            status
+	 * @param salesOrderId, status
 	 * @return ResponseEntity<String> message
 	 * @throws JSONException
 	 */
 	@PutMapping("/{salesOrderId}/{statusCode}")
 	@ResponseBody
 	public ResponseEntity<String> updateSalesOrder(@PathVariable("salesOrderId") final String salesOrderId,
-			@PathVariable("statusCode") final String statusCode, @RequestBody final String note,
+			@PathVariable("statusCode") String statusCode, @RequestBody String note,
 			RequestEntity<String> requestEntity) throws JSONException, IllegalArgumentException, TokenFlowException {
 		if (salesOrderService.getById(salesOrderId) != null) {
-			if (Arrays.stream(environment.getActiveProfiles()).anyMatch(env -> env.equalsIgnoreCase("local"))) {
-				return errorMessage("Service is currently unavailable", HttpStatus.SERVICE_UNAVAILABLE);
-			} else if (Arrays.stream(environment.getActiveProfiles()).anyMatch(env -> env.equalsIgnoreCase("cloud"))) {
+			
 				final String productId = salesOrderService.getById(salesOrderId).getProductId();
 				final BigDecimal quantity = salesOrderService.getById(salesOrderId).getQuantity();
-				if(statusCode.equalsIgnoreCase("S")){
-					try{
+				if (statusCode.equalsIgnoreCase("S")) {
+					try {
+						if (Arrays.stream(environment.getActiveProfiles()).anyMatch(env -> env.equalsIgnoreCase("cloud"))) {
 						Token jwtToken = SpringSecurityContext.getToken();
 						String appToken = jwtToken.getAppToken();
 						headers.set("Authorization", "Bearer " + appToken);
+						}
 						headers.set("Content-Type", "application/json");
 						RestTemplate restTemplate = new RestTemplate();
 						// creation of payload as json object from input
@@ -115,23 +115,43 @@ public class SalesOrderController {
 						JSONObject updatedStock = new JSONObject();
 						updatedStock.put("quantity", addQuan);
 						updatedStock.put("productId", productId);
+						logger.info("updated stock:", updatedStock);
 						final String S_PATH = geProductServiceUri() + productId;
+						logger.info("product URL:", S_PATH);
 						HttpEntity<String> request = new HttpEntity<String>(updatedStock.toString(), headers);
+						
 						// call product service
-						restTemplate.put(S_PATH, request); 	
-					}catch(Exception e){
-						return errorMessage(e.getMessage() + " " + productId,
-								HttpStatus.BAD_REQUEST);
+						ResponseEntity<String> response = restTemplate.exchange(S_PATH, HttpMethod.PUT, request,
+								String.class);
+						response.getStatusCode();
+						logger.info("status code:", response.getStatusCode());
+						logger.info("get response value:",response.getStatusCodeValue());
+						String responseBody = response.getBody();
+						logger.info("response body for success", responseBody);
+						if (response.getStatusCodeValue() == 200) {
+							salesOrderService.updateStatus(salesOrderId, statusCode, note);
+						} else if (response.getStatusCodeValue() == 204) {
+							statusCode = "C";
+							note = "Out of Stock";
+							salesOrderService.updateStatus(salesOrderId, statusCode, note);
+							return errorMessage( "Out of stock"  + productId, HttpStatus.NO_CONTENT);
+						}
 					}
+
+					catch (Exception e) {
+						return errorMessage(e.getMessage() + " " + productId, HttpStatus.BAD_REQUEST);
+					}
+				} else if (statusCode.equalsIgnoreCase("R")) {
+					statusCode = "R";
+					note = "Rejected by Retailer";
+					salesOrderService.updateStatus(salesOrderId, statusCode, note);
 				}
-				salesOrderService.updateStatus(salesOrderId, statusCode, note);
 				return new ResponseEntity<>("Sales Order with ID " + salesOrderId + " updated", HttpStatus.OK);
-			}
-		} else {
 			
+		} else {
+
 			return errorMessage("SalesOrder not found", HttpStatus.NOT_FOUND);
 		}
-		return errorMessage("Stock not found", HttpStatus.NOT_FOUND);
 	}
 
 	/**
@@ -193,10 +213,10 @@ public class SalesOrderController {
 
 	private String geProductServiceUri() {
 		String prodUrl = this.environment.getProperty("PROD_SERVICE")+"/product.svc/api/v1/stocks/";
-		logger.info("***********Sale microservice endpoint is {}********",prodUrl);
+		
 		final String productserviceUri = Arrays.stream(environment.getActiveProfiles())
-				.anyMatch(env -> (env.equalsIgnoreCase("cloud"))) ? prodUrl
-						: productServiceEndPoint;
+				.anyMatch(env -> (env.equalsIgnoreCase("cloud"))) ? prodUrl : productServiceEndPoint;
+		logger.info("***********Productservice end point used in Sales is {}********", productserviceUri);
 
 		return productserviceUri;
 	}

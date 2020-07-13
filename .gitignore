@@ -13,6 +13,7 @@ target/
 *.zip
 *.tar.gz
 *.rar
+mta_archives/
 
 #Intellij
 *.iml

@@ -1,0 +1,10 @@
+<core:FragmentDefinition xmlns:core="sap.ui.core" xmlns="sap.m">
+	<QuickView id="stockQuickView">
+		<QuickViewPage description="Available Stock" header="Stock Data" icon="sap-icon://activity-individual" title="{espmRetailerModel>stocks}" >
+			<QuickViewGroup heading="Details">
+				<QuickViewGroupElement id="productlabel" label="Product Id" value="{espmRetailerModel>/stocks/productId}"/>
+				<QuickViewGroupElement id="quantitylabel" label="Quantity" value="{espmRetailerModel>/stocks/quantity}"/>
+			</QuickViewGroup>
+		</QuickViewPage>
+	</QuickView>
+</core:FragmentDefinition>

@@ -1,7 +1,5 @@
-<mvc:View controllerName="com.sap.ESPM-UI.controller.Home" xmlns:html="http://www.w3.org/1999/xhtml" xmlns:mvc="sap.ui.core.mvc"
+<mvc:View controllerName="com.sap.espm.retailer.controller.Home" xmlns:html="http://www.w3.org/1999/xhtml" xmlns:mvc="sap.ui.core.mvc"
 	xmlns="sap.m">
-	<App>
-		<pages>
 		<Page title="{i18n>home.pageTitle}">
 			<headerContent>
 					<!--To add header icons-->
@@ -31,6 +29,4 @@
 				</TileContainer>
 			</content>
 		</Page>
-		</pages>
-		</App>
 </mvc:View>

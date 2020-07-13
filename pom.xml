@@ -6,7 +6,7 @@
 
 	<groupId>com.sap.refapps.espm</groupId>
 	<artifactId>espm-cn</artifactId>
-	<version>1.1.0</version>
+	<version>1.2.0</version>
 	<packaging>pom</packaging>
 
 	<properties>
@@ -18,7 +18,7 @@
 		<maven-jar-plugin.version>3.1.1</maven-jar-plugin.version>
 		<sap.cloud.security.version>2.3.2</sap.cloud.security.version>
 		<apache.httpclient.version>4.5.8</apache.httpclient.version>
-		<resilience4j.version>0.15.0</resilience4j.version>
+		<resilience4j.version>1.4.0</resilience4j.version>
 	</properties>
 	<parent>
 		<groupId>org.springframework.boot</groupId>
@@ -45,14 +45,14 @@
 				<artifactId>spring-cloud-spring-service-connector</artifactId>
 				<version>2.0.1.RELEASE</version>
 			</dependency>
-			
+
 			<!-- Spring cloud cloudfoundry connector -->
 			<dependency>
 				<groupId>org.springframework.cloud</groupId>
 				<artifactId>spring-cloud-cloudfoundry-connector</artifactId>
 				<version>2.0.1.RELEASE</version>
 			</dependency>
-			
+
 			<!-- Spring retry -->
 			<dependency>
 				<groupId>org.springframework.retry</groupId>
@@ -60,12 +60,21 @@
 				<version>1.2.2.RELEASE</version>
 			</dependency>
 
+			<!-- Cloud sdk -->
+			<dependency>
+				<groupId>com.sap.cloud.sdk</groupId>
+				<artifactId>sdk-bom</artifactId>
+				<version>3.19.1</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+			
 			<!-- xbem -->
-            <dependency>
-                <groupId>com.sap.cloud.servicesdk.xbem</groupId>
-                <artifactId>emjapi-connector-sap-cp</artifactId>
-                <version>${version.xbem.client}</version>
-            </dependency>
+			<dependency>
+				<groupId>com.sap.cloud.servicesdk.xbem</groupId>
+				<artifactId>emjapi-connector-sap-cp</artifactId>
+				<version>${version.xbem.client}</version>
+			</dependency>
 
 			<dependency>
 				<groupId>com.sap.cloud.servicesdk.xbem</groupId>
@@ -73,26 +82,25 @@
 				<version>${version.xbem.client}</version>
 			</dependency>
 
-            <dependency>
-                <groupId>com.sap.cloud.servicesdk.xbem</groupId>
-                <artifactId>emjapi-extension-sap-cp-jms</artifactId>
-                <version>${version.xbem.client}</version>
-            </dependency>
-            
-            <!-- netty needed while working with JMS of EM 
-			https://mvnrepository.com/artifact/io.netty/netty-handler -->
-			<dependency> 
+			<dependency>
+				<groupId>com.sap.cloud.servicesdk.xbem</groupId>
+				<artifactId>emjapi-extension-sap-cp-jms</artifactId>
+				<version>${version.xbem.client}</version>
+			</dependency>
+
+			<!-- netty needed while working with JMS of EM https://mvnrepository.com/artifact/io.netty/netty-handler -->
+			<dependency>
 				<groupId>io.netty</groupId>
 				<artifactId>netty-handler</artifactId>
-				<version>4.1.46.Final</version>
+				<version>4.1.45.Final</version>
 			</dependency>
-			
+
 			<dependency>
 				<groupId>com.sap.cloud.db.jdbc</groupId>
 				<artifactId>ngdbc</artifactId>
 				<version>2.4.59</version>
 			</dependency>
-			
+
 			<dependency>
 				<groupId>org.hamcrest</groupId>
 				<artifactId>hamcrest-library</artifactId>

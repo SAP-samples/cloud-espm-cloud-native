@@ -13,13 +13,13 @@
 	},
 	{
 	  "source": "^/product.svc/api/v1/stocks/(.*)",
-	  "destination": "product-service",
+	  "destination": "stock-service",
 	  "csrfProtection": false,
 	  "httpMethods": ["GET"]
 	},
 	{
 	  "source": "^/product.svc/api/v1/stocks/(.*)",
-	  "destination": "product-service",
+	  "destination": "stock-service",
 	  "csrfProtection": false,
 	  "scope": "$XSAPPNAME.Update",
 	  "httpMethods": ["PUT"]
@@ -50,8 +50,8 @@
         "pathSuffixes": [
           "index.html"
         ]
-      },
-      "scope": "$XSAPPNAME.Update",
+	  },
+	  "scope": "$XSAPPNAME.Update",
 	  "authenticationType": "xsuaa"
     },
     {
@@ -66,6 +66,3 @@
     }
     ]
 }
-
-
-

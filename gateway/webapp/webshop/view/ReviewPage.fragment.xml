@@ -1,0 +1,106 @@
+<core:FragmentDefinition
+		height="100%"
+		xmlns:layout="sap.ui.layout"
+		xmlns:form="sap.ui.layout.form"
+		xmlns:core="sap.ui.core"
+		xmlns="sap.m">
+		<Page id="wizardReviewPage">
+			<customHeader >
+				<Bar>
+					<contentLeft>
+						<Button icon="sap-icon://nav-back"
+								press="backToWizardContent">
+						</Button>
+					</contentLeft>
+					<contentMiddle>
+						<Title text="{i18n>review.titleSummary}"/>
+					</contentMiddle>
+				</Bar>
+			</customHeader >
+			<content>
+				<form:SimpleForm
+						title="{i18n>review.titleCartForm}"
+						minWidth="1024"
+						editable="false"
+						layout="ResponsiveGridLayout">
+					<form:content>
+						<Table class="sapUiResponsiveMargin" delete="onDeletePressed" growing="true" growingScrollToLoad="true" id="reviewCartTable" items="{customer>/carts/data}"
+						mode="" noDataText="{i18n>review.noDataShoppingCart}" updateFinished="onUpdateFinished" width="1200px">
+						<columns>
+							
+							<!-- Name + Availability -->
+							<Column hAlign="Left" id="availabilityColumn" width="{= ${device>/system/phone}? '20%' : '20%'}">
+								<header><Label id="availabilityLbl" text="{i18n>check.name}" visible="{= !${device>/system/phone}}"/></header>
+							</Column>
+
+							<!-- Quantity -->
+							<Column demandPopin="true" hAlign="Right" id="quantityColumn" minScreenWidth="Tablet" width="11%">
+								<header><Label id="quantityLbl" text="{i18n>check.quantity}"/></header>
+							</Column>
+							
+						</columns>
+						<ColumnListItem press="onLineItemPressed" type="Navigation" vAlign="Middle">
+							<cells>
+									<!-- Name + Availability -->
+								<ObjectIdentifier id="reviewavalaibilityObjIdent" 
+									title="{customer>name}"/>
+								<!-- Quantity -->
+								<Text id="reviewquantityTxt" text="{customer>quantityUnit}" width="5rem"/>
+							</cells>
+						</ColumnListItem>
+					</Table>
+					</form:content>
+				</form:SimpleForm>
+
+				<form:SimpleForm
+						title="{i18n>review.titlenameAddressForm}"
+						minWidth="1024"
+						editable="false"
+						layout="ResponsiveGridLayout">
+					<form:content>
+						<Label text="{i18n>review.firstname}"/>
+						<Text id="firstname" text="{customer>/customer/firstName}"/>
+						<Label text="{i18n>review.lastname}"/>
+						<Text id="lastName" text="{customer>/customer/lastName}"/>
+						<Label text="{i18n>check.DOB}"/>
+						<Text id="dateBirth" text="{customer>/customer/dateOfBirth}"/>
+						<Label text="{i18n>check.newEmail}"/>
+						<Text id="emailAddress" text="{customer>/customer/emailAddress}"/>
+						<Label text="{i18n>review.street}"/>
+						<Text id="street" text="{customer&gt;/customer/street}"/>
+						<Label text="{i18n>review.streetNumber}"/>
+						<Text id="houseNumber" text="{customer>/customer/houseNumber}"/>
+						<Label text="{i18n>review.city}"/>
+						<Text id="city" text="{customer>/customer/city}"/>
+						<Label text="{i18n>review.postalCode}"/>
+						<Text id="postalCode" text="{customer>/customer/postalCode}"/>
+						<Label text="{i18n>review.country}"/>
+					<Text id="country" text="{customer>/customer/country}"/>
+					</form:content>
+				</form:SimpleForm>
+
+				<form:SimpleForm
+						title="{i18n>review.titleBillingForm}"
+						minWidth="1024"
+						editable="false"
+						layout="ResponsiveGridLayout">
+					<form:content>
+						<Label text="{i18n>check.cardType}"/>
+						<Image id="cardImg" width="64px" align="left"></Image>
+						<Label text="{i18n>check.nameOnCard}"/>
+						<Text id="cardOwner" text="{customer>/customer/firstName} {customer>/customer/lastName}"/>
+						<Label text="{i18n>check.cardNumber}"/>
+					<Text id="cardNumber" text=""/>
+					</form:content>
+				</form:SimpleForm>
+			</content>
+			<footer>
+				<Bar>
+					<contentRight>
+						<Button id="orderButtonId" text="{i18n>review.placeOrder}" press="handleWizardSubmit"></Button>
+						<Button text="{i18n>check.cancel}" press="handleWizardCancel"></Button>
+					</contentRight>
+				</Bar>
+			</footer>
+		</Page>
+</core:FragmentDefinition>

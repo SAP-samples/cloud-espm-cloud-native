@@ -1,6 +1,6 @@
 sap.ui.define([
 	"sap/ui/model/json/JSONModel",
-	"com/sap/ESPM-UI/utils/httpops"
+	"com/sap/espm/shop/utils/httpops"
 ], function (JSONModel, HTTPOps) {
 	"use strict";
 
@@ -31,6 +31,30 @@ sap.ui.define([
 			this.setProperty('/carts', emptyCartModel);
 			this.setProperty('/salesorders', emptySalesOrderModel);
 		},
+
+		getProducts: function () {
+			var def = jQuery.Deferred();
+			var that = this;
+
+			var sUrl = PRODUCTS_ENDPOINT;
+
+			HTTPOps.getAsync(sUrl).then(function (products) {
+				var model = {
+					count: products.length,
+					data: products
+				};
+
+				that.setProperty("/products", model);
+				return that.loadProducts();
+			}).then(function () {
+				var oSalesOrder = that.getProperty("/products");
+				def.resolve(oSalesOrder);
+			}).fail(function (error) {
+				def.reject(error);
+			});
+			return def.promise();
+		},
+
 
 		loadProducts: function () {
 			var def = jQuery.Deferred();
@@ -107,7 +131,39 @@ sap.ui.define([
 			return def.promise();
 		},
 
-		createCart: function (sProductId, dQuantity) {
+		createCustomer: function (sEmailAddress, sPhoneNumber, sFirstName, sLastName, sDob, sCity, sPostalCode, sStreet , sHouseNumber, sCountry  ) {
+			var def = jQuery.Deferred();
+			var that = this;
+			var sUrl = CUSTOMERS_ENDPOINT;
+
+			var oCustomer = {
+				emailAddress: sEmailAddress,
+				phoneNumber: sPhoneNumber,
+				firstName: sFirstName,
+				lastName: sLastName,
+				dateOfBirth: sDob,
+				city: sCity,
+				postalCode: sPostalCode,
+				street: sStreet,
+				houseNumber: sHouseNumber,
+				country: sCountry
+			};
+
+			HTTPOps.postAsync(sUrl, oCustomer)
+				.then(function () {
+					return that.loadCustomer(sEmailAddress);
+				})
+				.then(function () {
+					def.resolve();
+				})
+				.fail(function (error) {
+					def.reject(error);
+				});
+
+			return def.promise();
+		},
+
+		createCart: function (sProductId, sProductName, dQuantity) {
 			var def = jQuery.Deferred();
 			var that = this;
 
@@ -117,6 +173,7 @@ sap.ui.define([
 			var oCart = {
 				productId: sProductId,
 				quantityUnit: dQuantity,
+				name: sProductName,
 				checkOutStatus: false
 			};
 
@@ -205,6 +262,7 @@ sap.ui.define([
 				var oSalesOrder = {
 					customerEmail: this.getProperty("/customer/emailAddress"),
 					productId: sProductId,
+					productName: oProduct.name,
 					currencyCode: oProduct.currencyCode,
 					grossAmount: dQuantity * oProduct.price,
 					quantity: dQuantity

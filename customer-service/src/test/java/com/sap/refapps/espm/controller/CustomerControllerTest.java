@@ -194,6 +194,7 @@ public class CustomerControllerTest {
 		cart.setCheckOutStatus(true);
 		cart.setQuantityUnit(new BigDecimal("7.000"));
 		requestBuilder = buildPutRequest(CART_URL + "000000000C5", cart);
+		cart.setName("Notebook Basic 15");
 		
 		objectToJson = convertObjectToJson(cart);
 		mockMvc.perform(requestBuilder
@@ -265,6 +266,7 @@ public class CustomerControllerTest {
 		Cart cart = new Cart();
 		cart.setProductId("P2");
 		cart.setQuantityUnit(new BigDecimal("8.000"));
+		cart.setName("Notebook Basic 17");
 		cart.setCheckOutStatus(false);
 		cart.setCustomer(customer);
 

@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.sap.refapps.espm.model.Product;
+import com.sap.refapps.espm.model.ProductWithStock;
 import com.sap.refapps.espm.model.Stock;
 import com.sap.refapps.espm.service.ProductService;
 
@@ -84,6 +85,18 @@ public class ProductController {
 	}
 
 	/**
+	 * To get Stock for all products
+	 * 
+	 * @param productId
+	 * @return stock
+	 */
+	@GetMapping("/stocks")
+	public ResponseEntity<Iterable<ProductWithStock>> getStockForAllProducts() {
+		final Iterable<ProductWithStock> stocks = productService.getStockForAllProducts();
+		return new ResponseEntity<>(stocks, HttpStatus.OK);
+	}
+
+	/**
 	 * To check and update the stock by productId
 	 * 
 	 * @param stock
@@ -108,7 +121,7 @@ public class ProductController {
 			}
 			if (flag == 2) {
 				return errorMessage("Could not update.Out of stock for product id : " + productId,
-						HttpStatus.BAD_REQUEST);
+						HttpStatus.NO_CONTENT);
 			}
 
 			HttpHeaders headers = new HttpHeaders();

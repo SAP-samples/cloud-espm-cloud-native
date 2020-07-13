@@ -1,4 +1,6 @@
-<mvc:View xmlns:html="http://www.w3.org/1999/xhtml" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" controllerName="com.sap.ESPM-UI.controller.Customer" displayBlock="true">
+<mvc:View xmlns:html="http://www.w3.org/1999/xhtml" 
+	xmlns:mvc="sap.ui.core.mvc" 
+	xmlns="sap.m" controllerName="com.sap.espm.shop.controller.Customer" displayBlock="true">
 	<App id="idAppControl">
 		<pages>
 			<Page title="{i18n>title}" backgroundDesign="Solid">
@@ -30,7 +32,7 @@
 								<content>
 									<List items="{customer>/salesorders/data}" noDataText="No Sales Orders">
 										<items>
-											<ObjectListItem title="{customer>productId}" type="Active" number="{ parts:[{path:'customer>grossAmount'},{path:'customer&gt;currencyCode'}], type: 'sap.ui.model.type.Currency', formatOptions: {showMeasure: false} }" numberUnit="{customer>currencyCode}">
+											<ObjectListItem title="{customer>productName}" type="Active" number="{ parts:[{path:'customer>grossAmount'},{path:'customer&gt;currencyCode'}], type: 'sap.ui.model.type.Currency', formatOptions: {showMeasure: false} }" numberUnit="{customer>currencyCode}">
 												<firstStatus>
 													<ObjectStatus text="{customer>lifecycleStatusName}" state="{path: 'customer>lifecycleStatus', formatter: '.formatter.lifecycleStatus'}"/>
 												</firstStatus>
@@ -47,12 +49,12 @@
 							<IconTabFilter text="Shopping Cart" count="{customer>/carts/count}" icon="sap-icon://cart" iconColor="Critical" id="filter2">
 								<content>
 									<List items="{customer>/carts/data}" noDataText="No Cart Items found">
-										<ObjectListItem title="{customer>productId}" type="Active" press="onCartSelected" number="{customer>quantityUnit}" numberUnit="units">
+										<ObjectListItem title="{customer>name}" type="Active" press="onCartSelected" number="{customer>quantityUnit}" numberUnit="units">
 											<firstStatus>
 												<ObjectStatus text="{path: 'customer>checkOutStatus', formatter: '.formatter.checkoutStatusText' }" state="{ path: 'customer>checkOutStatus', formatter: '.formatter.checkoutStatus'}"/>
 											</firstStatus>
 											<attributes>
-												<ObjectAttribute title="Product Id" text="{customer>productId}"/>
+												<ObjectAttribute title="Product Id" text="{customer>name}"/>
 												<ObjectAttribute title="Quantity" text="{customer>quantityUnit}"/>
 											</attributes>
 										</ObjectListItem>

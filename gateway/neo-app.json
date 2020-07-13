@@ -42,6 +42,14 @@
         "name": "espm-products"
       },
       "description": "ESPM Products Service"
+    },
+    {
+      "path": "/destinations/stocks",
+      "target": {
+        "type": "destination",
+        "name": "espm-stocks"
+      },
+      "description": "ESPM Stocks Service"
     }
     
   ],

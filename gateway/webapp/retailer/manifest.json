@@ -1,7 +1,7 @@
 {
 	"_version": "1.8.0",
 	"sap.app": {
-		"id": "com.sap.ESPM-UI",
+		"id": "com.sap.espm.retailer",
 		"type": "application",
 		"i18n": "i18n/i18n.properties",
 		"applicationVersion": {
@@ -37,21 +37,15 @@
 	"sap.ui5": {
 		"_version": "1.1.0",
 		"rootView": {
-			"viewName": "com.sap.ESPM-UI.view.App",
+			"viewName": "com.sap.espm.retailer.view.App",
 			"type": "XML"
 		},
 		"dependencies": {
 			"minUI5Version": "1.30.0",
 			"libs": {
-				"sap.ui.core": {
-					
-				},
-				"sap.m": {
-					
-				},
-				"sap.ui.layout": {
-					
-				}
+				"sap.ui.core": {},
+				"sap.m": {},
+				"sap.ui.layout": {}
 			}
 		},
 		"contentDensities": {
@@ -59,33 +53,33 @@
 			"cozy": true
 		},
 		"models": {
-"i18n": {
-"type": "sap.ui.model.resource.ResourceModel",
-"settings": {
-"bundleName": "com.sap.ESPM-UI.i18n.i18n"
-}
-}
-},
-"resources": {
-"css": [
-{
-"uri": "css/style.css"
-}
-]
-},
+			"i18n": {
+				"type": "sap.ui.model.resource.ResourceModel",
+				"settings": {
+					"bundleName": "com.sap.espm.retailer.i18n.i18n"
+				}
+			}
+		},
+		"resources": {
+			"css": [
+				{
+					"uri": "css/style.css"
+				}
+			]
+		},
 		"routing": {
 			"config": {
-"routerClass": "sap.m.routing.Router",
-"viewType": "XML",
-"async": true,
-"viewPath": "com.sap.ESPM-UI.view",
-"controlAggregation": "pages",
-"controlId": "espmRetailerId",
-"clearControlAggregation": false,
-"bypassed": {
-"target": "notfound"
-}
-},
+				"routerClass": "sap.m.routing.Router",
+				"viewType": "XML",
+				"async": true,
+				"viewPath": "com.sap.espm.retailer.view",
+				"controlAggregation": "pages",
+				"controlId": "espmRetailerId",
+				"clearControlAggregation": false,
+				"bypassed": {
+					"target": "notfound"
+				}
+			},
 			"routes": [
 				{
 					"pattern": "",
@@ -109,7 +103,7 @@
 					"viewName": "App",
 					"routerClass": "sap.m.routing.Router",
 					"async": true,
-					"viewPath": "com.sap.ESPM-UI.view",
+					"viewPath": "com.sap.espm.retailer.view",
 					"controlAggregation": "pages",
 					"controlId": "espmRetailerId",
 					"clearControlAggregation": false,
@@ -123,7 +117,7 @@
 					"viewName": "Home",
 					"routerClass": "sap.m.routing.Router",
 					"async": true,
-					"viewPath": "com.sap.ESPM-UI.view",
+					"viewPath": "com.sap.espm.retailer.view",
 					"controlAggregation": "pages",
 					"controlId": "espmRetailerId",
 					"clearControlAggregation": false,
@@ -137,7 +131,7 @@
 					"viewName": "SalesOrder",
 					"routerClass": "sap.m.routing.Router",
 					"async": true,
-					"viewPath": "com.sap.ESPM-UI.view",
+					"viewPath": "com.sap.espm.retailer.view",
 					"controlAggregation": "pages",
 					"controlId": "espmRetailerId",
 					"clearControlAggregation": false,
@@ -145,9 +139,22 @@
 					"bypassed": {
 						"viewName": "StockInformation"
 					}
+				},
+				"StockInformation": {
+					"viewType": "XML",
+					"viewName": "StockInformation",
+					"routerClass": "sap.m.routing.Router",
+					"async": true,
+					"viewPath": "com.sap.espm.retailer.view",
+					"controlAggregation": "pages",
+					"controlId": "espmRetailerId",
+					"clearControlAggregation": false,
+					"viewLevel": 2,
+					"bypassed": {
+						"target": "SalesOrder"
+					}
 				}
 			}
-			}
-			}
-			}
-			
+		}
+	}
+}

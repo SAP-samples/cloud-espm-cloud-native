@@ -1,12 +1,15 @@
-jQuery.sap.declare("com.sap.ESPM-UI.model.format");
+jQuery.sap.declare("com.sap.espm.retailer.model.format");
 jQuery.sap.require("sap.ui.core.format.DateFormat");
 jQuery.sap.require("sap.ui.core.format.NumberFormat");
 
-com.sap.ESPM-UI.model.format = { 
+com.sap.espm.retailer.model.format = { 
 		_statusStateMap : { 
-			"P" : "Success", 
-			"N" : "Warning",
-			"X" : "Error"
+			"S" : "Success", 
+			"N" : "Success",
+			"D" : "Success",
+			"C" : "Warning",
+			"I" : "Warning",
+			"R" : "Error"
 		},
 		statusText : function (value) { 
 			var bundle = this.getModel("i18n").getResourceBundle(); 
@@ -14,7 +17,7 @@ com.sap.ESPM-UI.model.format = {
 		}, 
 			
 		statusState : function (value) { 
-			var map = com.sap.ESPM-UI.retailer.model.format._statusStateMap; 
+			var map = com.sap.espm.retailer.model.format._statusStateMap; 
 			return (value && map[value]) ? map[value] : "None"; 
 		}, 
 		

@@ -1,12 +1,18 @@
+jQuery.sap.require("com.sap.espm.retailer.model.format");
 sap.ui.define([
-	"com/sap/ESPM-UI/controller/BaseController",
+	"com/sap/espm/retailer/controller/BaseController",
+	"sap/ui/core/mvc/Controller",
+	"com/sap/espm/retailer/model/formatter",
 	"sap/m/MessageToast",
 	"sap/m/MessageBox",
 	"sap/ui/core/BusyIndicator"
-], function (BaseController, MessageToast, MessageBox, BusyIndicator) {
+], function (Controller, formatter, BaseController, MessageToast, MessageBox, BusyIndicator) {
 	"use strict";
 
-	return BaseController.extend("com.sap.ESPM-UI.controller.SalesOrder", {
+	return Controller.extend("com.sap.espm.retailer.controller.SalesOrder", {
+
+		formatter: formatter,
+
 
 		/**
 		 * Called when a controller is instantiated and its View controls (if available) are already created.
@@ -53,9 +59,9 @@ sap.ui.define([
 			this.getView().byId("detailPageId").setVisible(true);
 
 			var context = event.getSource().getBindingContextPath();
-			var salesModel = new sap.ui.model.json.JSONModel(this.getView().getModel("customer").getProperty(context));
+			var salesModel = new sap.ui.model.json.JSONModel(this.getView().getModel("espmRetailerModel").getProperty(context));
 			this.byId("detailPageId").setModel(salesModel, "sales");
-			var oCustomerModel = this.getView().getModel('customer');
+			var oCustomerModel = this.getView().getModel('espmRetailerModel');
 			var customerEmail = oCustomerModel.getProperty(context + '/customerEmail');
 			oCustomerModel.loadCustomer(customerEmail);
 			var customer = oCustomerModel.getProperty('/customer');
@@ -71,8 +77,10 @@ sap.ui.define([
 
 			var filters = [];
 			var query = evt.getParameter("query");
+			var model = this.getView().byId("masterPageId").getModel("espmRetailerModel");
+			var lifecyclestatus = model.oData.salesorders.data;
 			if (query && query.length > 0) {
-				var filter = new sap.ui.model.Filter("SalesOrderId", sap.ui.model.FilterOperator.Contains, query);
+				var filter = new sap.ui.model.Filter("lifecycleStatusName", sap.ui.model.FilterOperator.Contains, query);
 				filters.push(filter);
 			} // update list binding 
 			var list = this.getView().byId("list");
@@ -85,30 +93,33 @@ sap.ui.define([
 			var salesOrderId = model.oData.salesOrderId;
 			var lifecyclestatus = model.oData.lifecycleStatus;
 			var bundle = this.getView().getModel("i18n").getResourceBundle();
-			var objectAttributes = this.getView().byId("detailObjectHeader").getAttributes();
-			var lifecycleStatusName = objectAttributes[2].getText();
+			var objectAttributes = this.getView().byId("detailObjectStatus");
+			var lifecycleStatusName = model.oData.lifecycleStatusName;
 			var that = this;
+			var val = 0;
 			if (lifecyclestatus == 'N' && lifecycleStatusName == "New") {
 				MessageBox.confirm(bundle.getText("sales.approveDialogMsg"),
 					function (oAction) {
 						if (MessageBox.Action.OK === oAction) {
-							var oCustomerModel = that.getView().byId("detailPageId").getModel("customer");
+							var oCustomerModel = that.getView().byId("detailPageId").getModel("espmRetailerModel");
 							oCustomerModel.updateSalesOrder(salesOrderId, "S", "Sales order Shipped")
-								.then(function () {
+								.then(function (status) {
 									BusyIndicator.hide();
+									console.log(status);
 									that.getView().byId("detailPageId").setVisible(true);
-									var objectAttributes = that.getView().byId("detailObjectHeader").getAttributes();
-									objectAttributes[2].setText("Order Shipped");
-									MessageToast.show("Product Successfully shipped");
+									if (status.statusCode === 200) {
+										MessageToast.show("Sales Order Shipped Successfully");
+
+									}
+									else {
+
+										MessageToast.show("Product is Out of Stock");
+
+									}
 								})
 								.fail(function (error) {
 									BusyIndicator.hide();
-									var oCustomerModel = that.getView().byId("detailPageId").getModel("customer");
-									oCustomerModel.updateSalesOrder(salesOrderId, "C", "Product is Out of stock")
-									that.getView().byId("detailPageId").setVisible(true);
-									var objectAttributes = that.getView().byId("detailObjectHeader").getAttributes();
-									objectAttributes[2].setText("Out of Stock");
-									MessageToast.show("Product cannot be shipped - Out of Stock");
+									MessageToast.show("Product URL is wrong");
 								});
 						}
 					},
@@ -119,7 +130,6 @@ sap.ui.define([
 				MessageToast.show("Only new Sales Order can be shipped");
 			}
 
-
 		},
 
 		handleReject: function () {
@@ -127,20 +137,20 @@ sap.ui.define([
 			var salesOrderId = model.oData.salesOrderId;
 			var lifecyclestatus = model.oData.lifecycleStatus;
 			var bundle = this.getView().getModel("i18n").getResourceBundle();
-			var objectAttributes = this.getView().byId("detailObjectHeader").getAttributes();
-			var lifecycleStatusName = objectAttributes[2].getText();
+			var objectAttributes = this.getView().byId("detailObjectStatus");
+			var lifecycleStatusName = model.oData.lifecycleStatusName;
 			var that = this;
 			if (lifecyclestatus == 'N' && lifecycleStatusName == "New") {
 				MessageBox.confirm(bundle.getText("sales.rejectDialogMsg"),
 					function (oAction) {
 						if (MessageBox.Action.OK === oAction) {
-							var oCustomerModel = that.getView().byId("detailPageId").getModel("customer");
+							var oCustomerModel = that.getView().byId("detailPageId").getModel("espmRetailerModel");
 							oCustomerModel.updateSalesOrder(salesOrderId, "R", "Sales order Rejected by Retailer")
 								.then(function () {
 									BusyIndicator.hide();
 									that.getView().byId("detailPageId").setVisible(true);
-									var objectAttributes = that.getView().byId("detailObjectHeader").getAttributes();
-									objectAttributes[2].setText("Rejected by Retailer");
+									var objectAttributes = that.getView().byId("detailObjectStatus");
+									objectAttributes.setText("Rejected by Retailer");
 									MessageToast.show(bundle.getText("sales.rejectDialogSuccessMsg"));
 								})
 								.fail(function (error) {

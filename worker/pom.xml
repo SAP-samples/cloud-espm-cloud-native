@@ -5,7 +5,7 @@
 	<parent>
 		<artifactId>espm-cn</artifactId>
 		<groupId>com.sap.refapps.espm</groupId>
-		<version>1.1.0</version>
+		<version>1.2.0</version>
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
 
@@ -16,7 +16,7 @@
 		<dependency>
 			<groupId>com.sap.refapps.espm</groupId>
 			<artifactId>commons</artifactId>
-			<version>1.1.0</version>
+			<version>1.2.0</version>
 		</dependency>
 
 		<!-- Spring boot starter -->
@@ -82,6 +82,13 @@
 			<groupId>io.netty</groupId>
 			<artifactId>netty-handler</artifactId>
 		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.security.oauth</groupId>
+			<artifactId>spring-security-oauth2</artifactId>
+		</dependency>
+		
+		
 	</dependencies>
 	<build>
 		<plugins>

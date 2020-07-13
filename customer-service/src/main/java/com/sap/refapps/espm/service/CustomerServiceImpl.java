@@ -32,72 +32,61 @@ public class CustomerServiceImpl implements CustomerService {
 	@Autowired
 	private CartRepository cartRepository;
 
-	/* (non-Javadoc)
-	 * @see com.sap.refapps.espm.service.CustomerService#save(com.sap.refapps.espm.model.Cart)
-	 */
 	@Override
 	public Cart saveCart(Cart cart) {
 		return cartRepository.save(cart);
 	}
 
-	/* (non-Javadoc)
-	 * @see com.sap.refapps.espm.service.CustomerService#getAll(java.lang.String)
-	 */
 	@Override
 	public Iterable<Cart> getCartByCustomerId(String customerId) {
 		return cartRepository.findCartsByCustomerId(customerId);
 	}
 
-	/* (non-Javadoc)
-	 * @see com.sap.refapps.espm.service.CustomerService#getCustomer(java.lang.String)
-	 */
 	@Override
-	public Customer getCustomerByEmailAddress(String emailAddress) throws DataAccessException {
-		Customer customer = customerRepository.findCustomerByEmailAddress(emailAddress);
-		return customer;
-	}
-	
-	@Override
-	public Customer getCustomerById(String customerId) throws DataAccessException {
-		Customer customer = customerRepository.findCustomerById(customerId);
+	public Customer getCustomerByEmailAddress(String emailAddress) {
+		Customer customer;
+		try {
+			customer = customerRepository.findCustomerByEmailAddress(emailAddress);
+		} catch(DataAccessException p) {
+			logger.info("Retrying to connect to the database...");
+			throw new DataAccessException("") {};
+		}
+		
 		return customer;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.sap.refapps.espm.service.CustomerService#delete(java.lang.String)
-	 */
+	@Override
+	public Customer getCustomerById(String customerId) {
+		Customer customer;
+		try {
+			customer = customerRepository.findCustomerById(customerId);
+		} catch(DataAccessException p) {
+			logger.info("Retrying to connect to the database...");
+			throw new DataAccessException("") {};
+		}
+		return customer;
+	}
+
 	@Override
 	public void deleteCart(String itemId) {
 		cartRepository.deleteById(itemId);
 	}
 
-	/* (non-Javadoc)
-	 * @see com.sap.refapps.espm.service.CustomerService#exists(java.lang.String)
-	 */
 	@Override
 	public boolean cartItemExists(String itemId) {
 		return cartRepository.existsById(itemId);
 	}
 
-	/* (non-Javadoc)
-	 * @see com.sap.refapps.espm.service.CustomerService#saveCustomer(com.sap.refapps.espm.model.Customer)
-	 */
 	@Override
 	public Customer saveCustomer(Customer customer) {
 		return customerRepository.save(customer);
 	}
 
-	/* (non-Javadoc)
-	 * @see com.sap.refapps.espm.service.CustomerService#saveCustomer(java.util.List)
-	 */
 	@Override
 	public void saveCustomer(List<Customer> listOfCustomers) {
 		customerRepository.saveAll(listOfCustomers);
 	}
 
-	/* (non-Javadoc)
-	 * @see com.sap.refapps.espm.service.CustomerService#loadCustomer(java.lang.String)
-	 */
 	@Override
 	public void loadCustomer(String filePath) throws IOException {
 		ObjectMapper mapper = new ObjectMapper();
@@ -111,13 +100,7 @@ public class CustomerServiceImpl implements CustomerService {
 		} catch (IOException e) {
 			logger.error("loading of customer data failed");
 			throw e;
-		} /*finally {
-			try {
-				inputStream.close();
-			} catch (IOException  | NullPointerException e) {
-				logger.info(e.getMessage());
-			}
-		}*/
+		}
 	}
 
 }

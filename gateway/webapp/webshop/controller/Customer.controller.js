@@ -1,5 +1,5 @@
 sap.ui.define([
-	"com/sap/ESPM-UI/controller/BaseController",
+	"com/sap/espm/shop/controller/BaseController",
 	"sap/m/Dialog",
 	"sap/m/Button",
 	"sap/m/MessageToast",
@@ -7,13 +7,13 @@ sap.ui.define([
 	"sap/ui/core/UIComponent",
 	"sap/ui/core/BusyIndicator",
 	"sap/ui/model/json/JSONModel",
-	"com/sap/ESPM-UI/model/Formatter",
+	"com/sap/espm/shop/model/Formatter",
 	"sap/ui/core/Fragment",
 	"sap/ui/model/Filter"
 ], function (BaseController, Dialog, Button, MessageToast, Text, UIComponent, BusyIndicator, JSONModel, Formatter, Fragment, Filter) {
 	"use strict";
 
-	return BaseController.extend("com.sap.ESPM-UI.controller.Customer", {
+	return BaseController.extend("com.sap.espm.shop.controller.Customer", {
 		formatter: Formatter,
 		oCart: null,
 		inputId: '',
@@ -34,7 +34,7 @@ sap.ui.define([
 					// create value help dialog
 					if (!that._valueHelpDialog) {
 						that._valueHelpDialog = sap.ui.xmlfragment(
-							"com.sap.ESPM-UI.view.Dialog",
+							"com.sap.espm.shop.view.Dialog",
 							that
 						);
 						that.getView().addDependent(that._valueHelpDialog);
@@ -42,10 +42,7 @@ sap.ui.define([
 
 
 					// create a filter for the binding
-					//	that._valueHelpDialog.getBinding("items").filter([new Filter(
-					//		"{customer>productId}",
-					//		sap.ui.model.FilterOperator.Contains, sInputValue
-					//	)]);
+				
 					sInputValue = that._valueHelpDialog.getBinding("items").oModel.oData.products.data;
 
 					// open value help dialog filtered by the input value
@@ -63,7 +60,6 @@ sap.ui.define([
 			var sKey = oSelectedItem.mProperties;
 			var descrip = sKey.description;
 			var titles = sKey.title;
-			// this._oCreateCartDialog.getModel().setProperty('/productId', sKey);
 			sap.ui.getCore().byId("productInput").setSelectedKey(titles);
 
 		},
@@ -118,7 +114,6 @@ sap.ui.define([
 			this._oCreateCartDialog.close();
 
 			var oCartInputModel = this._oCreateCartDialog.getModel();
-//			var productId = oCartInputModel.getProperty("/productId");
 			var productId = sap.ui.getCore().byId("productInput").getSelectedKey();
 			var quantityUnit = oCartInputModel.getProperty("/quantityUnit");
 
@@ -180,29 +175,13 @@ sap.ui.define([
 			var cartModel = new JSONModel(oCart);
 
 			// if (!this._oCartOperationDialog) {
-			this._oCartOperationDialog = sap.ui.xmlfragment("com.sap.ESPM-UI.view.CartOperations", this);
+			this._oCartOperationDialog = sap.ui.xmlfragment("com.sap.espm.shop.view.CartOperations", this);
 			//}
 			this._oCartOperationDialog.setModel(cartModel, 'cartModel');
 
 			this._oCartOperationDialog.open();
 		},
 
-		/**
-		 * Open the cart operations dialog allowing you to delete or convert a cart
-		 * to a sales order
-		 */
-		// _getCartOperationDialog : function (oCart) {
-		//  if (!this._oCartOperationDialog) {
-		//     this._oCartOperationDialog = sap.ui.xmlfragment("com.sap.ESPM-UI.view.CartOperations", this);
-
-		//     var cartModel = new JSONModel(oCart);
-		//     this._oCartOperationDialog.setModel(cartModel);
-
-		//     this.getView().addDependent(this._oCartOperationDialog);
-		//  }
-
-		//  return this._oCartOperationDialog;
-		// },
 
 		/***
 		 * This function is called when the cart operations dialog is closed using
@@ -235,7 +214,7 @@ sap.ui.define([
 		 */
 		_getCreateCartDialog: function () {
 			if (!this._oCreateCartDialog) {
-				this._oCreateCartDialog = sap.ui.xmlfragment("com.sap.ESPM-UI.view.CreateCart", this);
+				this._oCreateCartDialog = sap.ui.xmlfragment("com.sap.espm.shop.view.CreateCart", this);
 
 				var defaultCart = {
 					productId: "",
@@ -260,7 +239,7 @@ sap.ui.define([
 		},
 
 		/**
-		 *@memberOf com.sap.ESPM-UI.controller.Customer
+		 *@memberOf com.sap.espm.shop.controller.Customer
 		 */
 		onListItemPress: function (oEvent) {
 			alert('inside line item');
