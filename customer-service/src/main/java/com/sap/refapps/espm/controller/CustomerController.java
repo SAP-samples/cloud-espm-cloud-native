@@ -2,6 +2,8 @@ package com.sap.refapps.espm.controller;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.Duration;
+import java.util.function.Supplier;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,6 +28,11 @@ import com.sap.refapps.espm.model.Cart;
 import com.sap.refapps.espm.model.Customer;
 import com.sap.refapps.espm.service.CustomerService;
 
+import io.github.resilience4j.ratelimiter.RateLimiter;
+import io.github.resilience4j.ratelimiter.RateLimiterConfig;
+import io.github.resilience4j.ratelimiter.RateLimiterRegistry;
+import io.vavr.control.Try;
+
 /**
  * This class is a controller class of customer service which is responsible for
  * handling all endpoints.
@@ -41,10 +48,12 @@ public class CustomerController {
 	protected static final String API_CART = "/carts/";
 
 	private final CustomerService customerService;
+	private final RateLimiter rateLimiter;
 
 	@Autowired
 	public CustomerController(final CustomerService customerservice) {
 		this.customerService = customerservice;
+		rateLimiter = configureRateLimiter();
 	}
 	
 	/**
@@ -71,13 +80,10 @@ public class CustomerController {
 	 * @throws InterruptedException 
 	 */
 	@GetMapping(CustomerController.API_CUSTOMER + "{emailId}")
-	public ResponseEntity<?> getCustomerByEmailAddress(@PathVariable("emailId") final String emailAddress) throws InterruptedException {
+	public ResponseEntity<?> getCustomerByEmailAddress(@PathVariable("emailId") final String emailAddress) {
 
-		final Customer customer;
 		try {
-			customer = customerService.getCustomerByEmailAddress(emailAddress);
-			//To slow it down and get effects of rate limiting
-			  Thread.sleep(1000);
+			Customer customer = getCustomer(emailAddress);
 			if (customer != null)
 				return new ResponseEntity<Customer>(customer, HttpStatus.OK);
 			return new ResponseEntity<String>("Customer not found", HttpStatus.NOT_FOUND);
@@ -192,6 +198,36 @@ public class CustomerController {
 	 */
 	private ResponseEntity errorMessage(String message, HttpStatus status) {
 		return ResponseEntity.status(status).body(message);
+	}
+	
+	/**
+	 * Configures the ratelimiter
+	 * 
+	 * @return
+	 */
+	private RateLimiter configureRateLimiter() {
+		RateLimiterConfig config = RateLimiterConfig.custom()
+				.limitForPeriod(5) 							//number of calls permitted in a refresh period - default : 50
+				.limitRefreshPeriod(Duration.ofSeconds(1))//period to refresh the permission limit - default : 500ns
+				.timeoutDuration(Duration.ofMillis(500)) //how long a thread can wait to acquire permission - default : 5s
+				.build();
+		
+		RateLimiterRegistry rateLimiterRegistry = RateLimiterRegistry.of(config);
+		RateLimiter rateLimiter = rateLimiterRegistry.rateLimiter("customerService");
+		
+		return rateLimiter;
+	}
+	
+	/**
+	 * @param emailAddress
+	 * @return
+	 */
+	private Customer getCustomer(String emailAddress) {
+		Supplier<Customer> customerSupplier = 
+				RateLimiter.decorateSupplier(rateLimiter, () -> customerService.getCustomerByEmailAddress(emailAddress));
+		Customer customer = Try.ofSupplier(customerSupplier).get();
+		
+		return customer;
 	}
 	
 }
