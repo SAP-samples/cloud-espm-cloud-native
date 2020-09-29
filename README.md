@@ -1,5 +1,5 @@
  # Enterprise Sales and Procurement Model (ESPM) Cloud Native
-
+[![REUSE status](https://api.reuse.software/badge/github.com/SAP-samples/cloud-espm-cloud-native)](https://api.reuse.software/info/github.com/SAP-samples/cloud-espm-cloud-native)
   ## Description
 
   **Enterprise Sales and Procurement Model** (ESPM) **Cloud Native** is a reference application to showcase how **Resilience patterns** can be implemented in a Cloud Native application. It’s built based on microservices architecture principles. Each microservice is built as a [Spring Boot](https://spring.io/projects/spring-boot) application. The current scope of the application showcases the below resilience patterns.
