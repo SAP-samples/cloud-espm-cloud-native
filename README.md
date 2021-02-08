@@ -29,11 +29,6 @@
       - [Bounded Queue](#bounded-queue)
       - [Shed load](#shed-load)
       - [Unit Isolation](#unit-isolation)
-  - [REST API](#rest-api)
-    - [Swagger API Definition](#swagger-api-definition)
-      - [Customer Service](#customer-service)
-      - [Product Service](#product-service)
-      - [Sales Service](#sales-service)
   - [Requirements](#requirements)
     - [Message server](#message-server)
     - [SQL Database Server](#sql-database-server)
@@ -124,20 +119,6 @@ This pattern focuses on handling the rate at which requests are coming and rejec
 
 #### Unit Isolation
 The focus of this pattern is on the design of the failure unit. A failure unit is the entity of an application that can fail without overall availability of the entire application being affected.  The microservices architecture paradigm itself brings in a level of unit isolation while applying methodology of domain driven design to define the units.
-
-
-## REST API
-
-### Swagger API Definition
-
-#### Customer Service
-https://customer-service.cfapps.eu10.hana.ondemand.com
-
-#### Product Service
-https://product-service.cfapps.eu10.hana.ondemand.com
-
-#### Sales Service
-https://sales-service.cfapps.eu10.hana.ondemand.com
 
 
 ## Requirements
