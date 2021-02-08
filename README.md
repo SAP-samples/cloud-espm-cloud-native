@@ -98,7 +98,7 @@ The ESPM application consists of five microservices and one external service.
 
    *Retailer*: An application where an authenticated and authorized Sales Manager known as Retailer can approve/reject sales orders. Only a user with retailer role will be able to access the end point.
 
-6. **External Tax Service** - This is a service which is external to the application and used to do tax calculation. This Tax calculation service is provided, to be used along with the implementation of Circuit Breaker, Quarantine pattern. This service is also used in showcasing the app-to-app communication between two microservices deployed in the same subaccount, but bounded to two different Authorization and Trust Management services. For more information, see [referencing the application](https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/517895a9612241259d6941dbf9ad81cb.html#loio517895a9612241259d6941dbf9ad81cb__section_fm2_wsk_pdb) in the documentation for SAP Cloud Platform.
+6. **External Tax Service** - This is a service which is external to the application and used to do tax calculation. This Tax calculation service is provided, to be used along with the implementation of Circuit Breaker, Quarantine pattern. This service is also used in showcasing the app-to-app communication between two microservices deployed in the same subaccount, but bounded to two different Authorization and Trust Management services. For more information, see [referencing the application](https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/517895a9612241259d6941dbf9ad81cb.html#loio517895a9612241259d6941dbf9ad81cb__section_fm2_wsk_pdb) in the documentation for SAP Business Technology Platform.
 
 
 A [Domain Driven Design](https://en.wikipedia.org/wiki/Domain-driven_design) approach was used to decide the capabilities of each microservices. The Customer and Cart entities are part of the Customer Microservice and Product and Stock entities are part of the Product Service. To keep things simple, there is only one entity in Sales Service which is the Sales Order entity. In real world scenarios, Sales Entity might have Sales Order Header and Sales Order Line Items Entity and more. The Product and Customer service has its own database while Sale and worker shares the same database.
@@ -118,7 +118,7 @@ This pattern addresses the challenge in communicating with an external system. T
 #### Bounded Queue
 Introduction of a queue brings the application closer to an asynchronous processing paradigm. It based on assumption that computing resources like CPU and memory are not infinite. The bounded queue implementation in Sale Service can ensure that in case there are spikes in the rate at which Sales Orders are created, they can be slowed down by inserting into the queue first. The number of requests, the application can process at a point in time can be decided by the size of queue. If the queue becomes full, it creates a back pressure by rejecting messages. This ensures that application is not getting overloaded and does not crash.
 Also, a secondary advantage is that, if due to network latency, database is not available momentarily, the data can remain in the queue. Once the database is available, the worker can pick the data from queue and write to database.
-In cloud platform, Enterprise Messaging service provides an unbounded queue. It follows a pay per message model.
+In Business Technology Platform, Enterprise Messaging service provides an unbounded queue. It follows a pay per message model.
 #### Shed load
 This pattern focuses on handling the rate at which requests are coming and reject requests before processing, if the system can't handle it. Each request consumes memory. If the system tries to process too many requests than it can handle, it can crash. Shedding the load by rejecting requests which it can't handle as early as possible, ensures that the application remains healthy and does not crash. The system can define a fixed rate for accepting request or be elastic and decide at runtime the current load on resources and decide to accept or reject the request. The Shed Load pattern is implemented in Product and Customer Service to avoid spike in the number of concurrent requests handled by the application. The number of requests which can be processed at a point in time is fixed to specific number and the requests exceeding this number is rejected.
 
@@ -188,7 +188,7 @@ For Running locally:
 
 For Cloud:
 
-* SAP Cloud Platform account with [Enterprise Messaging](https://help.sap.com/viewer/product/SAP_ENTERPRISE_MESSAGING/Cloud/en-US) service. The 'default' plan for Enterprise Messaging service is required.
+* SAP Business Technology Platform account with [Enterprise Messaging](https://help.sap.com/viewer/product/SAP_ENTERPRISE_MESSAGING/Cloud/en-US) service. The 'default' plan for Enterprise Messaging service is required.
 * To deploy the MTAR we need the MTA CF CLI plugin, download the MTA CF CLI Plugin from [here](https://tools.hana.ondemand.com/#cloud)
 * The MultiApps CF CLI Plugin is now also available on the CF Community Repository. To install the latest available version of the MultiApps CLI Plugin execute the following:
 
@@ -289,7 +289,7 @@ Follow steps below to run each microservice of ESPM one by one. Please ensure th
 
 #### Tax Service
 
-[Tax service](./tax-service) is an external service. It can be deployed locally or on SAP Cloud Platform Neo Environment or SAP Cloud Platform Cloud Foundry Environment. This service does Tax calculation while a sales order is created. Tax Service can be locally deployed by following [these](./tax-service#running-locally-as-spring-boot-application) steps.
+[Tax service](./tax-service) is an external service. This service does Tax calculation while a sales order is created. Tax Service can be locally deployed by following [these](./tax-service#running-locally-as-spring-boot-application) steps.
 
 * Test the Tax Service by running the url  http://localhost:9994/tax.svc/api/v1/calculate/tax?amount=1000
 
@@ -463,8 +463,8 @@ To test the ESPM application, [Postman REST Client](https://www.getpostman.com/a
 
 ## Deploying the ESPM application on Cloud Foundry
 
-To run the application on Cloud Foundry you need an account on SAP Cloud Platform Cloud Foundry Environment Productive account.
-*Please note that in SAP Cloud Platform Cloud Foundry Environment,  for a trial account, there is limited resource and you get a RAM of 2 GB which is not sufficient to run the complete ESPM application.*  
+To run the application on Cloud Foundry you need an account on SAP Business Technology Platform Productive account.
+*Please note that in SAP Business Technology Platform Cloud Foundry Environment,  for a trial account, there is limited resource and you get a RAM of 2 GB which is not sufficient to run the complete ESPM application.*  
 
 Check if the Cloud Foundry Space you will be deploying the application has the following entitlements:
 
@@ -495,7 +495,7 @@ The ESPM application has a dependency to Tax Service Application which is a mock
 
 ### Security Implementation
 
-The security implementation in the ESPM application is based on [Spring Security](https://spring.io/projects/spring-security-oauth). Spring applications using the Spring-security libraries can integrate with the SAP Cloud Platform Authorization and Trust Management service as described [here](https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/be97ec4a799c4135884c62610fea2a8f.html). ESPM Application implements app-to-app communication so that two microservices can securely communicate with each other. This application showcases how to implement a secure communication using two  different ways:
+The security implementation in the ESPM application is based on [Spring Security](https://spring.io/projects/spring-security-oauth). Spring applications using the Spring-security libraries can integrate with the SAPBusiness Technology Platform Authorization and Trust Management service as described [here](https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/be97ec4a799c4135884c62610fea2a8f.html). ESPM Application implements app-to-app communication so that two microservices can securely communicate with each other. This application showcases how to implement a secure communication using two  different ways:
 
 - Propagating a Business User
 - Using a Technical User
@@ -549,7 +549,7 @@ As a pre prerequisite, the sale-service and product-service should be bound to s
  
  4. The sales-service accepts the granted authorities. This is achieved by the property **"$ACCEPT_GRANTED_AUTHORITIES"** in the xs-security.json. This ensures that the tax-service trusts the sale-service and hence technical user communication between the two services is achieved using client credentials flow.
  
- For more information, refer to section [referencing the application](https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/517895a9612241259d6941dbf9ad81cb.html#loio517895a9612241259d6941dbf9ad81cb__section_fm2_wsk_pdb) in the documentation for SAP Cloud Platform.
+ For more information, refer to section [referencing the application](https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/517895a9612241259d6941dbf9ad81cb.html#loio517895a9612241259d6941dbf9ad81cb__section_fm2_wsk_pdb) in the documentation for SAP Business Technology Platform.
 
 ### Configuring Enterprise Messaging
 
@@ -581,7 +581,7 @@ The Tax Service Application can be deployed in two ways:
    * **Destination Services (Recommended):** <br>
        * Create an instance of the destination service by using the command `cf create-service destination lite espm-destination` <br>
        * From the SCP Cockpit go to your space and open the `espm-destination` service instance in your space.. Create a new destination by clicking `New Destination`
-       and filling with the properties as shown below. (URL of tax service running on SAP Cloud Platform.)
+       and filling with the properties as shown below. (URL of tax service running on SAP Business Technology Platform.)
        <br>.
 
        ![Alt text](./documentation/images/tax-service-destination.png "Adding Destination")<br>
@@ -605,7 +605,7 @@ To Deploy MTAR, run the command:
 Destination will be used by ESPM Application to consume the Tax Service which is an external service.
 * From the SAP CP Cockpit go to your Sub Account and click Destination.
 
-* Create a new destination by clicking `New Destination`  and filling with the properties as shown below. (URL of tax service running on SAP Cloud Platform Cloud Foundry.)
+* Create a new destination by clicking `New Destination`  and filling with the properties as shown below. (URL of tax service running on SAP Business Technology Platform.)
 ![Alt text](./documentation/images/tax-service-destination.png "Adding Destination")
 
 ### Build and Deploy ESPM Application
@@ -688,11 +688,11 @@ To Deploy MTAR, run the command:
 
 ### Setup Role collections
 
-The ESPM application defines a role template called as `Retailer` and a role collection called as `Retailer-RoleCollection` in the application security descriptor (xs-security.json). Users need this Retailer role collection to accept sales orders. Creation of sales orders can be done by anonymous users. For more information about adding roles to role collection, see [Add Roles to Role Collections](https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/fe750543788a40b79a49854590ad0b11.html) in the documentation for SAP Cloud Platform.
+The ESPM application defines a role template called as `Retailer` and a role collection called as `Retailer-RoleCollection` in the application security descriptor (xs-security.json). Users need this Retailer role collection to accept sales orders. Creation of sales orders can be done by anonymous users. For more information about adding roles to role collection, see [Add Roles to Role Collections](https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/fe750543788a40b79a49854590ad0b11.html) in the documentation for SAP Business Technology Platform.
 
 ### Assign Role to the user
 
-We need to assign the role which we have created in the previous step to the user. For more information about assigning role collections, see [Assign Role Collections](https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/9e1bf57130ef466e8017eab298b40e5e.html) in the documentation for SAP Cloud Platform.
+We need to assign the role which we have created in the previous step to the user. For more information about assigning role collections, see [Assign Role Collections](https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/9e1bf57130ef466e8017eab298b40e5e.html) in the documentation for SAP Business Technology Platform.
 
  - In your Subaccount, navigate to Security > Trust Configuration.
 
