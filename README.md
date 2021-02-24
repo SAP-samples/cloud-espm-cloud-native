@@ -47,7 +47,7 @@
       - [Test the ESPM Application Locally](#test-the-espm-application-locally)
   - [Deploying the ESPM application on Cloud Foundry](#deploying-the-espm-application-on-cloud-foundry)
     - [Security Implementation](#security-implementation)
-    - [Configuring Enterprise Messaging](#configuring-enterprise-messaging)
+    - [Configuring SAP Event Mesh](#configuring-sap-event-mesh)
     - [Tax Service Application Deployment](#tax-service-application-deployment)
       - [CF Manifest](#cf-manifest)
       - [Deploy Service](#deploy-service)
@@ -113,7 +113,7 @@ This pattern addresses the challenge in communicating with an external system. T
 #### Bounded Queue
 Introduction of a queue brings the application closer to an asynchronous processing paradigm. It based on assumption that computing resources like CPU and memory are not infinite. The bounded queue implementation in Sale Service can ensure that in case there are spikes in the rate at which Sales Orders are created, they can be slowed down by inserting into the queue first. The number of requests, the application can process at a point in time can be decided by the size of queue. If the queue becomes full, it creates a back pressure by rejecting messages. This ensures that application is not getting overloaded and does not crash.
 Also, a secondary advantage is that, if due to network latency, database is not available momentarily, the data can remain in the queue. Once the database is available, the worker can pick the data from queue and write to database.
-In Business Technology Platform, Enterprise Messaging service provides an unbounded queue. It follows a pay per message model.
+In Business Technology Platform, SAP Event Mesh service provides an unbounded queue. It follows a pay per message model.
 #### Shed load
 This pattern focuses on handling the rate at which requests are coming and reject requests before processing, if the system can't handle it. Each request consumes memory. If the system tries to process too many requests than it can handle, it can crash. Shedding the load by rejecting requests which it can't handle as early as possible, ensures that the application remains healthy and does not crash. The system can define a fixed rate for accepting request or be elastic and decide at runtime the current load on resources and decide to accept or reject the request. The Shed Load pattern is implemented in Product and Customer Service to avoid spike in the number of concurrent requests handled by the application. The number of requests which can be processed at a point in time is fixed to specific number and the requests exceeding this number is rejected.
 
@@ -169,7 +169,7 @@ For Running locally:
 
 For Cloud:
 
-* SAP Business Technology Platform account with [Enterprise Messaging](https://help.sap.com/viewer/product/SAP_ENTERPRISE_MESSAGING/Cloud/en-US) service. The 'default' plan for Enterprise Messaging service is required.
+* SAP Business Technology Platform account with [SAP Event Mesh](https://help.sap.com/viewer/product/SAP_ENTERPRISE_MESSAGING/Cloud/en-US) service. The 'default' plan for SAP Event Mesh service is required.
 * To deploy the MTAR we need the MTA CF CLI plugin, download the MTA CF CLI Plugin from [here](https://tools.hana.ondemand.com/#cloud)
 * The MultiApps CF CLI Plugin is now also available on the CF Community Repository. To install the latest available version of the MultiApps CLI Plugin execute the following:
 
@@ -452,7 +452,7 @@ Check if the Cloud Foundry Space you will be deploying the application has the f
 | Service                                  | Plan       | Number of Instances |
 |------------------------------------------|------------|:-------------------:|
 | Destination                              | lite       |          1          |
-| Enterprise Messaging                     | default    |          1          |
+| SAP Event Mesh                           | default    |          1          |
 | SAP HANA Schemas & HDI Containers        | schema     |          1          |
 | SAP HANA Service                         | 64standard |          1          |
 | Application Runtime                      |            |          7          |
@@ -532,7 +532,7 @@ As a pre prerequisite, the sale-service and product-service should be bound to s
  
  For more information, refer to section [referencing the application](https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/517895a9612241259d6941dbf9ad81cb.html#loio517895a9612241259d6941dbf9ad81cb__section_fm2_wsk_pdb) in the documentation for SAP Business Technology Platform.
 
-### Configuring Enterprise Messaging
+### Configuring SAP Event Mesh
 
 * Open em-default.json file and update `"namespace": "<yourorgname>/<yourmessageclientname>/<uniqueID>"`
   e.g `"namespace": "myorg/espm/1"`
@@ -601,7 +601,7 @@ Destination will be used by ESPM Application to consume the Tax Service which is
 
 * Create an instance of the destination service by using the command `cf create-service destination lite espm-destination`
 
-* Create new enterprise messaging service using the command:
+* Create new SAP Event Mesh service using the command:
 
 `cf cs enterprise-messaging default espm-em -c em-default.json`
 
@@ -660,7 +660,7 @@ To Deploy MTAR, run the command:
 
 > Steps for the same:
 > 1. Go to subscriptions in cockpit.
-> 2. click on "Go to application" for Enterprise Messaging application. 
+> 2. click on "Go to application" for SAP Event Mesh application. 
 > 3. Open the message client.
 > 4. Delete the queue   
 
@@ -686,10 +686,10 @@ We need to assign the role which we have created in the previous step to the use
  - Select the role Retailer to assign it to the user.
 
 ### Enterprise Message Queue creation
-* Open Enterprise Messaging subscription in cockpit and please proceed with creating a queue with name `salesorderqueue`.
+* Open SAP Event Mesh subscription in cockpit and please proceed with creating a queue with name `salesorderqueue`.
 For more details about creating a queue, check [here](https://help.sap.com/viewer/bf82e6b26456494cbdd197057c09979f/Cloud/en-US/57af1bd4e8f54b0a9b36414a5ec6b800.html)
 
-![Alt text](./documentation/images/EM.png "Enterprise Messaging")
+![Alt text](./documentation/images/EM.png "SAP Event Mesh")
 
 ### Acessing the application UI
 * From CLI run command `cf apps`
