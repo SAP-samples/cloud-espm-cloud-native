@@ -139,7 +139,7 @@ Before running ESPM application one would need
 
 For Running locally:
 * Message Server
-  [Apache Qpid](https://qpid.apache.org/) will be used as message server for local development and testing (steps on installing QPID can be found below. Qpid was chosen was local development as it's easy to install and setup.
+  [Apache Qpid](https://qpid.apache.org/) will be used as message server for local development and testing (steps on installing QPID can be found below. Qpid was chosen was local development as it's easy to install and setup. (Ensure JDK 1.8 is present)
 * Database Server
   [PostgreSQL](https://www.postgresql.org/) would be used as the SQL Database server for local development.
 
@@ -451,14 +451,13 @@ Check if the Cloud Foundry Space you will be deploying the application has the f
 
 | Service                                  | Plan       | Number of Instances |
 |------------------------------------------|------------|:-------------------:|
-| Destination                              | lite       |          1          |
 | SAP Event Mesh                           | default    |          1          |
 | SAP HANA Schemas & HDI Containers        | schema     |          1          |
-| SAP HANA Service                         | 64standard |          1          |
-| Application Runtime                      |            |          7          |
+| SAP HANA cloud                           | hana       |          1          |
+| Cloud Foundry Runtime                    |            |          7          |
 
-Create SAP HANA Service instance with plan 64standard as described [here](https://help.sap.com/viewer/cc53ad464a57404b8d453bbadbc81ceb/Cloud/en-US/21418824b23a401aa116d9ad42dd5ba6.html). If the SAP HANA Service instance is present in another space share with your space as described [here](https://help.sap.com/viewer/cc53ad464a57404b8d453bbadbc81ceb/Cloud/en-US/390b47b7c0314d57a1829a0759a71ace.html)
-> If there are multiple instances of SAP HANA Service in the space where you plan to deploy this application, please modify the mta.yaml as shown below. Replace <database_guid> with the [id of the database](https://help.sap.com/viewer/cc53ad464a57404b8d453bbadbc81ceb/Cloud/en-US/93cdbb1bd50d49fe872e7b648a4d9677.html?q=guid) you would like to bind the application with :
+Create SAP HANA cloud instance with plan hana. If the SAP HANA cloud instance is present in another space share with your space as described [here](https://help.sap.com/viewer/cc53ad464a57404b8d453bbadbc81ceb/Cloud/en-US/390b47b7c0314d57a1829a0759a71ace.html)
+> If there are multiple instances of SAP HANA cloud in the space where you plan to deploy this application, please modify the mta.yaml as shown below. Replace <database_guid> with the [id of the database](https://help.sap.com/viewer/cc53ad464a57404b8d453bbadbc81ceb/Cloud/en-US/93cdbb1bd50d49fe872e7b648a4d9677.html?q=guid) you would like to bind the application with :
  ```
  # Hana Schema
     - name: espm-hana-db
@@ -604,6 +603,17 @@ Destination will be used by ESPM Application to consume the Tax Service which is
 * Create new SAP Event Mesh service using the command:
 
 `cf cs enterprise-messaging default espm-em -c em-default.json`
+
+
+* Create a HANA CLoud instance if you dont have one:
+* To create a DB instance of Hana cloud logon to SAP BTP in your browser and navigate to your subaccount. Open marketplace. 
+* Click on SAP HANA  cloud and click on create SAP HANA cloud.
+* Logon with your BTP user name and password.
+* In the create instance window enter the instance name .
+* Provide an Administrator password and confirm adminstrator password.
+* Specify size of the memory in HANA database. Default is 30 GB.
+* In SAP HANA Database advanced settings, select the allowed connection to Allow all IP addresses(For non-productive use only).
+* An instance of HANA cloud DB will be created for you. 
 
 * Run command `cf marketplace` and check the service and plan names of HANA. Check if service with name `hana` and plan `schema` exists
 
