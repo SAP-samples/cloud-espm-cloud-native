@@ -58,7 +58,7 @@
   - [Running the Application](#running-the-application)
     - [Setup Role collections](#setup-role-collections)
     - [Assign Role to the user](#assign-role-to-the-user)
-    - [Enterprise Message Queue creation](#enterprise-message-queue-creation)
+    - [Event Mesh Queue creation](#event-mesh-queue-creation)
     - [Accessing the application UI](#acessing-the-application-ui)
     - [Accessing the application API Endpoints](#accessing-the-application-api-endpoints)
       - [Customer Service](#customer-service-3)
@@ -695,7 +695,7 @@ We need to assign the role which we have created in the previous step to the use
 
  - Select the role Retailer to assign it to the user.
 
-### Enterprise Message Queue creation
+### Event Mesh Queue creation
 * Open SAP Event Mesh subscription in cockpit and please proceed with creating a queue with name `salesorderqueue`.
 For more details about creating a queue, check [here](https://help.sap.com/viewer/bf82e6b26456494cbdd197057c09979f/Cloud/en-US/57af1bd4e8f54b0a9b36414a5ec6b800.html)
 
