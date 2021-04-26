@@ -42,7 +42,7 @@ public class CustomerServiceTest {
 	 *  
 	 * @throws IOException
 	 */
-	@Test(expected = java.io.IOException.class)
+	@Test(expected = java.lang.Exception.class)
 	public void testLoadCustomerFromInvalidPath() throws IOException {
 		customerService.loadCustomer(INVALID_FILE_PATH);
 	}
