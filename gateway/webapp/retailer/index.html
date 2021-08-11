@@ -5,13 +5,13 @@
 		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
 		<meta charset="UTF-8">
 
-		<title>ESPMRetailer</title>
+		<title>ESPM Retailer</title>
 
 		<script id="sap-ui-bootstrap"
 			src="https://sapui5.hana.ondemand.com/resources/sap-ui-core.js"
 			data-sap-ui-libs="sap.m,sap.ui.layout"
 			data-sap-ui-xx-bindingSyntax="complex"
-			data-sap-ui-theme="sap_bluecrystal"
+			data-sap-ui-theme="sap_fiori_3_dark"
 			data-sap-ui-compatVersion="edge"
 			data-sap-ui-resourceroots='{"com.sap.espm.retailer": ""}'>
 		</script>
@@ -21,6 +21,7 @@
 		<script>
 			sap.ui.getCore().attachInit(function() {
 				new sap.m.Shell({
+					appWidthLimited: false,
 					app: new sap.ui.core.ComponentContainer({
 						height : "100%",
 						name : "com.sap.espm.retailer"

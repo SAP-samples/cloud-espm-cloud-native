@@ -2,8 +2,9 @@ sap.ui.define([
 	"com/sap/espm/shop/controller/BaseController",
 	"sap/m/Dialog",
 	"sap/m/Button",
-	"sap/m/Text"
-], function (BaseController, Dialog, Button, Text) {
+	"sap/m/Text",
+	"sap/m/MessageBox"
+], function (BaseController, Dialog, Button, Text, MessageBox) {
 	"use strict";
 
 	return BaseController.extend("com.sap.espm.shop.controller.App", {
@@ -32,25 +33,28 @@ sap.ui.define([
 		 * @memberOf com.sap.espm.shop.view.App
 		 */
 		onAfterRendering: function () {
-			if (!this.pressDialog) {
-				this.pressDialog = new Dialog({
-					title: 'Important Information',
-					content: new Text({
-						text: "ESPM is a demo application. So, please do not enter any real personal information when using the application"
-					}),
-					beginButton: new Button({
-						text: 'Close',
-						press: function () {
-							this.pressDialog.close();
-						}.bind(this)
-					})
-				});
+			MessageBox.information("ESPM is a demo application. So, please do not enter any real personal information when using the application");
+			// if (!this.pressDialog) {
+			// 	this.pressDialog = new Dialog({
+			// 		title: 'Important Information',
+			// 		content: new Text({
+			// 			text: "ESPM is a demo application. So, please do not enter any real personal information when using the application"
+						
+			// 		}),
+			// 		beginButton: new Button({
+			// 			text: 'Close',
+			// 			press: function () {
+			// 				this.pressDialog.close();
+			// 			}.bind(this)
+			// 		})
+			// 	});
 
-				//to get access to the global model
-				this.getView().addDependent(this.pressDialog);
-			}
+			// 	//to get access to the global model
+			// 	this.getView().addDependent(this.pressDialog);
+			// }
 
-			this.pressDialog.open();
+			// this.pressDialog.open();
+			
 		},
 
 		/**

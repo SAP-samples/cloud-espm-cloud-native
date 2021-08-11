@@ -25,7 +25,7 @@
 						layout="ResponsiveGridLayout">
 					<form:content>
 						<Table class="sapUiResponsiveMargin" delete="onDeletePressed" growing="true" growingScrollToLoad="true" id="reviewCartTable" items="{customer>/carts/data}"
-						mode="" noDataText="{i18n>review.noDataShoppingCart}" updateFinished="onUpdateFinished" width="1200px">
+						noDataText="{i18n>review.noDataShoppingCart}" updateFinished="onUpdateFinished" width="1200px">
 						<columns>
 							
 							<!-- Name + Availability -->
@@ -86,7 +86,7 @@
 						layout="ResponsiveGridLayout">
 					<form:content>
 						<Label text="{i18n>check.cardType}"/>
-						<Image id="cardImg" width="64px" align="left"></Image>
+						<Image id="cardImg" width="64px"></Image>
 						<Label text="{i18n>check.nameOnCard}"/>
 						<Text id="cardOwner" text="{customer>/customer/firstName} {customer>/customer/lastName}"/>
 						<Label text="{i18n>check.cardNumber}"/>
@@ -97,7 +97,7 @@
 			<footer>
 				<Bar>
 					<contentRight>
-						<Button id="orderButtonId" text="{i18n>review.placeOrder}" press="handleWizardSubmit"></Button>
+						<Button id="orderButtonId" text="{i18n>review.placeOrder}" type="Accept" press="handleWizardSubmit"></Button>
 						<Button text="{i18n>check.cancel}" press="handleWizardCancel"></Button>
 					</contentRight>
 				</Bar>

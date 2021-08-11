@@ -17,7 +17,8 @@
 							</Bar>
 						</subHeader>
 						<content>
-							<List updateFinished="listUpdateFinished" growing="true" growingScrollToLoad="true" id="list" items="{path: 'espmRetailerModel>/salesorders/data'}" mode="" noDataText="{i18n>sales.masterListNoDataText}" select="onSelect">
+							<List updateFinished="listUpdateFinished" growing="true" growingScrollToLoad="true" id="list" items="{path: 'espmRetailerModel>/salesorders/data', shorter: {
+								path: 'lifecycleStatus', group: true}}"  noDataText="{i18n>sales.masterListNoDataText}" select="onSelect">
 								<items>
 									<ObjectListItem press="handleListItemPress" type="Active" numberUnit="{espmRetailerModel>currencyCode}" number="{path: 'espmRetailerModel>grossAmount', formatter:'com.sap.espm.retailer.model.format.formatAmount'}" title="{espmRetailerModel>salesOrderId}">
 										<firstStatus>
@@ -40,9 +41,9 @@
 								<ObjectAttribute text="{espmRetailerModel>/customer/customerId}" />
 								<ObjectAttribute text="{path: 'sales>/createdAt', formatter: 'com.sap.espm.retailer.model.format.date'}" />
 							</attributes>
-							<firstStatus>
+							<statuses>
 								<ObjectStatus id="detailObjectStatus" state="{ path: 'sales>/lifecycleStatus', formatter: 'com.sap.espm.retailer.model.format.statusState' }" text="{path: 'sales>/lifecycleStatus',formatter: 'com.sap.espm.retailer.model.format.statusText'}"/>
-							</firstStatus>
+							</statuses>
 						</ObjectHeader>
 						<IconTabBar expanded="true">
 							<items>
@@ -93,7 +94,7 @@
 							<Bar>
 								<contentRight>
 									<Button id="approveButtonId" text="{i18n>sales.ApproveButtonText}" type="Accept" icon="sap-icon://accept" press="handleApprove" />
-									<Button text="{i18n>sales.RejectButtonText}" type="Reject" icon="sap-icon://reject" press="handleReject" />
+									<Button text="{i18n>sales.RejectButtonText}" type="Reject" icon="sap-icon://decline" press="handleReject" />
 								</contentRight>
 							</Bar>
 						</footer>

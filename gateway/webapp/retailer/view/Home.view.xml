@@ -1,11 +1,11 @@
 <mvc:View controllerName="com.sap.espm.retailer.controller.Home" xmlns:html="http://www.w3.org/1999/xhtml" xmlns:mvc="sap.ui.core.mvc"
 	xmlns="sap.m">
-		<Page title="{i18n>home.pageTitle}">
+		<Page title="{i18n>home.pageTitle}"  titleAlignment="Center">
 			<headerContent>
 					<!--To add header icons-->
 				</headerContent>
 			<content>
-				<TileContainer
+				<!-- <TileContainer
 					id="container"
 					tileDelete="handleTileDelete">
 					<StandardTile
@@ -26,7 +26,25 @@
 						title="{i18n>home.stockTile}"
 						info=""
 						infoState="" />
-				</TileContainer>
+				</TileContainer> -->
+				<VBox alignItems="Center" justifyContent="Center" height="100%">
+					<HBox  class="sapUiMediumMargin" alignItems="Center" justifyContent="Center">
+						<GenericTile class="sapUiTinyMarginBegin sapUiTinyMarginTop tileLayout sapUiSmallMargin" header="{i18n>home.approveTile}"
+					 press="approveTilePressed">
+						<TileContent>
+							<ImageContent src="sap-icon://approvals" />
+						</TileContent>
+					</GenericTile>
+	
+					<GenericTile class="sapUiTinyMarginBegin sapUiTinyMarginTop tileLayout sapUiSmallMargin" header="{i18n>home.stockTile}"
+						press="stockTilePressed">
+						   <TileContent>
+							   <ImageContent src="sap-icon://inspection" />
+						   </TileContent>
+					   </GenericTile>
+					</HBox>
+				</VBox>
+				
 			</content>
 		</Page>
 </mvc:View>

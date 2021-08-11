@@ -10,7 +10,7 @@
 			<Wizard id="checkoutWizard" complete="wizardCompletedHandler">
 				<WizardStep title="{i18n>check.wizardStep1Title}" id="ProductTypeStep">
 					<Table class="sapUiResponsiveMargin" delete="onDeletePressed" growing="true" growingScrollToLoad="true" id="checkoutCartTable" items="{customer>/carts/data}"
-						mode="" noDataText="{i18n>check.noDataShoppingCart}" updateFinished="onUpdateFinished" width="auto">
+						noDataText="{i18n>check.noDataShoppingCart}" updateFinished="onUpdateFinished" width="auto">
 						<columns>
 							<!-- Name + Availability -->
 							<Column hAlign="Left" id="availabilityColumn" width="{= ${device>/system/phone}? '20%' : '20%'}">
@@ -33,7 +33,7 @@
 					</Table>
 				</WizardStep>
 				<WizardStep id="creditCardStep" activate="checkCustomerInformation" title="{i18n>check.wizardStep2Title}">
-					<RadioButtonGroup valueState="" id="radioButtonGroupId" columns = "2" select="radioButtonSelected">
+					<RadioButtonGroup id="radioButtonGroupId" columns = "2" select="radioButtonSelected">
 						<buttons>
 							<RadioButton id="existingCustomerId" text="{i18n>check.radioHaveAccount}"/>
 						</buttons>
@@ -49,18 +49,18 @@
 						<HBox alignItems="Center" justifyContent="Center" width="100%">
 							<Label text="{i18n>check.cardType}" required="true"/>
 							<RadioButton id="card_type1" groupName="cardType" selected="true" app:cardtype="american" select="onRbChange"/>
-							<Image src="images/american.png" width="100%" align="left"></Image>
+							<Image src="images/american.png" width="100%" ></Image>
 							<RadioButton id="card_type2" groupName="cardType" selected="false" app:cardtype="master" select="onRbChange"/>
-							<Image src="images/master.png" width="100%" align="left"></Image>
+							<Image src="images/master.png" width="100%" ></Image>
 							<RadioButton id="card_type3" groupName="cardType" selected="false" app:cardtype="mastero" select="onRbChange"/>
-							<Image src="images/mastero.png" width="100%" align="left"></Image>
+							<Image src="images/mastero.png" width="100%" ></Image>
 						</HBox>
 						<Label text="{i18n>check.nameOnCard}" required="true"/>
-						<Input id="nameId" placeholder="{i18n>check.holderName}" type ="sap.ui.model.type.String" liveChange ="validateStringInputField" value="{customer>/customer/firstName} {customer>/customer/lastName}"/>
+						<Input id="nameId" placeholder="{i18n>check.holderName}" type ="Text" liveChange ="validateStringInputField" value="{customer>/customer/firstName} {customer>/customer/lastName}"/>
 						<Label text="{i18n>check.cardNumber}" required="true"/>
-						<Input id="numberId" placeholder="{i18n>check.holderCardNumber}" type ="sap.ui.model.type.Integer" liveChange ="validateNumberInputField" value=""/>
+						<Input id="numberId" placeholder="{i18n>check.holderCardNumber}" type ="Number" liveChange ="validateNumberInputField" value=""/>
 						<Label text="{i18n>check.securityCode}" required="true"/>
-						<Input id="securityId" placeholder="{i18n>check.holderSecurityId}" type ="sap.ui.model.type.Integer" liveChange ="validateNumberInputField" value=""/>
+						<Input id="securityId" placeholder="{i18n>check.holderSecurityId}" type ="Number" liveChange ="validateNumberInputField" value=""/>
 					</form:SimpleForm>
 				</WizardStep>
 			</Wizard>
@@ -68,8 +68,8 @@
 			<footer>
 				<Toolbar>
 					<ToolbarSpacer/>
-						<Button text="{i18n>check.addProducts}" press="addMoreProducts"/>
-						<Button text="{i18n>check.cancel}" press="handleWizardCancel"/>
+						<Button text="{i18n>check.addProducts}" type="Emphasized" press="addMoreProducts"/>
+						<Button text="{i18n>check.cancel}" type="Reject" press="handleWizardCancel"/>
 					</Toolbar>
 				</footer>
 	</Page>

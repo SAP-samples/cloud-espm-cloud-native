@@ -1,8 +1,9 @@
 sap.ui.define(
   [
     "sap/ui/core/mvc/Controller",
-    "com/sap/espm/shop/model/formatter",
+    "com/sap/espm/shop/model/Formatter",
     "sap/ui/core/UIComponent",
+
     "sap/ui/core/routing/History",
   ],
   function (Controller, formatter, UIComponent, History) {
@@ -34,19 +35,19 @@ sap.ui.define(
       _onObjectMatched: function (oEvent) {
         bindingObject = oEvent.getParameter("arguments").Productdetails;
         bindingPath = "/" + bindingObject;
-        bindingObject = "EspmModel>/" + bindingObject;
+        bindingObject = "customer>/products/data" + bindingPath;
         this.getView().bindElement(bindingObject);
-        this.byId("reviewTable").bindItems({
-          path: bindingObject + "/CustomerReview",
-          template: this.byId("reviewListItem"),
-        });
-        var oView = this.getView();
-        var oTable = oView.byId("reviewTable");
+        // this.byId("reviewTable").bindItems({
+        //   path: bindingObject + "/CustomerReview",
+        //   template: this.byId("reviewListItem"),
+        // });
+        // var oView = this.getView();
+        // var oTable = oView.byId("reviewTable");
 
-        var oBinding = oTable.getBinding("items");
+        // var oBinding = oTable.getBinding("items");
 
-        var sorters = new sap.ui.model.Sorter("CreationDate", true);
-        oBinding.sort(sorters);
+        // var sorters = new sap.ui.model.Sorter("CreationDate", true);
+        // oBinding.sort(sorters);
       },
 
       onAfterRendering: function () {},
@@ -65,8 +66,8 @@ sap.ui.define(
 
       onAddToCartPressed: function () {
         var oModel = this.getView().getModel("Cart");
-        var model = this.getView().getModel("EspmModel");
-        var productContext = model.getProperty(bindingPath);
+        var model = this.getView().getModel("customer");
+        var productContext = model.getProperty("/products/data" + bindingPath);
         formatter.onAddToCart(oModel, productContext);
         this.getView()
           .byId("btnProductHeader")

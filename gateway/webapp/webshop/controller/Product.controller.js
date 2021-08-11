@@ -14,9 +14,20 @@ sap.ui.define([
 
         onInit: function () {
             this.getView().byId("productListPage").setVisible(true);
+            localStorage.setItem("checkedOut", false);
             var productsModel = new sap.ui.model.json.JSONModel(this.getView().getModel("customer"));
             this.byId("productListPage").setModel(productsModel, "products");
+            var oRouter = UIComponent.getRouterFor(this);
+            oRouter
+            .getRoute("Product")
+            .attachPatternMatched(this._onObjectMatched, this);
         },
+        _onObjectMatched: function (oEvent) {
+            if(localStorage.getItem("checkedOut") == "true"){
+                this.getView().byId("btnProductListHeader").setText(0);
+            }
+            
+          },
         onAfterRendering: function () {
 
         },
@@ -26,7 +37,7 @@ sap.ui.define([
         onLineItemPressed: function (event) {
             var bindingContext = event.getSource().getBindingContextPath();
             var oRouter = UIComponent.getRouterFor(this);
-            oRouter.navTo("ProductDetail", { Productdetails: bindingContext.substr(1) });
+            oRouter.navTo("ProductDetail", { Productdetails: bindingContext.split("/")[3] });
         },
         onAddToCartHomePressed: function (oEvent) {
             var productId = oEvent.getSource().getBindingContext('customer').getObject().productId;

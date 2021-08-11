@@ -144,10 +144,24 @@ sap.ui.define([
 				oCustomerModel.removeCart(sCartId)
 
 			}
-			sap.m.MessageToast.show("Orders Placed!!");
-			this._oNavContainer.backToPage(this._oWizardContentPage.getId());
-			var oRouter = UIComponent.getRouterFor(this);
-			oRouter.navTo("Product", true);
+			var that = this;
+			MessageBox.success("Order Created!", {
+				actions: [MessageBox.Action.OK],
+				onClose: function (oAction) {
+					if (oAction === MessageBox.Action.OK) {
+						localStorage.setItem("checkedOut",true);
+						that._oNavContainer.backToPage(that._oWizardContentPage.getId());
+						var oRouter = UIComponent.getRouterFor(that);
+						oRouter.navTo("Product", true);
+					}
+				}
+			});
+			
+			
+			// sap.m.MessageToast.show("Orders Placed!!");
+			// this._oNavContainer.backToPage(this._oWizardContentPage.getId());
+			// var oRouter = UIComponent.getRouterFor(this);
+			// oRouter.navTo("Product", true);
 
 		},
 

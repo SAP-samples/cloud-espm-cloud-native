@@ -16,19 +16,19 @@ sap.ui.define(function() {
 		onAddToCart: function(oModel, productContext){
 			
 			var aData = oModel.getProperty("/carts");
-			sap.m.MessageToast.show(productContext.Name +" " + " added to the cart");
+			sap.m.MessageToast.show(productContext.name +" " + " added to the cart");
 			
 			for(var i=0; i<aData.length; i++){
 					var prodId = aData[i];
-					if(prodId.ProductId === productContext.ProductId){
-						prodId.Quantity += 1;//prodId.Quantity++;
-						prodId.Total = prodId.Quantity * prodId.Price;
+					if(prodId.productId === productContext.productId){
+						prodId.quantity += 1;//prodId.Quantity++;
+						prodId.total = prodId.quantity * prodId.price;
 						oModel.setData({ShoppingCart : aData});
 						return;
 					}
 				}
-				productContext.Quantity = 1;
-				productContext.Total = productContext.Quantity * productContext.Price;
+				productContext.quantity = 1;
+				productContext.total = productContext.quantity * productContext.price;
 				aData.push(productContext);
 				oModel.setData({ShoppingCart : aData});	
 
@@ -38,10 +38,13 @@ sap.ui.define(function() {
 				var totalQuantity = 0;
 				
 				var data = oModel.getProperty("/carts");
-				for(var i=0; i<data.length; i++){
+				if(data){
+						for(var i=0; i<data.length; i++){
 						var prodId = data[i];
-						totalQuantity += prodId.Quantity;
+						totalQuantity += prodId.quantity;
 					}
+				}
+				
 			return totalQuantity;		
 		}
 	};
