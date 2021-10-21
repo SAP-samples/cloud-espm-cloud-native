@@ -111,7 +111,8 @@ It's usually not possible to predict how long it will take for response while ca
 This pattern addresses the challenge in communicating with an external system. The status of the external system is not known, and it could be under load and not responding.  The circuit breaker tackles these problems by introducing a kind of circuit for each external dependency. If a problem is identified, the circuit on the caller side controls the behavior of the calls in future. The circuit breaker is implemented in the Sale Service of ESPM application for communicating with the external Tax service. The Tax service could be temporarily, unavailable, under load or non-responsive. The Circuit Breaker ensures that if Tax service is not reachable the circuit is opened, and no future calls goes Tax service and a fall back service or mechanism is used for Tax Calculation.
 
 #### Bounded Queue
-Introduction of a queue brings the application closer to an asynchronous processing paradigm. It based on assumption that computing resources like CPU and memory are not infinite. The bounded queue implementation in Sale Service can ensure that in case there are spikes in the rate at which Sales Orders are created, they can be slowed down by inserting into the queue first. The number of requests, the application can process at a point in time can be decided by the size of queue. If the queue becomes full, it creates a back pressure by rejecting messages. This ensures that application is not getting overloaded and does not crash.
+Introduction of a queue brings the application closer to an asynchronous processing paradigm. It based on assumption that computing resources like 
+U and memory are not infinite. The bounded queue implementation in Sale Service can ensure that in case there are spikes in the rate at which Sales Orders are created, they can be slowed down by inserting into the queue first. The number of requests, the application can process at a point in time can be decided by the size of queue. If the queue becomes full, it creates a back pressure by rejecting messages. This ensures that application is not getting overloaded and does not crash.
 Also, a secondary advantage is that, if due to network latency, database is not available momentarily, the data can remain in the queue. Once the database is available, the worker can pick the data from queue and write to database.
 In Business Technology Platform, SAP Event Mesh service provides an unbounded queue. It follows a pay per message model.
 #### Shed load
@@ -560,8 +561,8 @@ The Tax Service Application can be deployed in two ways:
 * The TAX SERVICE can be accessed in Cloud Foundary in either of the 2 ways:
    * **Destination Services (Recommended):** <br>
        * Create an instance of the destination service by using the command `cf create-service destination lite espm-destination` <br>
-       * From the SCP Cockpit go to your space and open the `espm-destination` service instance in your space.. Create a new destination by clicking `New Destination`
-       and filling with the properties as shown below. (URL of tax service running on SAP Business Technology Platform.)
+       * From the SAP BTP Cockpit go to your space and open the `espm-destination` service instance in your space.. Create a new destination by clicking `New Destination`
+       and filling with the properties as shown below. (URL of tax service running on SAP Business Technology Platform (BTP).)
        <br>.
 
        ![Alt text](./documentation/images/tax-service-destination.png "Adding Destination")<br>
@@ -583,7 +584,7 @@ To Deploy MTAR, run the command:
 ### Create Destination
 
 Destination will be used by ESPM Application to consume the Tax Service which is an external service.
-* From the SAP CP Cockpit go to your Sub Account and click Destination.
+* From the SAP BTP Cockpit go to your Sub Account and click Destination.
 
 * Create a new destination by clicking `New Destination`  and filling with the properties as shown below. (URL of tax service running on SAP Business Technology Platform.)
 ![Alt text](./documentation/images/tax-service-destination.png "Adding Destination")
@@ -703,7 +704,7 @@ For more details about creating a queue, check [here](https://help.sap.com/viewe
 
 ### Acessing the application UI
 * From CLI run command `cf apps`
-* Note down the URL for application espm-gateway. This would be appearing as <unique_id>-espm-gateway.cfapps.eu10.hana.ondemand.com (if you deploy the application in an SAP CP sub account is in the Region Europe (Frankfurt))
+* Note down the URL for application espm-gateway. This would be appearing as <unique_id>-espm-gateway.cfapps.eu10.hana.ondemand.com (if you deploy the application in an SAP BTP sub account is in the Region Europe (Frankfurt))
 * Launch URL for ***Webshop*** application https://<unique_id>-espm-gateway.cfapps.eu10.hana.ondemand.com/webapp/webshop/index.html  
 * You will be redirected to authenticate to your user.
 ![Alt text](./documentation/images/login.png "Login")
