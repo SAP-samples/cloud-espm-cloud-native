@@ -27,9 +27,11 @@ implements ApplicationContextInitializer<ConfigurableApplicationContext> {
 		ConfigurableEnvironment applicationEnvironment = applicationContext.getEnvironment();
 		Cloud cloud = getCloud();
 		if (cloud != null) {
+			logger.info("**********Initializing the application context for cloud env**********");
 			applicationEnvironment.addActiveProfile("cloud");
 
 		} else {
+			logger.info("**********Initializing the application context for local env**********");
 			applicationEnvironment.addActiveProfile("local");
 		}
 

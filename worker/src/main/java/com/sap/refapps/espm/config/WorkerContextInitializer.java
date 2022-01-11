@@ -17,9 +17,11 @@ public class WorkerContextInitializer implements ApplicationContextInitializer<C
 		ConfigurableEnvironment applicationEnvironment = applicationContext.getEnvironment();
 		Cloud cloud = getCloud();
 		if (cloud != null) {
+			logger.info("**********Initializing the application context for cloud env**********");
 			applicationEnvironment.setActiveProfiles("cloud");
 
 		} else {
+			logger.info("**********Initializing the application context for local env**********");
 			applicationEnvironment.setActiveProfiles("local");
 		}
 
