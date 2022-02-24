@@ -1,13 +1,14 @@
 package com.sap.refapps.espm.service;
 
 import java.io.IOException;
-import java.io.IOException;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 
 /**
@@ -16,7 +17,7 @@ import org.springframework.test.context.junit4.SpringRunner;
  *
  */
 @ActiveProfiles(profiles = "test")
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @SpringBootTest
 public class ProductServiceTest {
 
@@ -46,9 +47,11 @@ public class ProductServiceTest {
 	 * 
 	 * @throws IOException
 	 */
-	@Test(expected = java.lang.Exception.class)
+	@Test
 	public void testLoadProductFromInvalidPath() throws IOException {
-		service.loadProduct(INVALID_PATH); 
+		Assertions.assertThrows(java.lang.Exception.class, () -> {
+			service.loadProduct(INVALID_PATH);
+		  });
 	}
 
 	/**
@@ -70,8 +73,10 @@ public class ProductServiceTest {
 	 * 
 	 * @throws IOException
 	 */
-	@Test(expected = java.lang.Exception.class)
+	@Test
 	public void testLoadStockFromInvalidPath() throws IOException {
-		service.loadStock(INVALID_PATH);
+		Assertions.assertThrows(java.lang.Exception.class, () -> {
+			service.loadStock(INVALID_PATH);
+		  });
 	} 
 }

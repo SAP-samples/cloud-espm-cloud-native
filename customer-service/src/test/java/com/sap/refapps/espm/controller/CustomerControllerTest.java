@@ -13,9 +13,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.io.IOException;
 import java.math.BigDecimal;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.ComponentScan;
@@ -23,7 +23,7 @@ import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
@@ -40,7 +40,7 @@ import com.sap.refapps.espm.model.Customer;
  *
  */
 @ActiveProfiles(profiles = "test")
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @WebAppConfiguration
 @ComponentScan({ "com.sap.refapps.espm" })
 @SpringBootTest
@@ -68,7 +68,7 @@ public class CustomerControllerTest {
 			+ "\"phoneNumber\":\"1029384756\",\"firstName\":\"Viola\",\"lastName\":\"Gains\",\"dateOfBirth\":\"19801231\","
 			+ "\"city\":\"Antioch, Illinois\",\"postalCode\":\"60002\",\"street\":\"Spring Garden Street\",\"houseNumber\":\"143\",\"country\":\"US\"}";
 
-	@Before
+	@BeforeEach
 	public void create() {
 		mockMvc = MockMvcBuilders.webAppContextSetup(context).build();
 	}

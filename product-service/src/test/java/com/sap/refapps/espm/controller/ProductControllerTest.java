@@ -6,16 +6,16 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
@@ -27,7 +27,7 @@ import org.springframework.web.context.WebApplicationContext;
  *
  */
 @ActiveProfiles(profiles = "test")
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @WebAppConfiguration
 @ComponentScan({"com.sap.refapps.espm"})
 @SpringBootTest
@@ -52,7 +52,7 @@ public class ProductControllerTest {
     private final static String UPDATE_STOCK_JSON_MAX_QUANTITY = "{\"productId\":\"2\",\"quantity\":1000.0}";
     private final static String UPDATE_STOCK_JSON_MIN_QUANTITY = "{\"productId\":\"1\",\"quantity\":-11.0}";
     
-    @Before
+    @BeforeEach
     public void create() {
     	mockMvc = MockMvcBuilders.webAppContextSetup(context).build();
     }
