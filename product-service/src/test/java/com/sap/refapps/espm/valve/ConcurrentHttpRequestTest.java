@@ -1,12 +1,13 @@
 package com.sap.refapps.espm.valve;
 
 import com.sap.refapps.espm.Application;
-import org.junit.runner.RunWith;
+
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.*;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -18,7 +19,7 @@ import static java.util.Collections.nCopies;
 import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.*;
 
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = Application.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public abstract class ConcurrentHttpRequestTest {
 
