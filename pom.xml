@@ -16,7 +16,7 @@
 		<postgresql.version>42.3.3</postgresql.version>
 		<version.xbem.client>2.0.7</version.xbem.client>
 		<maven-jar-plugin.version>3.1.1</maven-jar-plugin.version>
-		<sap.cloud.security.version>2.3.2</sap.cloud.security.version>
+		<sap.cloud.security.version>2.9.0</sap.cloud.security.version>
 		<apache.httpclient.version>4.5.13</apache.httpclient.version>
 		<resilience4j.version>1.7.0</resilience4j.version>
 	</properties>
