@@ -8,7 +8,7 @@ import javax.jms.JMSException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.cloud.cloudfoundry.com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.web.client.RestTemplate;
 
 import com.sap.cloud.security.xsuaa.tokenflows.XsuaaTokenFlows;
@@ -20,25 +20,28 @@ import com.sap.refapps.espm.util.SalesOrderLifecycleStatusEnum;
 import com.sap.refapps.espm.util.SalesOrderLifecycleStatusNameEnum;
 
 /**
- * The objective of this class is to offer common attributes and behaviors (variables and methods) 
- * to its concrete subclasses with default values and implementations. It also provide abstraction 
- * to some of the behaviors which need specific implementation by the subclasses.
+ * The objective of this class is to offer common attributes and behaviors
+ * (variables and methods)
+ * to its concrete subclasses with default values and implementations. It also
+ * provide abstraction
+ * to some of the behaviors which need specific implementation by the
+ * subclasses.
  * 
  * @author C5258401
  *
  */
 public abstract class AbstractSalesOrderService implements SalesOrderService {
-	
+
 	private static final Logger logger = LoggerFactory.getLogger(AbstractSalesOrderService.class);
-	
+
 	private final SalesOrderRepository salesOrderRepository;
-	
+
 	private Iterable<SalesOrder> salesOrder;
-	
+
 	protected final ResilienceHandler resilienceHandler;
-	
+
 	protected final RestTemplate restTemplate;
-	
+
 	/**
 	 * @param salesOrderRepository
 	 * @param restTemplate
@@ -50,18 +53,18 @@ public abstract class AbstractSalesOrderService implements SalesOrderService {
 		this.restTemplate = restTemplate;
 		this.resilienceHandler = resilienceHandler;
 	}
-	
+
 	@Override
 	public void insert(final SalesOrder salesOrder)
 			throws JsonProcessingException, UnsupportedEncodingException, JMSException {
-		//TODO nothing
+		// TODO nothing
 	}
-	
+
 	@Override
 	public boolean insert(SalesOrder salesOrder, String profile) {
 		return false;
 	}
-	
+
 	@Override
 	public Iterable<SalesOrder> getAll() {
 		salesOrder = salesOrderRepository.getAllSalesOrders();
@@ -78,7 +81,7 @@ public abstract class AbstractSalesOrderService implements SalesOrderService {
 	public SalesOrder getById(String salesOrderId) {
 		return salesOrderRepository.findSalesOrderById(salesOrderId);
 	}
-	
+
 	@Override
 	public void updateStatus(String salesOrderId, String lifecyleStatus, String note) {
 		Optional<SalesOrder> optionalSalesOrder = salesOrderRepository.findById(salesOrderId);
@@ -92,7 +95,7 @@ public abstract class AbstractSalesOrderService implements SalesOrderService {
 		}
 
 	}
-	
+
 	/**
 	 * @param amount
 	 * @return

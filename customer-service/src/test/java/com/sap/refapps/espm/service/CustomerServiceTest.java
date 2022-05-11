@@ -2,20 +2,22 @@ package com.sap.refapps.espm.service;
 
 import java.io.IOException;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.junit4.SpringRunner;
 
 /**
- * This class is used to test the loading 
+ * This class is used to test the loading
  * mock data from json files
  *
  */
 @ActiveProfiles(profiles = "test")
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @SpringBootTest
 public class CustomerServiceTest {
 
@@ -28,7 +30,7 @@ public class CustomerServiceTest {
 	/**
 	 * This method is used to test the
 	 * loadCustomer(path) with valid path.
-	 *  
+	 * 
 	 * @throws IOException
 	 */
 	@Test
@@ -39,11 +41,13 @@ public class CustomerServiceTest {
 	/**
 	 * This method is used to test the
 	 * loadCustomer(path) with invalid path.
-	 *  
+	 * 
 	 * @throws IOException
 	 */
-	@Test(expected = java.lang.Exception.class)
+	@Test
 	public void testLoadCustomerFromInvalidPath() throws IOException {
-		customerService.loadCustomer(INVALID_FILE_PATH);
+		Assertions.assertThrows(java.lang.Exception.class, () -> {
+			customerService.loadCustomer(INVALID_FILE_PATH);
+		});
 	}
 }

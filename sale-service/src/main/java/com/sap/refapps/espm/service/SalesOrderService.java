@@ -5,7 +5,7 @@ import java.math.BigDecimal;
 
 import javax.jms.JMSException;
 
-import org.springframework.cloud.cloudfoundry.com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.JsonProcessingException;
 
 import com.sap.refapps.espm.model.SalesOrder;
 import com.sap.refapps.espm.model.Tax;
@@ -48,8 +48,7 @@ public interface SalesOrderService {
 	 */
 	void insert(SalesOrder salesOrder)
 			throws JsonProcessingException, UnsupportedEncodingException, JMSException;
-	
-	
+
 	/**
 	 * create a sales order for local environment
 	 * 
