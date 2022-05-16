@@ -7,8 +7,8 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cloud.cloudfoundry.com.fasterxml.jackson.core.type.TypeReference;
-import org.springframework.cloud.cloudfoundry.com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
@@ -47,11 +47,12 @@ public class CustomerServiceImpl implements CustomerService {
 		Customer customer;
 		try {
 			customer = customerRepository.findCustomerByEmailAddress(emailAddress);
-		} catch(DataAccessException p) {
+		} catch (DataAccessException p) {
 			logger.info("Retrying to connect to the database...");
-			throw new DataAccessException("") {};
+			throw new DataAccessException("") {
+			};
 		}
-		
+
 		return customer;
 	}
 
@@ -60,9 +61,10 @@ public class CustomerServiceImpl implements CustomerService {
 		Customer customer;
 		try {
 			customer = customerRepository.findCustomerById(customerId);
-		} catch(DataAccessException p) {
+		} catch (DataAccessException p) {
 			logger.info("Retrying to connect to the database...");
-			throw new DataAccessException("") {};
+			throw new DataAccessException("") {
+			};
 		}
 		return customer;
 	}

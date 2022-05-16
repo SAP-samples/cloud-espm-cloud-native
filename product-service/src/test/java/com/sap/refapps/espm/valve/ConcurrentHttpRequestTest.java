@@ -1,11 +1,12 @@
 package com.sap.refapps.espm.valve;
 
 import com.sap.refapps.espm.Application;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.*;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.LinkedList;
@@ -18,7 +19,7 @@ import static java.util.Collections.nCopies;
 import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.*;
 
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = Application.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public abstract class ConcurrentHttpRequestTest {
 
@@ -34,10 +35,12 @@ public abstract class ConcurrentHttpRequestTest {
 		return defaultCountPerStatus;
 	}
 
-	public List<ResponseEntity<String>> sendConcurrentHttpRequests(int numberOfRequests, int numberOfThreads, String endpoint) {
+	public List<ResponseEntity<String>> sendConcurrentHttpRequests(int numberOfRequests, int numberOfThreads,
+			String endpoint) {
 		try {
 			ExecutorService executorService = Executors.newFixedThreadPool(numberOfThreads);
-			List<Callable<ResponseEntity<String>>> requests = nCopies(numberOfRequests, () -> sendHttpRequest(endpoint));
+			List<Callable<ResponseEntity<String>>> requests = nCopies(numberOfRequests,
+					() -> sendHttpRequest(endpoint));
 			List<Future<ResponseEntity<String>>> responseFutures = executorService.invokeAll(requests);
 
 			executorService.shutdown();

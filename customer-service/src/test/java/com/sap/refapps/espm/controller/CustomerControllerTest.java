@@ -13,9 +13,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.io.IOException;
 import java.math.BigDecimal;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.ComponentScan;
@@ -23,6 +23,7 @@ import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
@@ -40,7 +41,7 @@ import com.sap.refapps.espm.model.Customer;
  *
  */
 @ActiveProfiles(profiles = "test")
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @WebAppConfiguration
 @ComponentScan({ "com.sap.refapps.espm" })
 @SpringBootTest
@@ -51,24 +52,26 @@ public class CustomerControllerTest {
 	private WebApplicationContext context;
 	private MockMvc mockMvc;
 	private MockHttpServletRequestBuilder requestBuilder;
-	private String objectToJson; 
+	private String objectToJson;
 
 	private final String EMAIL_ADDRESS = "viola.gains@itelo1.info";
 	private final String LOCATION = "location";
 	private final String CUSTOMER_ID = "1000000001";
 	private final String INVALID_CUSTOMER_ID = "1990000001";
-	private final String CUSTOMER_URL_VALID = CustomerController.API 
+	private final String CUSTOMER_URL_VALID = CustomerController.API
 			+ CustomerController.API_CUSTOMER + EMAIL_ADDRESS;
-	private final String CUSTOMER_URL_INVALID = CustomerController.API 
+	private final String CUSTOMER_URL_INVALID = CustomerController.API
 			+ CustomerController.API_CUSTOMER + "invalid@test.com";
-	private final String CART_URL = CustomerController.API + CustomerController.API_CUSTOMER + CUSTOMER_ID + CustomerController.API_CART;
-	private final String INVALID_CUSTOMER_CART_URL = CustomerController.API + CustomerController.API_CUSTOMER + INVALID_CUSTOMER_ID  + CustomerController.API_CART;
+	private final String CART_URL = CustomerController.API + CustomerController.API_CUSTOMER + CUSTOMER_ID
+			+ CustomerController.API_CART;
+	private final String INVALID_CUSTOMER_CART_URL = CustomerController.API + CustomerController.API_CUSTOMER
+			+ INVALID_CUSTOMER_ID + CustomerController.API_CART;
 
 	private static final String CUSTOMER_JSON = "{\"customerId\":\"1000000001\",\"emailAddress\":\"viola.gains@itelo1.info\","
 			+ "\"phoneNumber\":\"1029384756\",\"firstName\":\"Viola\",\"lastName\":\"Gains\",\"dateOfBirth\":\"19801231\","
 			+ "\"city\":\"Antioch, Illinois\",\"postalCode\":\"60002\",\"street\":\"Spring Garden Street\",\"houseNumber\":\"143\",\"country\":\"US\"}";
 
-	@Before
+	@BeforeEach
 	public void create() {
 		mockMvc = MockMvcBuilders.webAppContextSetup(context).build();
 	}
@@ -87,7 +90,7 @@ public class CustomerControllerTest {
 				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
 				.andExpect(content().json(CUSTOMER_JSON));
 	}
-	
+
 	/**
 	 * It is used to test the getCustomerByEmailAddress()
 	 * by providing invalid email id.
@@ -114,8 +117,7 @@ public class CustomerControllerTest {
 				.andExpect(status().isCreated())
 				.andExpect(content().contentType(MediaType.APPLICATION_JSON));
 	}
-	
-	
+
 	/**
 	 * It is used to test the addCart()
 	 * with valid content.
@@ -137,7 +139,7 @@ public class CustomerControllerTest {
 	 */
 	@Test
 	public void testCreateCartWithNoContent() throws Exception {
-		mockMvc.perform(post(CART_URL,CUSTOMER_ID).contentType(MediaType.APPLICATION_JSON))
+		mockMvc.perform(post(CART_URL, CUSTOMER_ID).contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isBadRequest());
 	}
 
@@ -150,7 +152,7 @@ public class CustomerControllerTest {
 	public void testGetAllCarts() throws Exception {
 		requestBuilder = buildPostRequest(CART_URL);
 		mockMvc.perform(requestBuilder).andExpect(status().isCreated()).andReturn().getResponse();
-		
+
 		requestBuilder = buildGetRequest(CART_URL);
 		mockMvc.perform(requestBuilder).andExpect(status().isOk())
 				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -170,7 +172,7 @@ public class CustomerControllerTest {
 		MockHttpServletResponse response = mockMvc.perform(requestBuilder)
 				.andExpect(status().isCreated())
 				.andReturn().getResponse();
-		
+
 		Cart cart = convertJsonContent(response, Cart.class);
 		cart.setCheckOutStatus(true);
 
@@ -181,7 +183,7 @@ public class CustomerControllerTest {
 				.andExpect(content().contentType(TEXT_PLAIN))
 				.andExpect(content().string("Cart updated for item id : " + itemId));
 	}
-	
+
 	/**
 	 * It is used to test the updateCart()
 	 * with invalid Item Id.
@@ -195,7 +197,7 @@ public class CustomerControllerTest {
 		cart.setQuantityUnit(new BigDecimal("7.000"));
 		requestBuilder = buildPutRequest(CART_URL + "000000000C5", cart);
 		cart.setName("Notebook Basic 15");
-		
+
 		objectToJson = convertObjectToJson(cart);
 		mockMvc.perform(requestBuilder
 				.contentType(MediaType.APPLICATION_JSON).content(objectToJson))
@@ -287,7 +289,7 @@ public class CustomerControllerTest {
 		objectToJson = convertObjectToJson(cart);
 		return put(path).content(objectToJson)
 				.contentType(MediaType.APPLICATION_JSON);
-	} 
+	}
 
 	/**
 	 * This method is used to build mock DELETE request.
@@ -299,30 +301,31 @@ public class CustomerControllerTest {
 		return delete(path);
 	}
 
-    /**
-     * This method is used to perform a post request to get
-     * the response header 'LOCATION' which is being passed
-     * to getIdFromLocation() to parse the ID from it and 
-     * return it back.
-     * 
-     * @return (string) id
-     * @throws Exception
-     */
-    public String performPostAndGetId() throws Exception {
-    	MockHttpServletResponse response = mockMvc.perform(buildPostRequest(CART_URL))
+	/**
+	 * This method is used to perform a post request to get
+	 * the response header 'LOCATION' which is being passed
+	 * to getIdFromLocation() to parse the ID from it and
+	 * return it back.
+	 * 
+	 * @return (string) id
+	 * @throws Exception
+	 */
+	public String performPostAndGetId() throws Exception {
+		MockHttpServletResponse response = mockMvc.perform(buildPostRequest(CART_URL))
 				.andExpect(status().isCreated()).andReturn().getResponse();
 
-        return getIdFromLocation(response.getHeader(LOCATION));
-    }
+		return getIdFromLocation(response.getHeader(LOCATION));
+	}
 
 	/**
 	 * This method is useed to parse the id from the URL provided.
+	 * 
 	 * @param location
 	 * @return (string) id
 	 */
 	private String getIdFromLocation(String location) {
 		return location.substring(location.lastIndexOf('/') + 1);
-	} 
+	}
 
 	/**
 	 * To convert an object to a JSON string

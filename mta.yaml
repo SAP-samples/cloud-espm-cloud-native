@@ -112,6 +112,7 @@ modules:
     properties:
       TARGET_RUNTIME: tomcat
       QUEUE_NAME: "<yourorgname>/<yourmessageclientname>/<uniqueID>/salesorderqueue"
+      spring.main.allow-circular-references: true
     requires:
       - name: espm-hana-db
       - name: espm-em
@@ -186,8 +187,8 @@ resources:
     parameters:
       service: hana
       service-plan: schema
-      #config:
-        #database_id: <database_guid>
+      config:
+        database_id:  <database_guid>
       
   - name: espm-xsuaa
     parameters:

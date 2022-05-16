@@ -115,11 +115,6 @@ sap.ui.define([
 
 			sap.ui.getCore().byId("cardImg").setSrc("images/" + this.cardType + ".png");
 			this._oNavContainer.to(this._oWizardReviewPage);
-
-
-			this._oNavContainer.to(this._oWizardReviewPage);
-
-
 		},
 		handleWizardCancel: function () {
 
@@ -129,7 +124,7 @@ sap.ui.define([
 		},
 		handleWizardSubmit: function () {
 			var that = this;
-			this._oWizardReviewPage.setBusy(true);
+			// this._oWizardReviewPage.setBusy(true);
 			//			this.createSalesOrders();
 			var oCustomerModel = this.getView().getModel('customer');
 			var numberoforder = oCustomerModel.oData.carts.count;
