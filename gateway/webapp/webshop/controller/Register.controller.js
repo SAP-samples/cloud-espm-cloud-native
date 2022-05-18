@@ -504,7 +504,7 @@ sap.ui.define([
 					] };
 			// set explored app's demo model on this sample
 			var oModel = new sap.ui.model.json.JSONModel(oCountry);
-			oModel.setSizeLimit(1000);
+			oModel.setSizeLimit(250);
 			this.getView().setModel(oModel, "oModel");
 
 			var today = new Date();
