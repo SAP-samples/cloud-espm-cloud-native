@@ -45,6 +45,7 @@ applications:
   env:
     CORS_DOMAIN: "cfapps.eu10.hana.ondemand.com"
     QUEUE_NAME: "<yourorgname>/<yourmessageclientname>/<uniqueID>/salesorderqueue"
+    spring.main.allow-circular-references: true
   services:
     - espm-hana-db
     - espm-em
