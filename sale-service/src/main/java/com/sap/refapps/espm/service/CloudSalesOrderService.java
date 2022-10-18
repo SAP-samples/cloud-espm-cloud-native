@@ -7,7 +7,6 @@ import java.math.MathContext;
 import java.net.URI;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Base64;
 import java.util.Date;
 import java.util.HashMap;
 
@@ -22,33 +21,27 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Profile;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.RestTemplate;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.context.annotation.Profile;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
-import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.RestTemplate;
-
 import com.sap.cloud.sdk.cloudplatform.connectivity.DefaultHttpDestination;
 import com.sap.cloud.sdk.cloudplatform.connectivity.Destination;
 import com.sap.cloud.sdk.cloudplatform.connectivity.DestinationAccessor;
 import com.sap.cloud.sdk.cloudplatform.connectivity.DestinationLoader;
 import com.sap.cloud.sdk.cloudplatform.connectivity.DestinationLoaderChain;
 import com.sap.cloud.sdk.cloudplatform.connectivity.ScpCfDestinationLoader;
-import com.sap.cloud.security.xsuaa.client.ClientCredentials;
-import com.sap.cloud.security.xsuaa.client.DefaultOAuth2TokenService;
 import com.sap.cloud.security.xsuaa.client.OAuth2TokenResponse;
-import com.sap.cloud.security.xsuaa.client.XsuaaDefaultEndpoints;
 import com.sap.cloud.security.xsuaa.tokenflows.TokenFlowException;
 import com.sap.cloud.security.xsuaa.tokenflows.XsuaaTokenFlows;
 import com.sap.cloud.servicesdk.xbem.extension.sapcp.jms.MessagingServiceJmsConnectionFactory;
@@ -87,6 +80,9 @@ public class CloudSalesOrderService extends AbstractSalesOrderService {
 
 	@Autowired(required = false)
 	private MessagingServiceJmsConnectionFactory jmsConnectionFactory;
+	
+	@Autowired
+	private XsuaaTokenFlows xsuaaTokenFlows;
 
 	/**
 	 * @param salesOrderRepository
@@ -171,23 +167,9 @@ public class CloudSalesOrderService extends AbstractSalesOrderService {
 		OAuth2TokenResponse clientCredentialsTokenResponse = null;
 		try {
 			// client credentials flow
-			final DestinationService configuration = getDestinationServiceDetails("xsuaa");
-			String clientSecret = configuration.clientsecret;
-			String clientId = configuration.clientid;
-			String url = configuration.url;
-			final XsuaaDefaultEndpoints xsuaaDefaultEndpoints = new XsuaaDefaultEndpoints(url);
-			final ClientCredentials clientCredentials = new ClientCredentials(clientId, clientSecret);
-			final DefaultOAuth2TokenService defaultOAuth2TokenService = new DefaultOAuth2TokenService();
-
-			// XsuaaTokenFlows are used to get access to token flow builders which inturn is
-			// used for getting a technical user token.
-			XsuaaTokenFlows xsuaaTokenFlows = new XsuaaTokenFlows(defaultOAuth2TokenService, xsuaaDefaultEndpoints,
-					clientCredentials);
 			clientCredentialsTokenResponse = xsuaaTokenFlows.clientCredentialsTokenFlow().execute();
 		} catch (TokenFlowException e) {
 			logger.error("Couldn't get client credentials token: {}", e.getMessage());
-		} catch (IOException e) {
-			logger.error("No proper XSUAA Service available: {}", e.getMessage());
 		} catch (Exception e) {
 			logger.error("Please contact the administrator for details: {}", e.getMessage());
 		}

@@ -39,7 +39,7 @@ public class WebSecurityConfig  extends WebSecurityConfigurerAdapter {
 	 * @returns jwt converter
 	 */
 	Converter<Jwt, AbstractAuthenticationToken> getJwtAuthoritiesConverter() {
-		TokenAuthenticationConverter converter = new TokenAuthenticationConverter(xsuaaServiceConfiguration);
+		var converter = new TokenAuthenticationConverter(xsuaaServiceConfiguration);
 		converter.setLocalScopeAsAuthorities(true);
 		return converter;
 	}

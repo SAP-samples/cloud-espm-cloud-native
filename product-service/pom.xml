@@ -44,9 +44,8 @@
 
 		<!-- Spring and XSUAA Security -->
 		<dependency>
-			<groupId>com.sap.cloud.security.xsuaa</groupId>
+			<groupId>com.sap.cloud.security.xsuaa</groupId> <!-- Also managed by cloud-sdk -->
 			<artifactId>xsuaa-spring-boot-starter</artifactId>
-			<version>${sap.cloud.security.version}</version>
 		</dependency>
 		
 		<!-- h2database -->

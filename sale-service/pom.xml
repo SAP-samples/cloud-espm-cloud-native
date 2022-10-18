@@ -81,23 +81,20 @@
 		
 		<!-- Resilience4j CircuitBreaker -->
 		<dependency>
-			<groupId>io.github.resilience4j</groupId>
+			<groupId>io.github.resilience4j</groupId> <!-- Also managed by cloud-sdk -->
 			<artifactId>resilience4j-circuitbreaker</artifactId>
-			<version>${resilience4j.version}</version>
 		</dependency>
 
 		<!-- Resilience4j Retry -->
 		<dependency>
-			<groupId>io.github.resilience4j</groupId>
+			<groupId>io.github.resilience4j</groupId> <!-- Also managed by cloud-sdk -->
 			<artifactId>resilience4j-retry</artifactId>
-			<version>${resilience4j.version}</version>
 		</dependency>
 
 		<!-- Resilience4j TimeLimiter -->
 		<dependency>
-			<groupId>io.github.resilience4j</groupId>
+			<groupId>io.github.resilience4j</groupId> <!-- Also managed by cloud-sdk -->
 			<artifactId>resilience4j-timelimiter</artifactId>
-			<version>${resilience4j.version}</version>
 		</dependency>
 
 		<dependency>
@@ -117,9 +114,8 @@
 
 		<!-- Spring and XSUAA Security -->
 		<dependency>
-			<groupId>com.sap.cloud.security.xsuaa</groupId>
+			<groupId>com.sap.cloud.security.xsuaa</groupId> <!-- Also managed by cloud-sdk -->
 			<artifactId>xsuaa-spring-boot-starter</artifactId>
-			<version>${sap.cloud.security.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.httpcomponents</groupId>

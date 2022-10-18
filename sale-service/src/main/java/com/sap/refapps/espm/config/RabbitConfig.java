@@ -60,7 +60,7 @@ public class RabbitConfig {
 	 */
 	@Bean
 	RabbitTemplate rabbitTemplateSettings(ConnectionFactory rabbitConnectionFactory){
-		RabbitTemplate template = new RabbitTemplate(rabbitConnectionFactory);
+		var template = new RabbitTemplate(rabbitConnectionFactory);
 		template.setMessageConverter(new Jackson2JsonMessageConverter());
 		return template;
 
@@ -75,7 +75,7 @@ public class RabbitConfig {
 	@Bean
 	public ConnectionFactory connectionFactory() throws IOException, URISyntaxException {
 
-		CachingConnectionFactory connectionFactory = new CachingConnectionFactory(amqpUrl);
+		var connectionFactory = new CachingConnectionFactory(amqpUrl);
 		connectionFactory.setUsername(rabbitUserName);
 		connectionFactory.setPassword(rabbitPassword);
 		connectionFactory.setChannelCacheSize(100);

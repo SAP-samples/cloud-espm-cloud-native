@@ -109,13 +109,13 @@ public class ProductServiceImpl implements ProductService {
 
 	@Override
 	public void loadProduct(String location) throws IOException {
-		ObjectMapper mapper = new ObjectMapper();
-		TypeReference<List<Product>> typeReference = new TypeReference<List<Product>>() {
+		var mapper = new ObjectMapper();
+		var typeReference = new TypeReference<List<Product>>() {
 		};
 		InputStream inputStream = null;
 		try {
 			inputStream = TypeReference.class.getResourceAsStream(location);
-			List<Product> listOfProducts = mapper.readValue(inputStream, typeReference);
+			var listOfProducts = mapper.readValue(inputStream, typeReference);
 			saveProduct(listOfProducts);
 		} catch (IOException e) {
 			logger.error("loading of product data failed");
@@ -125,13 +125,13 @@ public class ProductServiceImpl implements ProductService {
 
 	@Override
 	public void loadStock(String location) throws IOException {
-		ObjectMapper mapper = new ObjectMapper();
-		TypeReference<List<Stock>> typeReference = new TypeReference<List<Stock>>() {
+		var mapper = new ObjectMapper();
+		var typeReference = new TypeReference<List<Stock>>() {
 		};
 		InputStream inputStream = null;
 		try {
 			inputStream = TypeReference.class.getResourceAsStream(location);
-			List<Stock> listOfStocks = mapper.readValue(inputStream, typeReference);
+			var listOfStocks = mapper.readValue(inputStream, typeReference);
 			saveStock(listOfStocks);
 		} catch (IOException e) {
 			logger.error("loading of stock data failed");

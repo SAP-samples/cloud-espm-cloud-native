@@ -34,14 +34,16 @@ modules:
       builder: maven
       build-result: "target/product-service-1.2.0.jar"
       timeout: 60m
-      buildpack: https://github.com/cloudfoundry/java-buildpack.git
     properties:
       TARGET_RUNTIME: tomcat
+      JBP_CONFIG_COMPONENTS: "jres: ['com.sap.xs.java.buildpack.jdk.SAPMachineJDK']"
+      JBP_CONFIG_SAP_MACHINE_JRE: '{ jre: { version: "11.+" } }'
     requires:
       - name: espm-hana-db
       - name: espm-xsuaa
     parameters:
       memory: 1G
+      buildpack: sap_java_buildpack
     provides:
       - name: product-service
         properties:
@@ -57,13 +59,15 @@ modules:
       builder: maven
       build-result: "target/customer-service-1.2.0.jar"
       timeout: 60m
-      buildpack: https://github.com/cloudfoundry/java-buildpack.git
     properties:
       TARGET_RUNTIME: tomcat
+      JBP_CONFIG_COMPONENTS: "jres: ['com.sap.xs.java.buildpack.jdk.SAPMachineJDK']"
+      JBP_CONFIG_SAP_MACHINE_JRE: '{ jre: { version: "11.+" } }'
     requires:
       - name: espm-hana-db
     parameters:
       memory: 1G
+      buildpack: sap_java_buildpack
     provides:
       - name: customer-service
         properties:
@@ -76,13 +80,14 @@ modules:
       builder: maven
       build-result: "target/sale-service-1.2.0.jar"
       timeout: 60m
-      buildpack: https://github.com/cloudfoundry/java-buildpack.git
     deployed-after:
       - espm-product-svc
     properties:
       TARGET_RUNTIME: tomcat
       QUEUE_NAME: "<yourorgname>/<yourmessageclientname>/<uniqueID>/salesorderqueue"
       PROD_SERVICE: ~{product-service/product-url}
+      JBP_CONFIG_COMPONENTS: "jres: ['com.sap.xs.java.buildpack.jdk.SAPMachineJDK']"
+      JBP_CONFIG_SAP_MACHINE_JRE: '{ jre: { version: "11.+" } }'
     requires:
       - name: espm-hana-db
       - name: espm-em
@@ -96,6 +101,7 @@ modules:
           forwardAuthToken: true
     parameters:
       memory: 1G
+      buildpack: sap_java_buildpack
     provides:
       - name: sales-service
         properties:
@@ -108,16 +114,18 @@ modules:
       builder: maven
       build-result: "target/worker-1.2.0.jar"
       timeout: 60m
-      buildpack: https://github.com/cloudfoundry/java-buildpack.git
     properties:
       TARGET_RUNTIME: tomcat
       QUEUE_NAME: "<yourorgname>/<yourmessageclientname>/<uniqueID>/salesorderqueue"
       spring.main.allow-circular-references: true
+      JBP_CONFIG_COMPONENTS: "jres: ['com.sap.xs.java.buildpack.jdk.SAPMachineJDK']"
+      JBP_CONFIG_SAP_MACHINE_JRE: '{ jre: { version: "11.+" } }'
     requires:
       - name: espm-hana-db
       - name: espm-em
     parameters:
       memory: 1G
+      buildpack: sap_java_buildpack
       no-host: true
       health-check-type: process
 

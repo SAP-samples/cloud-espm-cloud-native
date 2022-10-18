@@ -91,13 +91,13 @@ public class CustomerServiceImpl implements CustomerService {
 
 	@Override
 	public void loadCustomer(String filePath) throws IOException {
-		ObjectMapper mapper = new ObjectMapper();
-		TypeReference<List<Customer>> typeReference = new TypeReference<List<Customer>>() {
+		var mapper = new ObjectMapper();
+		var typeReference = new TypeReference<List<Customer>>() {
 		};
 		InputStream inputStream = null;
 		try {
 			inputStream = TypeReference.class.getResourceAsStream(filePath);
-			List<Customer> listOfCustomers = mapper.readValue(inputStream, typeReference);
+			var listOfCustomers = mapper.readValue(inputStream, typeReference);
 			saveCustomer(listOfCustomers);
 		} catch (IOException e) {
 			logger.error("loading of customer data failed");
