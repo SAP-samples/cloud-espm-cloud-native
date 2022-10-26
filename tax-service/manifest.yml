@@ -3,9 +3,12 @@ applications:
 - name: espm-tax-service
   host: <unique-id>-espm-tax-service
   memory: 1024M
+  buildpack: sap_java_buildpack
   instances: 1
   path: target/tax-service.jar
   env:
     SPRING_PROFILES_DEFAULT: cf
+    JBP_CONFIG_COMPONENTS: "jres: ['com.sap.xs.java.buildpack.jdk.SAPMachineJDK']"
+    JBP_CONFIG_SAP_MACHINE_JRE: '{ jre: { version: "11.+" } }'
   services:
     - espm-xsuaa-tax

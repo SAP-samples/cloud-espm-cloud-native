@@ -39,7 +39,7 @@ public class RabbitConfig {
 	 */
 	@Primary
 	public SimpleMessageListenerContainer rabbitListener(ConnectionFactory rabbitConnectionFactory) {
-		SimpleMessageListenerContainer factory = new SimpleMessageListenerContainer();
+		var factory = new SimpleMessageListenerContainer();
 		factory.setConnectionFactory(rabbitConnectionFactory);
 		factory.setPrefetchCount(prefetchCount);
 		factory.setAcknowledgeMode(AcknowledgeMode.MANUAL);

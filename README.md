@@ -126,7 +126,7 @@ The focus of this pattern is on the design of the failure unit. A failure unit i
 
 Before running ESPM application one would need
 
-* Java 8
+* Java 11
 * [Apache Maven](https://maven.apache.org/)
 * To build the multi target application, we need the [Cloud MTA Build tool](https://sap.github.io/cloud-mta-build-tool/), download the tool from [here](https://sap.github.io/cloud-mta-build-tool/download/)
 * For Windows system, install 'MAKE' from https://sap.github.io/cloud-mta-build-tool/makefile/
@@ -140,14 +140,16 @@ Before running ESPM application one would need
 
 For Running locally:
 * Message Server
-  [Apache Qpid](https://qpid.apache.org/) will be used as message server for local development and testing (steps on installing QPID can be found below. Qpid was chosen was local development as it's easy to install and setup. (Ensure JDK 1.8 is present)
+  [Apache Qpid](https://qpid.apache.org/) will be used as message server for local development and testing (steps on installing QPID can be found below. Qpid was chosen was local development as it's easy to install and setup. (Ensure JDK 11 is present)
 * Database Server
   [PostgreSQL](https://www.postgresql.org/) would be used as the SQL Database server for local development.
 
 
 ### Message server
 
-* Download Qpid from [its repository](http://archive.apache.org/dist/qpid/broker-j/7.0.1/binaries/apache-qpid-broker-j-7.0.1-bin.zip)  
+* Download Qpid Broker-J 8.0 from [its repository](https://qpid.apache.org/releases/qpid-broker-j-8.0.6/)
+
+>Note: Qpid Broker-J 7.0 is incompatible with JDK 11.  
 * Extract the zip and navigate to the bin directory
 * To run Qpid server
      - Windows - Run the qpid-server.bat
@@ -155,6 +157,8 @@ For Running locally:
 
 * On the first run a qpid-broker a default config.json will be generated in your user directory
   * On windows C:\users\<username>\Appdata\roaming\Qpid\config.json
+
+>Note: If you're facing issues in starting the qpid server, please delete the already existing Qpid\config.json file and then restart the server again.
   * On Linux/Mac /Users/<username>/config.json
 * add the property "secureOnlyMechanisms": [], in the config.json file to disable SSL, as indicated in [sample file](https://github.com/SAP-samples/cloud-espm-cloud-native/blob/master/documentation/config.json#L9). Please do not use the sample file but update your own config.json file with this property.
 * Stop Qpid server and start it again

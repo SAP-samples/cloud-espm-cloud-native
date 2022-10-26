@@ -6,7 +6,6 @@ import org.springframework.cloud.Cloud;
 import org.springframework.cloud.CloudException;
 import org.springframework.cloud.CloudFactory;
 import org.springframework.context.*;
-import org.springframework.core.env.ConfigurableEnvironment;
 
 public class WorkerContextInitializer implements ApplicationContextInitializer<ConfigurableApplicationContext> {
 
@@ -14,8 +13,8 @@ public class WorkerContextInitializer implements ApplicationContextInitializer<C
 
 	@Override
 	public void initialize(ConfigurableApplicationContext applicationContext) {
-		ConfigurableEnvironment applicationEnvironment = applicationContext.getEnvironment();
-		Cloud cloud = getCloud();
+		var applicationEnvironment = applicationContext.getEnvironment();
+		var cloud = getCloud();
 		if (cloud != null) {
 			logger.info("**********Initializing the application context for cloud env**********");
 			applicationEnvironment.setActiveProfiles("cloud");
@@ -29,7 +28,7 @@ public class WorkerContextInitializer implements ApplicationContextInitializer<C
 
 	private Cloud getCloud() {
 		try {
-			CloudFactory cloudFactory = new CloudFactory();
+			var cloudFactory = new CloudFactory();
 			return cloudFactory.getCloud();
 		} catch (CloudException ce) {
 			logger.error("no suitable cloud found");

@@ -16,10 +16,13 @@ modules:
     properties:
       TARGET_RUNTIME: tomcat
       SPRING_PROFILES_DEFAULT: cf
+      JBP_CONFIG_COMPONENTS: "jres: ['com.sap.xs.java.buildpack.jdk.SAPMachineJDK']"
+      JBP_CONFIG_SAP_MACHINE_JRE: '{ jre: { version: "11.+" } }'
     requires:
       - name: espm-xsuaa-tax
     parameters:
       memory: 1G
+      buildpack: sap_java_buildpack
     provides:
       - name: tax-service
         properties:

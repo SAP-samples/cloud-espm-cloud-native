@@ -58,8 +58,8 @@ public class TaxController {
 	@ResponseBody
 	public ResponseEntity<Tax> calculateTaxFromAmount(@RequestParam("amount") final BigDecimal amount){
 			
-			Tax tax = taxService.calculateTaxFromAmount(amount);
-			HttpHeaders headers = new HttpHeaders();
+			var tax = taxService.calculateTaxFromAmount(amount);
+			var headers = new HttpHeaders();
 			headers.setContentType(org.springframework.http.MediaType.APPLICATION_JSON);
 
 			return new ResponseEntity<Tax>(tax,headers,HttpStatus.OK);
@@ -94,7 +94,7 @@ public class TaxController {
 	 * @return ResponseEtity with headers, status and body
 	 */
 	public static ResponseEntity<String> errorMessage(String message, HttpStatus status ){
-		HttpHeaders headers = new HttpHeaders();
+		var headers = new HttpHeaders();
 		headers.setContentType(org.springframework.http.MediaType.TEXT_PLAIN);
 
 		return ResponseEntity.status(status).headers(headers).body(message);
