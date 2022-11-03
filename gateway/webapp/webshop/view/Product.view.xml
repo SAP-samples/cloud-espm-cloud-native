@@ -62,7 +62,7 @@
 						<ObjectIdentifier class="sapMTableContentMargin" id="availabilityObjIdent" text="{customer>name}"/>
 						<Text class="sapMTableContentMargin" id="desctiptionTxt" maxLines="3" text="{customer>shortDescription}"/>
 						<ObjectNumber class="sapMTableContentMargin" id="priceObjNumber" number="{path: 'customer>price' }" unit="{customer>currencyCode}"/>
-						<Input id="numberId" width="50%" placeholder="1" type ="Number" textAlign="End" liveChange ="validateNumberInputField" value=""/>
+						<Input id="numberId" width="50%" placeholder="0" type ="Number" textAlign="End" liveChange ="validateNumberInputField" value=""/>
 						<Button class="sapMTableContentMargin" id="btnAddToCart" press="onAddToCartHomePressed" icon="sap-icon://cart-3" iconFirst="true" type="Emphasized" tooltip="{i18n>home.addToCart}"/>
 					</cells>
 				</ColumnListItem>

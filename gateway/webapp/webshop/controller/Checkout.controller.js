@@ -120,7 +120,7 @@ sap.ui.define([
 
 			this._oNavContainer.backToPage(this._oWizardContentPage.getId());
 			var oRouter = UIComponent.getRouterFor(this);
-			oRouter.navTo("Home", true);
+			oRouter.navTo("Product", true);
 		},
 		handleWizardSubmit: function () {
 			var that = this;
