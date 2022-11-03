@@ -19,15 +19,13 @@ sap.ui.define([
             this.byId("productListPage").setModel(productsModel, "products");
             var oRouter = UIComponent.getRouterFor(this);
             oRouter
-            .getRoute("Product")
-            .attachPatternMatched(this._onObjectMatched, this);
+                .getRoute("Product")
+                .attachPatternMatched(this._onObjectMatched, this);
         },
         _onObjectMatched: function (oEvent) {
-            if(localStorage.getItem("checkedOut") == "true"){
-                this.getView().byId("btnProductListHeader").setText(0);
-            }
-            
-          },
+            countvar = this.getOwnerComponent().getModel("customer").getData().carts.count;
+            this.getView().byId("btnProductListHeader").setText(countvar);
+        },
         onAfterRendering: function () {
 
         },
@@ -43,22 +41,23 @@ sap.ui.define([
             var productId = oEvent.getSource().getBindingContext('customer').getObject().productId;
             var name = oEvent.getSource().getBindingContext('customer').getObject().name;
             var quantityUnit = oEvent.oSource.oParent.mAggregations.cells[4].mProperties.value;
-            if(quantityUnit === "")
+            if(isNaN(parseInt(quantityUnit)) || parseInt(quantityUnit)<= 0)
             {
-                sap.m.MessageToast.show("Minimum quantity 1 is taken");
-                quantityUnit = 1;
+                sap.m.MessageToast.show("Invalid Quantity. Minimum quantity should be 1");
             }
-            var oCustomerModel = this.getView().getModel('customer');
-            var ctrl = this.getView().byId("txtEmailAddress");
-            email = ctrl.mProperties.text;
-            var customerModel = this.getView().getModel('customer');
-            customerid = customerModel.loadCustomer(email);
-            customerModel.createCart(productId, name, quantityUnit);
-            countvar++;
-            this.getView().byId("btnProductListHeader").setText(countvar);
-            if(countvar>5)
-            {   
-                sap.m.MessageToast.show("Please try to restrict the Products for fast checkout..");
+            else{
+                var ctrl = this.getView().byId("txtEmailAddress");
+                email = ctrl.mProperties.text;
+                var customerModel = this.getView().getModel('customer');
+                customerid = customerModel.loadCustomer(email);
+                customerModel.createCart(productId, name, quantityUnit);
+                countvar++;
+                this.getView().byId("btnProductListHeader").setText(countvar);
+                if(countvar>5)
+                {
+                    sap.m.MessageToast.show("Please try to restrict the Products for fast checkout..");
+
+                }
 
             }
         },
@@ -85,8 +84,8 @@ sap.ui.define([
         },
 
         onNavBack: function () {
-			window.history.go(-1);
-		},
+            window.history.go(-1);
+        },
 
         onOrdersButtonPressed: function () {
             var ctrl = this.getView().byId("txtEmailAddress");
@@ -114,8 +113,7 @@ sap.ui.define([
             var that = this;
             var customerModel = this.getView().getModel('customer');
             customerid = customerModel.loadCustomer(email);
-        }
-
+        },
     });
 
 });
