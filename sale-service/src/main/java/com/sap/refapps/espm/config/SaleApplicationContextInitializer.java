@@ -2,11 +2,10 @@ package com.sap.refapps.espm.config;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.cloud.Cloud;
-import org.springframework.cloud.CloudException;
-import org.springframework.cloud.CloudFactory;
 import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
+
+import io.pivotal.cfenv.core.CfEnv;
 
 /**
  * This is the application context initializer class
@@ -24,8 +23,9 @@ implements ApplicationContextInitializer<ConfigurableApplicationContext> {
 	@Override
 	public void initialize(ConfigurableApplicationContext applicationContext) {
 		var applicationEnvironment = applicationContext.getEnvironment();
-		var cloud = getCloud();
-		if (cloud != null) {
+		var cfEnv = new CfEnv();
+		
+		if (cfEnv.isInCf()) {
 			logger.info("**********Initializing the application context for cloud env**********");
 			applicationEnvironment.setActiveProfiles("cloud");
 
@@ -34,21 +34,6 @@ implements ApplicationContextInitializer<ConfigurableApplicationContext> {
 			applicationEnvironment.setActiveProfiles("local");
 		}
 
-	}
-
-	/** 
-	 * Returns cloud object if the application runs on cloud environment
-	 * 
-	 * @return cloud object if the application runs on cloud environment
-	 */
-	private Cloud getCloud() {
-		try {
-			var cloudFactory = new CloudFactory();
-			return cloudFactory.getCloud();
-		} catch (CloudException ce) {
-			logger.error("no suitable cloud found");
-			return null;
-		}
 	}
 
 }
