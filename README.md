@@ -324,6 +324,7 @@ Follow steps below to run each microservice of ESPM one by one. Please ensure th
 
 * Gateway acts as the single-entry point into the ESPM application. It's implemented using SAP HANA XS Advanced [Approuter](https://help.sap.com/viewer/4505d0bdaf4948449b7f7379d24d0f0d/2.0.03/en-US/0117b71251314272bfe904a2600e89c0.html) library.
 * Navigate to gateway folder.
+* Change the authenticationMethod and authenticationType to `none` in xs-app.json.
 * Configure all three microservice end point by specifying the name (destination name) and local url of the microservice in the file default-env.json as shown below
 `{
     "name": "customer-service",
@@ -347,7 +348,7 @@ The below are the list of local service API endpoints of all the microservices.
 | Endpoint URL 	| http://localhost:9991/customer.svc/api/v1/customers/			 |
 | Header       	| `Content-Type:application/json`                                        |
 | Method       	| `POST`                                                                 |
-| Body         	| `{"emailAddress": "new_customer@test.com", "phoneNumber": "0123456789", "firstName": "new", "lastName": "customer", "dateOfBirth": "19900911", "city": "Bang, KR", "postalCode": "112233", "street": "100ft Road", "houseNumber": "123", "country": "IN"}`
+| Body         	| `{"emailAddress": "<customer-emailId>", "phoneNumber": "0123456789", "firstName": "new", "lastName": "customer", "dateOfBirth": "19900911", "city": "Bang, KR", "postalCode": "112233", "street": "100ft Road", "houseNumber": "123", "country": "IN"}`
 
 | |Get Customer by Email ID|
 |-|-|
@@ -360,7 +361,7 @@ The below are the list of local service API endpoints of all the microservices.
 | Endpoint URL 	| http://localhost:9991/customer.svc/api/v1/customers/{customerId}/carts/|
 | Header       	| `Content-Type:application/json`                                        |
 | Method       	| `POST`                                                                 |
-| Body         	| `{"productId": "HT-1000", "productName" :"Notebook Basic 15", "checkOutStatus": "false","quantityUnit": 3}`     
+| Body         	| `{"productId": "HT-1000", "name" :"Notebook Basic 15", "checkOutStatus": "false","quantityUnit": 3}`     
 
 | |Get Cart by Customer ID|
 |-|-|
@@ -372,7 +373,7 @@ The below are the list of local service API endpoints of all the microservices.
 | Endpoint URL 	| http://localhost:9991/customer.svc/api/v1/customers/{customerId}/carts/{itemId}         |
 | Header       	| `Content-Type:application/json`                                                         |
 | Method       	| `PUT`                                                                                   |
-| Body         	| `"productId": "HT-1000", "productName" :"Notebook Basic 15", "quantityUnit": 10,"checkOutStatus": false}`|
+| Body         	| `"productId": "HT-1000", "name" :"Notebook Basic 15", "quantityUnit": 10,"checkOutStatus": false}`|
 
 | |Delete Cart by Item ID|
 |-|-|
@@ -480,7 +481,7 @@ The ESPM application has a dependency to Tax Service Application which is a mock
 
 ### Security Implementation
 
-The security implementation in the ESPM application is based on [Spring Security](https://spring.io/projects/spring-security-oauth). Spring applications using the Spring-security libraries can integrate with the SAPBusiness Technology Platform Authorization and Trust Management service as described [here](https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/be97ec4a799c4135884c62610fea2a8f.html). ESPM Application implements app-to-app communication so that two microservices can securely communicate with each other. This application showcases how to implement a secure communication using two  different ways:
+The security implementation in the ESPM application is based on [Spring Security](https://spring.io/projects/spring-security-oauth). Spring applications using the Spring-security libraries can integrate with the SAPBusiness Technology Platform Authorization and Trust Management service as described [here](https://help.sap.com/docs/SAP_HANA_PLATFORM/4505d0bdaf4948449b7f7379d24d0f0d/cc45f1833e364d348b5057a60d0b8aed.html#configure-spring-security-for-spring-boot-applications%0A(spring-xsuaa)). ESPM Application implements app-to-app communication so that two microservices can securely communicate with each other. This application showcases how to implement a secure communication using two  different ways:
 
 - Propagating a Business User
 - Using a Technical User
@@ -505,7 +506,7 @@ The steps below describe how authentication and authorization is implemented in 
 
 As a pre prerequisite, the sale-service and product-service should be bound to same xsuaa instance.
 
- 1. Add the [application security descriptor](https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/150b04d647cd4b42835411c1787a8b11.html) file (xs-security.json) to the project.
+ 1. Add the [application security descriptor](https://help.sap.com/docs/CP_AUTHORIZ_TRUST_MNG/42d3f70108eb4439953bfe47f4f90809/381b77b9e77448fd9a2036da1ec39729.html?state=DRAFT&q=application%20security%20descriptor%20file) file (xs-security.json) to the project.
     > This file can be found in the root folder of the project.
  
  2. Define a role **Retailer** within the application security descriptor.
@@ -544,6 +545,12 @@ As a pre prerequisite, the sale-service and product-service should be bound to s
 
 * Replace the `QUEUE_NAME` for sales-svc, worker apps in [manifest.yml file](./manifest.yml) with the new queue name that was created based on the namespace, name provided in the previous step. 
 
+### Listing Allowed Redirect URIs
+
+* If your landscape domain or custom domain isn't on this list including wildcards, the SAP Authorization and Trust Management service won't redirect users there. The application security descriptor (xs-security.json) includes the redirect-uris parameter. This parameter contains a list of the redirect URIs that SAP BTP checks for when redirecting.
+
+For more Information, refer to section [redirect-uris](https://help.sap.com/docs/BTP/65de2977205c403bbc107264b8eccf4b/f117cab6b92d438cb2a0b5204713994b.html?q=security%20considerations#listing-allowed-redirect-uris)
+
 
 ### Tax Service Application Deployment
 
@@ -561,7 +568,7 @@ The Tax Service Application can be deployed in two ways:
 
 * Edit the manifest.yml file and update `<unique_id>` with some unique value for each tax applications host name
 
-* Deploy Tax  Service on to Cloud Foundry from the tax-service project folder by running command `cf push espm-tax-svc` from CLI.
+* Deploy Tax  Service on to Cloud Foundry from the tax-service project folder by running command `cf push <unique_id>-espm-tax-svc` from CLI.
 * The TAX SERVICE can be accessed in Cloud Foundary in either of the 2 ways:
    * **Destination Services (Recommended):** <br>
        * Create an instance of the destination service by using the command `cf create-service destination lite espm-destination` <br>
@@ -583,7 +590,7 @@ This will package your application to be ready for deployment.
 
 To Deploy MTAR, run the command:
 
-	cf deploy mta_archives/cloud-espm-cloud-native-tax_1.2.0.mtar
+	cf deploy mta_archives/cloud-espm-cloud-native-tax_1.3.0.mtar
 
 ### Create Destination
 
@@ -639,15 +646,15 @@ Destination will be used by ESPM Application to consume the Tax Service which is
 
 * Deploy Worker on to Cloud Foundry from the project root folder by running command `cf push <unique_id>-espm-worker` from CLI
 
-* Deploy Sale Service  on to Cloud Foundry from the project root folder by running command `cf push espm-sales-svc` from CLI.
+* Deploy Sale Service  on to Cloud Foundry from the project root folder by running command `cf push <unique_id>-espm-sales-svc` from CLI.
 
 * Learn resilience patterns implemented in Sale and worker services
 
 * Stop Sale and Worker service.
 
-* Deploy Product Service on to Cloud Foundry from the project root folder by running command `cf push espm-product-svc` from CLI.
+* Deploy Product Service on to Cloud Foundry from the project root folder by running command `cf push <unique_id>-espm-product-svc` from CLI.
 
-* Deploy Customer Service on to Cloud Foundry from the project root folder by running command `cf push espm-customer-svc` from CLI.
+* Deploy Customer Service on to Cloud Foundry from the project root folder by running command `cf push <unique_id>-espm-customer-svc` from CLI.
 
 * Learn resilience patterns implemented in Product and Customer  services
 
@@ -669,7 +676,7 @@ This will package your application to be ready for deployment.
 
 To Deploy MTAR, run the command:
 
-	cf deploy mta_archives/cloud-espm-cloud-native_1.2.0.mtar
+	cf deploy mta_archives/cloud-espm-cloud-native_1.3.0.mtar
 
 >Note: If you need to undeploy the application, you will have to delete the salesOrder queue manually before doing so. 
 
@@ -825,7 +832,7 @@ The below are the list of local service API endpoints of all the microservices.
 
 In order to access the below endpoint, the user needs retailer role and token has to be passed in the header.
 
-Execute the below command and make note of url, clientid, clientsecret.
+Execute the below command and make a note of `xsuaa` service-instance url, clientid, clientsecret.
 
 `cf env <unique_id>-espm-product-svc`
 
@@ -880,7 +887,7 @@ The payload of the request needs to have following form-url-encoded values:
 
 In order to access the below endpoint, the user needs retailer role and token has to be passed in the header.
 
-Execute the below command and make note of url, clientid, clientsecret.
+Execute the below command and make a note of `xsuaa` service-instance url, clientid, clientsecret.
 
 `cf env <unique_id>-espm-sales-svc`
 
