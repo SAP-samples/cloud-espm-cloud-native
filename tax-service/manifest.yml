@@ -1,7 +1,6 @@
 ---
 applications:
-- name: espm-tax-service
-  host: <unique-id>-espm-tax-service
+- name: <unique-id>-espm-tax-service
   memory: 1024M
   buildpack: sap_java_buildpack
   instances: 1
