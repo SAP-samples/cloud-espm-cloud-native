@@ -3,7 +3,7 @@ applications:
 - name: <unique_id>-espm-product-svc
   memory: 1G
   buildpack: sap_java_buildpack
-  path: product-service/target/product-service-1.3.0.jar
+  path: product-service/target/product-service-1.3.1.jar
   env:
     CORS_DOMAIN: "<your_domain>"  # e.g: cfapps.eu10.hana.ondemand.com
     JBP_CONFIG_COMPONENTS: "jres: ['com.sap.xs.java.buildpack.jdk.SAPMachineJDK']"
@@ -16,7 +16,7 @@ applications:
 - name: <unique_id>-espm-customer-svc
   memory: 1G
   buildpack: sap_java_buildpack
-  path: customer-service/target/customer-service-1.3.0.jar
+  path: customer-service/target/customer-service-1.3.1.jar
   env:
     CORS_DOMAIN: "<your_domain>"
     JBP_CONFIG_COMPONENTS: "jres: ['com.sap.xs.java.buildpack.jdk.SAPMachineJDK']"
@@ -27,7 +27,7 @@ applications:
 - name: <unique_id>-espm-sales-svc
   memory: 1G
   buildpack: sap_java_buildpack
-  path: sale-service/target/sale-service-1.3.0.jar
+  path: sale-service/target/sale-service-1.3.1.jar
   env:
     CORS_DOMAIN: "<your_domain>"
     QUEUE_NAME: "<yourorgname>/<yourmessageclientname>/<uniqueID>/salesorderqueue"
@@ -44,7 +44,7 @@ applications:
   health-check-type: process
   memory: 1G
   buildpack: sap_java_buildpack
-  path: worker/target/worker-1.3.0.jar
+  path: worker/target/worker-1.3.1.jar
   env:
     CORS_DOMAIN: "<your_domain>"
     QUEUE_NAME: "<yourorgname>/<yourmessageclientname>/<uniqueID>/salesorderqueue"
