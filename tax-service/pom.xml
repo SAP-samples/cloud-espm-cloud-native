@@ -22,7 +22,7 @@
         <java.version>11</java.version>
         <maven-jar-plugin.version>3.1.1</maven-jar-plugin.version>
 		<log4j2.version>2.17.1</log4j2.version>
-		<java.cfenv.boot.version>2.4.0</java.cfenv.boot.version>
+		<java.cfenv.boot.version>2.2.4.RELEASE</java.cfenv.boot.version>
     </properties>
 
     <dependencies>
