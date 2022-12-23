@@ -603,7 +603,8 @@ Destination will be used by ESPM Application to consume the Tax Service which is
 ### Build and Deploy ESPM Application
 
 #### Using CF manifest
-* In the root folder of project edit the manifest.yml file and update `<unique_id>` with some unique value for each applications host name
+* In the root folder of project edit the manifest.yml file and update `<unique_id>` with some unique value for each applications name
+* Replace `<your_domain>` with your domain name. e.g `cfapps.eu10.hana.ondemand.com`
 * update `QUEUE_NAME` parameter for applications  espm-sales-svc and espm-worker with value
   `"<yourorgname>/<yourmessageclientname>/<uniqueID>/salesorderqueue"`
   e.g `myorg/espm/1/salesorderqueue`
@@ -614,7 +615,7 @@ Destination will be used by ESPM Application to consume the Tax Service which is
 
 * Create new SAP Event Mesh service using the command:
 
-`cf cs enterprise-messaging default espm-em -c em-default.json`
+  `cf cs enterprise-messaging default espm-em -c em-default.json`
 
 
 * Create a HANA CLoud instance if you dont have one:
