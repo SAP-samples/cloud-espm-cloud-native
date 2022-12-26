@@ -49,7 +49,7 @@
 		
 		<!-- Resilience4j RateLimiter -->
 		<dependency>
-		    <groupId>io.github.resilience4j</groupId> <!-- Also managed by cloud-sdk -->
+		    <groupId>io.github.resilience4j</groupId>
 		    <artifactId>resilience4j-ratelimiter</artifactId>
 		</dependency>
 	</dependencies>

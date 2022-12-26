@@ -32,7 +32,7 @@
 
 		<!-- Spring and XSUAA Security -->
 		<dependency>
-			<groupId>com.sap.cloud.security.xsuaa</groupId> <!-- Also managed by cloud-sdk -->
+			<groupId>com.sap.cloud.security.xsuaa</groupId>
 			<artifactId>xsuaa-spring-boot-starter</artifactId>
 		</dependency>
 		
