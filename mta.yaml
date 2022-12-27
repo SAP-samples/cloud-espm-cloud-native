@@ -84,7 +84,7 @@ modules:
       - espm-product-svc
     properties:
       TARGET_RUNTIME: tomcat
-      QUEUE_NAME: "<yourorgname>/<yourmessageclientname>/<uniqueID>/salesorderqueue"
+      QUEUE_NAME: "<yourorgname>/<any_messageclientname>/<uniqueID>/salesorderqueue"
       PROD_SERVICE: ~{product-service/product-url}
       JBP_CONFIG_COMPONENTS: "jres: ['com.sap.xs.java.buildpack.jdk.SAPMachineJDK']"
       JBP_CONFIG_SAP_MACHINE_JRE: '{ jre: { version: "11.+" } }'
@@ -116,7 +116,7 @@ modules:
       timeout: 60m
     properties:
       TARGET_RUNTIME: tomcat
-      QUEUE_NAME: "<yourorgname>/<yourmessageclientname>/<uniqueID>/salesorderqueue"
+      QUEUE_NAME: "<yourorgname>/<any_messageclientname>/<uniqueID>/salesorderqueue"
       spring.main.allow-circular-references: true
       JBP_CONFIG_COMPONENTS: "jres: ['com.sap.xs.java.buildpack.jdk.SAPMachineJDK']"
       JBP_CONFIG_SAP_MACHINE_JRE: '{ jre: { version: "11.+" } }'

@@ -30,8 +30,8 @@ applications:
   path: sale-service/target/sale-service-1.3.1.jar
   env:
     CORS_DOMAIN: "<your_domain>"
-    QUEUE_NAME: "<yourorgname>/<yourmessageclientname>/<uniqueID>/salesorderqueue"
-    PROD_SERVICE: https://<unique_id>-espm-product-svc.cfapps.sap.hana.ondemand.com
+    QUEUE_NAME: "<yourorgname>/<any_messageclientname>/<uniqueID>/salesorderqueue"
+    PROD_SERVICE: https://<unique_id>-espm-product-svc.<your_domain>
     JBP_CONFIG_COMPONENTS: "jres: ['com.sap.xs.java.buildpack.jdk.SAPMachineJDK']"
     JBP_CONFIG_SAP_MACHINE_JRE: '{ jre: { version: "11.+" } }'
   services:
@@ -47,7 +47,7 @@ applications:
   path: worker/target/worker-1.3.1.jar
   env:
     CORS_DOMAIN: "<your_domain>"
-    QUEUE_NAME: "<yourorgname>/<yourmessageclientname>/<uniqueID>/salesorderqueue"
+    QUEUE_NAME: "<yourorgname>/<any_messageclientname>/<uniqueID>/salesorderqueue"
     spring.main.allow-circular-references: true
     JBP_CONFIG_COMPONENTS: "jres: ['com.sap.xs.java.buildpack.jdk.SAPMachineJDK']"
     JBP_CONFIG_SAP_MACHINE_JRE: '{ jre: { version: "11.+" } }'

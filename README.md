@@ -58,7 +58,6 @@
   - [Running the Application](#running-the-application)
     - [Setup Role collections](#setup-role-collections)
     - [Assign Role to the user](#assign-role-to-the-user)
-    - [Event Mesh Queue creation](#event-mesh-queue-creation)
     - [Accessing the application UI](#acessing-the-application-ui)
     - [Accessing the application API Endpoints](#accessing-the-application-api-endpoints)
       - [Customer Service](#customer-service-3)
@@ -539,7 +538,7 @@ As a pre prerequisite, the sale-service and product-service should be bound to s
 
 ### Configuring SAP Event Mesh
 
-* Open em-default.json file and update `"namespace": "<yourorgname>/<yourmessageclientname>/<uniqueID>"`
+* Open em-default.json file and update `"namespace": "<yourorgname>/<any_messageclientname>/<uniqueID>"`
   e.g `"namespace": "myorg/espm/1"`
  For more details, check [here](https://help.sap.com/viewer/bf82e6b26456494cbdd197057c09979f/Cloud/en-US/d0483a9e38434f23a4579d6fcc72654b.html)
 
@@ -606,7 +605,7 @@ Destination will be used by ESPM Application to consume the Tax Service which is
 * In the root folder of project edit the manifest.yml file and update `<unique_id>` with some unique value for each applications name
 * Replace `<your_domain>` with your domain name. e.g `cfapps.eu10.hana.ondemand.com`
 * update `QUEUE_NAME` parameter for applications  espm-sales-svc and espm-worker with value
-  `"<yourorgname>/<yourmessageclientname>/<uniqueID>/salesorderqueue"`
+  `"<yourorgname>/<any_messageclientname>/<uniqueID>/salesorderqueue"`
   e.g `myorg/espm/1/salesorderqueue`
 
 * Do a maven build of complete application from command line by running command `mvn clean install` from the projects root folder.
@@ -657,6 +656,10 @@ Destination will be used by ESPM Application to consume the Tax Service which is
 
 * Deploy Customer Service on to Cloud Foundry from the project root folder by running command `cf push <unique_id>-espm-customer-svc` from CLI.
 
+* Before deploying Gateway Service on Cloud Foundry please check the authenticationMethod should be route and the authenticationType should be none in xs-app.json.
+
+* Deploy Gateway Service to Cloud Foundry from the project root folder by running command `cf push <unique_id>-espm-gateway-svc` from CLI.
+
 * Learn resilience patterns implemented in Product and Customer  services
 
 
@@ -698,21 +701,13 @@ The ESPM application defines a role template called as `Retailer` and a role col
 
 We need to assign the role which we have created in the previous step to the user. For more information about assigning role collections, see [Assign Role Collections](https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/9e1bf57130ef466e8017eab298b40e5e.html) in the documentation for SAP Business Technology Platform.
 
- - In your Subaccount, navigate to Security > Trust Configuration.
+ - In your Subaccount, navigate to Security > Users.
 
- - Click on the default IDP service.
-
- - Enter the e-mail address of the user and choose Show Assignments.
+ - Enter the e-mail address of the user in search bar, select and expand.
 
  - Choose Assign Role Collection
 
- - Select the role Retailer to assign it to the user.
-
-### Event Mesh Queue creation
-* Open SAP Event Mesh subscription in cockpit and please proceed with creating a queue with name `salesorderqueue`.
-For more details about creating a queue, check [here](https://help.sap.com/viewer/bf82e6b26456494cbdd197057c09979f/Cloud/en-US/57af1bd4e8f54b0a9b36414a5ec6b800.html)
-
-![Alt text](./documentation/images/EM.png "SAP Event Mesh")
+ - Select the required retailer role to assign it to the user.
 
 ### Acessing the application UI
 * From CLI run command `cf apps`
