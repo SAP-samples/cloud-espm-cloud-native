@@ -542,7 +542,7 @@ As a pre prerequisite, the sale-service and product-service should be bound to s
   e.g `"namespace": "myorg/espm/1"`
  For more details, check [here](https://help.sap.com/viewer/bf82e6b26456494cbdd197057c09979f/Cloud/en-US/d0483a9e38434f23a4579d6fcc72654b.html)
 
-* Replace the `QUEUE_NAME` for sales-svc, worker apps in [manifest.yml file](./manifest.yml) with the new queue name that was created based on the namespace, name provided in the previous step. 
+* Replace the `QUEUE_NAME` for sales-svc (`<unique_id>-espm-sales-svc`) and worker (`<unique-id>-espm-worker`) apps in [manifest.yml file](./manifest.yml) with the new queue name that was created based on the namespace, name provided in the previous step. 
 
 ### Listing Allowed Redirect URIs
 
@@ -589,7 +589,7 @@ This will package your application to be ready for deployment.
 
 To Deploy MTAR, run the command:
 
-	cf deploy mta_archives/cloud-espm-cloud-native-tax_1.3.0.mtar
+	cf deploy mta_archives/cloud-espm-cloud-native-tax_1.3.1.mtar
 
 ### Create Destination
 
@@ -604,7 +604,7 @@ Destination will be used by ESPM Application to consume the Tax Service which is
 #### Using CF manifest
 * In the root folder of project edit the manifest.yml file and update `<unique_id>` with some unique value for each applications name
 * Replace `<your_domain>` with your domain name. e.g `cfapps.eu10.hana.ondemand.com`
-* update `QUEUE_NAME` parameter for applications  espm-sales-svc and espm-worker with value
+* update `QUEUE_NAME` parameter for applications sales service (`<unique_id>-espm-sales-svc`) and worker (`<unique-id>-espm-worker`) with value
   `"<yourorgname>/<any_messageclientname>/<uniqueID>/salesorderqueue"`
   e.g `myorg/espm/1/salesorderqueue`
 
@@ -680,7 +680,7 @@ This will package your application to be ready for deployment.
 
 To Deploy MTAR, run the command:
 
-	cf deploy mta_archives/cloud-espm-cloud-native_1.3.0.mtar
+	cf deploy mta_archives/cloud-espm-cloud-native_1.3.1.mtar
 
 >Note: If you need to undeploy the application, you will have to delete the salesOrder queue manually before doing so. 
 
