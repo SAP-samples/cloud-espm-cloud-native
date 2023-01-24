@@ -11,7 +11,6 @@
 
 	<properties>
 	    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		 <spring-boot.version>2.6.6</spring-boot.version>
 		<java.version>11</java.version>
 		<log4j2.version>2.17.1</log4j2.version>
 		<postgresql.version>42.2.19</postgresql.version>
@@ -50,7 +49,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.6.6</version>
+		<version>2.7.7</version>
 	</parent>
 
 	<modules>
@@ -114,14 +113,6 @@
 				<artifactId>xsuaa-spring-boot-starter</artifactId>
 				<version>${sap.cloud.security.version}</version>
 			</dependency>
-
-			<dependency>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-dependencies</artifactId>
-                <version>2.6.6</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
 			
 			<!-- xbem -->
 			<dependency>
