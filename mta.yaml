@@ -1,6 +1,6 @@
 _schema-version: "2.0.0"
 ID: cloud-espm-cloud-native
-version: 1.3.1
+version: 1.3.2
 parameters:
   enable-parallel-deployments: true
 
@@ -32,7 +32,7 @@ modules:
     path: product-service
     build-parameters:
       builder: maven
-      build-result: "target/product-service-1.3.1.jar"
+      build-result: "target/product-service-1.3.2.jar"
       timeout: 60m
     properties:
       TARGET_RUNTIME: tomcat
@@ -57,7 +57,7 @@ modules:
     path: customer-service
     build-parameters:
       builder: maven
-      build-result: "target/customer-service-1.3.1.jar"
+      build-result: "target/customer-service-1.3.2.jar"
       timeout: 60m
     properties:
       TARGET_RUNTIME: tomcat
@@ -78,7 +78,7 @@ modules:
     path: sale-service
     build-parameters:
       builder: maven
-      build-result: "target/sale-service-1.3.1.jar"
+      build-result: "target/sale-service-1.3.2.jar"
       timeout: 60m
     deployed-after:
       - espm-product-svc
@@ -112,7 +112,7 @@ modules:
     path: worker
     build-parameters:
       builder: maven
-      build-result: "target/worker-1.3.1.jar"
+      build-result: "target/worker-1.3.2.jar"
       timeout: 60m
     properties:
       TARGET_RUNTIME: tomcat
