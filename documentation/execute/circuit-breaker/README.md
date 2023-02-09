@@ -1,9 +1,9 @@
 ### Resilience Patterns in Action 
 #### Circuit Breaker
-In ESPM this pattern is showcased via sale service. This service needs to compute the tax amount for a Sales Order. This is done by hitting an external [Tax Service](./tax-service). If the Tax Service is unreachable, instead of throwing an error, a fallback mechanism executes the logic and default tax value is returned. Resilience4j library is used to implement Circuit breaker patterns.
+In ESPM this pattern is showcased via sale service. This service needs to compute the tax amount for a Sales Order. This is done by hitting an external [Tax Service](/tax-service). If the Tax Service is unreachable, instead of throwing an error, a fallback mechanism executes the logic and default tax value is returned. Resilience4j library is used to implement Circuit breaker patterns.
 To see the pattern in action follow these steps-
 * Navigate to tax-service folder
-* Run the application [Locally as Spring Boot Application](./tax-service/README.md#running-locally-as-spring-boot-application)
+* Run the application [Locally as Spring Boot Application](/tax-service/README.md#running-locally-as-spring-boot-application)
 *  Hit the Sales Service by running the url `http://localhost:9993/sale.svc/api/v1/salesOrders/` and POST the sales data.
 	  For e.g.:
 	  `{

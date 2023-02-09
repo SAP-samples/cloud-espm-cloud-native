@@ -89,7 +89,7 @@ Follow steps below to run each microservice of ESPM one by one. Please ensure th
 
 #### Tax Service
 
-[Tax service](./tax-service) is an external service. This service does Tax calculation while a sales order is created. Tax Service can be locally deployed by following [these](./tax-service#running-locally-as-spring-boot-application) steps.
+[Tax service](/tax-service) is an external service. This service does Tax calculation while a sales order is created. Tax Service can be locally deployed by following [these](/tax-service#running-locally-as-spring-boot-application) steps.
 
 * Test the Tax Service by running the url  http://localhost:9994/tax.svc/api/v1/calculate/tax?amount=1000
 
