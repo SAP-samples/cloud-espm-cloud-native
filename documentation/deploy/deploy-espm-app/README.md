@@ -37,7 +37,7 @@ To Deploy MTAR, run the command:
   `"<yourorgname>/<any_messageclientname>/<uniqueID>/salesorderqueue"`
   e.g `myorg/espm/1/salesorderqueue`
   
-  > In case you are using a different name for the HANA instance, please update the [hana configuration file](./commons/src/main/java/com/sap/refapps/espm/config/HanaDataSourceConfig.java#L23), mta file as well with the same name. <br>
+  > In case you are using a different name for the HANA instance, please update the [hana configuration file](/commons/src/main/java/com/sap/refapps/espm/config/HanaDataSourceConfig.java#L23), mta file as well with the same name. <br>
     If there are multiple instances of SAP HANA cloud in the space where you plan to deploy this application, please modify the mta.yaml as shown below. Replace <database_guid> with the [id of the database](https://help.sap.com/viewer/cc53ad464a57404b8d453bbadbc81ceb/Cloud/en-US/93cdbb1bd50d49fe872e7b648a4d9677.html?q=guid) you would like to bind the application with :
  ```
  # Hana Schema
