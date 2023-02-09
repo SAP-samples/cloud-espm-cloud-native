@@ -34,7 +34,7 @@ As a pre prerequisite, the sale-service and product-service should be bound to s
 
  3. Configure scope checks for validating jwt tokens.
  
-    This is done in the sale-service and product-service by extending the [WebSecurityConfigurerAdapter class](https://docs.spring.io/spring-security/site/docs/current/api/org/springframework/security/config/annotation/web/configuration/WebSecurityConfigurerAdapter.html).
+    This is done in the sale-service and product-service by extending the [WebSecurityConfigurerAdapter class](https://docs.spring.io/spring-security/site/docs/5.7.0-M2/api/org/springframework/security/config/annotation/web/configuration/WebSecurityConfigurerAdapter.html).
  
  4. Implement app-to-app communication for the business user in the createSalesOrder method of class `com.sap.refapps.espm.controller.SalesOrderController ` in the sale-service microservice 
  
