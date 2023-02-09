@@ -1,6 +1,6 @@
 ### Resilience Patterns in Action - Timeout
  This pattern is implemented in Sales Service along with Circuit Breaker pattern. It's used to ensure that any request from Sales Service to Tax service does not wait indefinitely but times out after a preconfigured time for 1.2 seconds and a fall back is used for Tax calculation. To see these patterns in action, follow these steps:
-* Run Tax Service locally as [Spring Boot Application as mentioned](./tax-service#running-locally-as-spring-boot-application)
+* Run Tax Service locally as [Spring Boot Application as mentioned](/tax-service#running-locally-as-spring-boot-application)
 * Check if the Tax service URL is configured in application.properties (/sale-service/src/main/resources folder) file as `tax.service=http://localhost:9994/tax.svc/api/v1/calculate/tax?amount=`
 * Run the Sale Service
 * Create a Sales Order with following data using Postman
