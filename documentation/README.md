@@ -20,7 +20,7 @@
     2. [Configure your Account in SAP BTP](./prepare/configure-global-account/README.md)
     3. [Create/Configure SAP HANA Cloud Instance in SAP BTP](./prepare/create-sap-hana-cloud/README.md)
 
-* [DEVELOP](./documentation/develop/README.md)
+* [DEVELOP](../documentation/develop/README.md)
     1. [Deploying the ESPM Application Locally](./develop/deploy-espm-application/README.md)
     2. [Accessing the Local API Endpoints](./develop/local-api-endpoint/README.md)
     3. [Resilience Patterns in Action - Retry](./execute/retry/README.md)
@@ -28,15 +28,14 @@
     5. [Resilience Patterns in Action - Circuit Breaker & Unit Isolation](./execute/circuit-breaker/README.md)
     6. [Resilience Patterns in Action - Shed Load](./execute/shedload/README.md)
 
-* [DEPLOY](./documentation/deploy/README.md)
+* [DEPLOY](../documentation/deploy/README.md)
     1. [Deploying the ESPM Application on Cloud Foundry](./deploy/deploy-espm-app/README.md)
     2. [Configure Role Collections and Set Up Destinations](./deploy/configure-rolecollection-destinations/README.md)
     3. [Accessing the Application API Endpoints](./deploy/accessing-the-APIendpoints/README.md)
 
-* [EXECUTE](./documentation/execute/README.md)
+* [EXECUTE](../documentation/execute/README.md)
     1. [Execute the ESPM Application](./deploy/run-espm-application/README.md)
 
-* [COMPLETE](./documentation/complete/README.md)
+* [COMPLETE](../documentation/complete/README.md)
     1. [Tell us what do you think](./complete/give-feedback/README.md)
-    2. [Explore similar missions](./complete/explore-similar-missions/README.md)
-    3. [Complete the mission](./complete/complete-mission/README.md)
+    2. [Complete the mission](./complete/complete-mission/README.md)

@@ -5,7 +5,7 @@ ESPM Application uses Spring MVC with JPA. JPA (Java Persistence API) is an API 
 This project uses the database server based on the environment it is deployed.
 
 * PostgreSQL is used as the SQL Database server for local deployment.
-[PostgreSql JDBC Driver](https://jdbc.postgresql.org/documentation/) provides connectivity to postgreSql database in java Application. PostgresSql Jdbc connection is provided in [application.properties](https://github.tools.sap/refapps/cloud-espm-cloud-native/blob/master/customer-service/src/main/resources/application.properties) of each microservice.
+[PostgreSql JDBC Driver](https://jdbc.postgresql.org/documentation/) provides connectivity to postgreSql database in java Application. PostgresSql Jdbc connection is provided in [application.properties](/customer-service/src/main/resources/application.properties) of each microservice.
 
 * SAP HANA Cloud is used as the Database server for cloud deployment. We use SAP HANA Schema on SAP HANA Cloud database for persistence.
 [SAP HANA JDBC Driver](https://help.sap.com/docs/SAP_HANA_CLIENT/f1b440ded6144a54ada97ff95dac7adf/434e2962074540e18c802fd478de86d6.html?version=latest) provides connectivity to HANA Databases in Java applications.
@@ -13,13 +13,13 @@ This project uses the database server based on the environment it is deployed.
 ## How Does It Work?
 
 Lets take produce service as an example.
-* [Product.java](https://github.tools.sap/refapps/cloud-espm-cloud-native/blob/master/product-service/src/main/java/com/sap/refapps/espm/model/Product.java) is our entity class that represents the product table structure in the database.
+* [Product.java](/product-service/src/main/java/com/sap/refapps/espm/model/Product.java) is our entity class that represents the product table structure in the database.
 We used @Entity annotation to mark it as an Entity. The Spring will create a product table into the database.
 
-* [ProductRepository.java](https://github.tools.sap/refapps/cloud-espm-cloud-native/blob/master/product-service/src/main/java/com/sap/refapps/espm/repository/ProductRepository.java) is our DAO(Data Access Object) implementation class that performs database operations. 
+* [ProductRepository.java](/product-service/src/main/java/com/sap/refapps/espm/repository/ProductRepository.java) is our DAO(Data Access Object) implementation class that performs database operations. 
 It extends [CrudRepository](https://docs.spring.io/spring-data/commons/docs/current/api/org/springframework/data/repository/CrudRepository.html), a Spring Data interface for generic CRUD operations on a repository of a specific type. It provides several methods out of the box for interacting with a database.
 
-* [ProductController.java](https://github.tools.sap/refapps/cloud-espm-cloud-native/blob/master/product-service/src/main/java/com/sap/refapps/espm/controller/ProductController.java#L43) is our controller class which is responsible for handling all endpoints.
+* [ProductController.java](/product-service/src/main/java/com/sap/refapps/espm/controller/ProductController.java#L43) is our controller class which is responsible for handling all endpoints.
 
 Database Tables That Are Used ESPM Application's persistence layer has the following tables: 
 
