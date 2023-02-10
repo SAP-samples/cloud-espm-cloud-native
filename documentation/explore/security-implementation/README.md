@@ -32,9 +32,7 @@ As a pre prerequisite, the sale-service and product-service should be bound to s
     
     Only a person assigned the **Retailer** role will be able to access the retailer UI of the ESPM application to process the sales orders.
 
- 3. Configure scope checks for validating jwt tokens.
- 
-    This is done in the sale-service and product-service by extending the [WebSecurityConfigurerAdapter class](https://docs.spring.io/spring-security/site/docs/5.7.0-M2/api/org/springframework/security/config/annotation/web/configuration/WebSecurityConfigurerAdapter.html).
+ 3. Scope checks are validated in sale-service and product-service by using the incoming jwt token forwarded by the gateway application via the approuter.
  
  4. Implement app-to-app communication for the business user in the createSalesOrder method of class `com.sap.refapps.espm.controller.SalesOrderController ` in the sale-service microservice 
  
