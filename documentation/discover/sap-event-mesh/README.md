@@ -3,7 +3,6 @@
 SAP Event Mesh is a cloud-based messaging service that enables you to connect applications and services within SAP Business Technology Platform (SAP BTP). Scaling to a very high number of messages per second in real-time, you can send and receive messages reliably using open standards and protocols (MQTT, AMQP, REST).
 
 Access the following materials to learn about SAP Event Mesh and what it is about:
-* [L2 SAP Event Mesh](https://github.tools.sap/e2e-scenario-enablement/mission-structure-template/blob/main/documentation/discover/sap-event-mesh/L2%20SAP%20Event%20Mesh%20%202021.pdf)
 * Watch the [Enterprise Messaging Explained](https://www.youtube.com/watch?v=1E5kjxhWD9o) video. Enterprise Message is the former name of SAP Event Mesh.
 * Start by browsing the [SAP Event Mesh community page](https://community.sap.com/topics/enterprise-messaging)
 * Check out help.sap.com to access the [SAP Event Mesh documentation](https://help.sap.com/viewer/product/SAP_ENTERPRISE_MESSAGING/Cloud/en-US) 
