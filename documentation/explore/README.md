@@ -1,4 +1,4 @@
-## [EXPLORE]
+## EXPLORE
 
 1. [Explore the Different Microservices](../explore/explore-different-microservices/README.md)
 2. [Understand the Resilient Patterns Used in the Application](../explore/resilient-patterns/README.md)
