@@ -25,10 +25,10 @@
 - [DEVELOP](../documentation/develop/README.md)
     - [Deploying the ESPM Application Locally](./develop/deploy-espm-application/README.md)
     - [Accessing the Local API Endpoints](./develop/local-api-endpoint/README.md)
-    - [Resilience Patterns in Action - Retry](./execute/retry/README.md)
-    - [Resilience Patterns in Action - Timeout](./execute/timeout/README.md)
-    - [Resilience Patterns in Action - Circuit Breaker & Unit Isolation](./execute/circuit-breaker/README.md)
-    - [Resilience Patterns in Action - Shed Load](./execute/shedload/README.md)
+    - [Resilience Patterns in Action - Retry](./develop/retry/README.md)
+    - [Resilience Patterns in Action - Timeout](./develop/timeout/README.md)
+    - [Resilience Patterns in Action - Circuit Breaker & Unit Isolation](./develop/circuit-breaker/README.md)
+    - [Resilience Patterns in Action - Shed Load](./develop/shedload/README.md)
 
 - [DEPLOY](../documentation/deploy/README.md)
     - [Deploying the ESPM Application on Cloud Foundry](./deploy/deploy-espm-app/README.md)
@@ -36,7 +36,7 @@
     - [Accessing the Application API Endpoints](./deploy/accessing-the-APIendpoints/README.md)
 
 - [EXECUTE](../documentation/execute/README.md)
-    - [Execute the ESPM Application](./deploy/run-espm-application/README.md)
+    - [Execute the ESPM Application](./execute/run-espm-application/README.md)
 
 - [COMPLETE](../documentation/complete/README.md)
     - [Tell us what do you think](./complete/give-feedback/README.md)
