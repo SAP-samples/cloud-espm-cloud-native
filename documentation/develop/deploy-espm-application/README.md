@@ -119,6 +119,7 @@ Follow steps below to run each microservice of ESPM one by one. Please ensure th
   INFO 35816 --- [           main] s.b.c.e.t.TomcatEmbeddedServletContainer : Tomcat started on port(s): 9993 (http)
   INFO 35816 --- [           main] com.sap.refapps.espm.Application         : Started Application in 7.806 seconds (JVM running for 12.842)
   ~~~
+  
 * Test the Sale Service by running the url http://localhost:9993/sale.svc/api/v1/salesOrders/
 
 | Lifecycle |  Life Cycle Status Name | Note |

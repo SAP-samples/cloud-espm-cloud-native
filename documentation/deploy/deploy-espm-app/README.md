@@ -28,10 +28,14 @@ This will package your application to be ready for deployment.
 
 To Deploy MTAR, run the command:
 
-	cf deploy mta_archives/cloud-espm-cloud-native-tax_1.3.1.mtar
+	cf deploy mta_archives/cloud-espm-cloud-native-tax_1.3.2.mtar
 
 
 ### Build and Deploy ESPM Application
+
+* Navigate to gateway folder fromm root folder of your project.
+
+* Change the authenticationMethod to `route` and authenticationType to `xsuaa` in xs-app.json.
 
 * In mta.yml update `QUEUE_NAME` parameter for modules  espm-sales-svc and espm-worker with value
   `"<yourorgname>/<any_messageclientname>/<uniqueID>/salesorderqueue"`
@@ -56,9 +60,8 @@ To Deploy MTAR, run the command:
 
 This will package your application to be ready for deployment.
 
-
 * To Deploy MTAR, run the command:
 
-	cf deploy mta_archives/cloud-espm-cloud-native_1.3.1.mtar
+	cf deploy mta_archives/cloud-espm-cloud-native_1.3.2.mtar
 
 
