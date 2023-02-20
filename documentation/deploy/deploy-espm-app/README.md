@@ -33,7 +33,7 @@ To Deploy MTAR, run the command:
 
 ### Build and Deploy ESPM Application
 
-* Navigate to gateway folder fromm root folder of your project.
+* Navigate to gateway folder from root folder of your project.
 
 * Change the authenticationMethod to `route` and authenticationType to `xsuaa` in xs-app.json.
 
