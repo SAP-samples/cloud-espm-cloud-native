@@ -32,7 +32,7 @@ In this section, you will set up the subaccount in SAP BTP to deploy the ESPM Ap
 
    ![entitlement runtime](../images/cf-entitlements.png)
 
-   3. Search for **SAP HANA Cloud** and select the **tools (Application)** service plan. 
+   3. Search for **SAP HANA Cloud** and select the **hana** service plan. 
 
    ![entitlement hana](../images/ent-hana.png)
    

@@ -1,7 +1,7 @@
 ## Prerequisites and Required Systems
 This section contains the prerequisites that you have to fulfill before you get started. Make sure that the prerequisites are fulfilled and all required systems, services, and tools are available. 
 
-* JAVA 11
+* SAPMachineJDK11
 * [Apache Maven](https://maven.apache.org/)
 * To build the multi target application, we need the [Cloud MTA Build tool](https://sap.github.io/cloud-mta-build-tool/), download the tool from [here](https://sap.github.io/cloud-mta-build-tool/download/)
 * For Windows system, install 'MAKE' from https://sap.github.io/cloud-mta-build-tool/makefile/
