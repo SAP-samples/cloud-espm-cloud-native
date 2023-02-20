@@ -4,8 +4,7 @@ ESPM Application uses Spring MVC with JPA. JPA (Java Persistence API) is an API 
 
 This project uses the database server based on the environment it is deployed.
 
-* PostgreSQL is used as the SQL Database server for local deployment.
-[PostgreSql JDBC Driver](https://jdbc.postgresql.org/documentation/) provides connectivity to postgreSql database in java Application. PostgresSql Jdbc connection is provided in [application.properties](/customer-service/src/main/resources/application.properties) of each microservice.
+* PostgreSQL is used as the SQL Database server for local deployment. [PostgreSql JDBC Driver](https://jdbc.postgresql.org/documentation) provides connectivity to postgreSql database in java Application. PostgresSql Jdbc connection is provided in [application.properties](https://github.com/SAP-samples/cloud-espm-cloud-native/blob/main/customer-service/src/main/resources/application.properties) of each microservice.
 
 * SAP HANA Cloud is used as the Database server for cloud deployment. We use SAP HANA Schema on SAP HANA Cloud database for persistence.
 [SAP HANA JDBC Driver](https://help.sap.com/docs/SAP_HANA_CLIENT/f1b440ded6144a54ada97ff95dac7adf/434e2962074540e18c802fd478de86d6.html?version=latest) provides connectivity to HANA Databases in Java applications.
