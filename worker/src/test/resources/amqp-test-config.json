@@ -31,6 +31,6 @@
     "name" : "default",
     "type" : "Memory",
     "defaultVirtualHostNode" : "true",
-    "virtualHostInitialConfiguration" : "{\"type\": \"Memory\", \"nodeAutoCreationPolicies\": [{\"patterns\":\".*\",\"createdOnPublish\":\"true\",\"createdOnConsume\":\"true\",\"nodeType\":\"queue\",\"attributes\":{}}] }"
+    "virtualHostInitialConfiguration" : "{\"type\": \"Memory\" }"
   }]
 }
