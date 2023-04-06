@@ -19,6 +19,7 @@
 		<sap.cloud.security.version>2.12.3</sap.cloud.security.version>
 		<apache.httpclient.version>4.5.13</apache.httpclient.version>
 		<resilience4j.version>1.7.1</resilience4j.version>
+		<snakeyaml.version>1.33</snakeyaml.version>
 		<java.cfenv.boot.version>2.2.4.RELEASE</java.cfenv.boot.version>
 
 				 <maven.compiler.source>${java.version}</maven.compiler.source>
