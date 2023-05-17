@@ -1,4 +1,4 @@
-# Configure Your Account in SAP BTP
+ # Configure Your Account in SAP BTP
 
 In this section, you will set up the subaccount in SAP BTP to deploy the ESPM Application.
 

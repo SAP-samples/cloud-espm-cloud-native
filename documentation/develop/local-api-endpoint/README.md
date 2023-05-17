@@ -98,4 +98,4 @@ Endpoint URL - http://localhost:9994/tax.svc/api/v1/calculate/tax?amount=1000
 Method - `GET`       
 
 #### Test the ESPM Application Locally
-To test the ESPM application, [Postman REST Client](https://www.getpostman.com/apps) can be used. A Postman collection which is provided [here](/documentation/postman-collections/ESPM-LOCAL.postman_collection.json) has all the request URLs and sample request body payloads (in case of a POST request).
+To test the ESPM application, [Postman REST Client](https://www.getpostman.com/apps) can be used. A Postman collection which is provided [here](../../postman-collections/ESPM-LOCAL.postman_collection.json) has all the request URLs and sample request body payloads (in case of a POST request).
