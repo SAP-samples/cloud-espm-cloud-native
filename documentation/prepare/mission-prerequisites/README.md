@@ -6,7 +6,7 @@ This section contains the prerequisites that you have to fulfill before you get 
 * To build the multi target application, we need the [Cloud MTA Build tool](https://sap.github.io/cloud-mta-build-tool/), download the tool from [here](https://sap.github.io/cloud-mta-build-tool/download/)
 * For Windows system, install 'MAKE' from https://sap.github.io/cloud-mta-build-tool/makefile/
 >Note: Please set the npm registry for @sap libraries using the command :  
-`npm set @sap:registry=https://npm.sap.com`
+`npm set @sap:registry= https://registry.npmjs.org/`
 * Install the following:
 	1. grunt 	- `npm install -g grunt-cli`
 	2. cds	 	- `npm install -g @sap/cds`
