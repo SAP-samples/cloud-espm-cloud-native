@@ -658,7 +658,7 @@ Destination will be used by ESPM Application to consume the Tax Service which is
 
 * Before deploying Gateway Service on Cloud Foundry please check the authenticationMethod should be route and the authenticationType should be none in xs-app.json.
 
-* Deploy Gateway Service to Cloud Foundry from the project root folder by running command `cf push <unique_id>-espm-gateway-svc` from CLI.
+* Deploy Gateway Service to Cloud Foundry from the project root folder by running command `cf push <unique_id>-espm-gateway` from CLI.
 
 * Learn resilience patterns implemented in Product and Customer  services
 
