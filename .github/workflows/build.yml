@@ -47,7 +47,8 @@ jobs:
         java-version: 11
     - name: Setup Apache Qpid Broker j
       run: |
-        wget -O /home/runner/work/cloud-espm-cloud-native/cloud-espm-cloud-native https://www.apache.org/dyn/closer.lua?filename=qpid/broker-j/9.0.0/binaries/apache-qpid-broker-j-9.0.0-bin.tar.gz
+        cd /home/runner/work/cloud-espm-cloud-native/cloud-espm-cloud-native
+        wget  https://www.apache.org/dyn/closer.lua?filename=qpid/broker-j/9.0.0/binaries/apache-qpid-broker-j-9.0.0-bin.tar.gz
         pwd
         tar -xvzf apache-qpid-broker-j-9.0.0-bin.tar.gz
         cd qpid-broker/9.0.0/bin/
