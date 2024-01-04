@@ -47,9 +47,9 @@ jobs:
         java-version: 11
     - name: Setup Apache Qpid Broker j
       run: |
-        wget https://downloads.apache.org/qpid/broker-j/9.0.0/binaries/apache-qpid-broker-j-9.0.0-bin.tar.gz
-        tar -xvzf apache-qpid-broker-j-9.0.0-bin.tar.gz
-        cd qpid-broker/9.0.0/bin/
+        wget https://downloads.apache.org/qpid/broker-j/9.1.0/apache-qpid-broker-j-9.1.0-src.tar.gz
+        tar -xvzf apache-qpid-broker-j-9.1.0-src.tar.gz
+        cd apache-qpid-broker-j-9.1.0-src/broker/bin
         nohup ./qpid-server start &
     - name: Build with Maven
       run: mvn clean install
