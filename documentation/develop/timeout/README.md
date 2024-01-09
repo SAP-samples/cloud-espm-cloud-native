@@ -11,7 +11,7 @@
 
 * Check if the request succeeds.
 * Check that the response time would be under 1 seconds
-* Stop the Tax Services which is running on SAP BTP Neo or on Cloud Foundry.
+* Stop the Tax Services which is running on locally.
 * Create a Sales Order with following data  
 ` Method : POST `    
   `URL : http://localhost:9993/sale.svc/api/v1/salesOrders`       

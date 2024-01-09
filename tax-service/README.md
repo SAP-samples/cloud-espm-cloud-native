@@ -23,7 +23,7 @@ The tax service calculate the tax based on various slabs as defined below. The r
 3. To test the service execute URL http://localhost:9994/tax.svc/api/v1/calculate/tax?amount=1000
 response will be `{"taxAmount":100.0,"taxPercentage":10.0}`
 
-# Running on SAP Cloud Platfrom CloudFoundary Environment
+# Running on SAP Cloud Platfrom CloudFoundry Environment
 
 1.  Open the manifest.yml file and for name property replace <unique-id> with your I/D number or any uniqe string
 2. Navigate to the tax-service folder and execute command

@@ -32,7 +32,7 @@ Update Cart by Item ID
     Endpoint UR - http://localhost:9991/customer.svc/api/v1/customers/{customerId}/carts/{itemId}
     Header - `Content-Type:application/json`
     Method - `PUT`
-    Body - `"productId": "HT-1000", "name" :"Notebook Basic 15", "quantityUnit": 10,"checkOutStatus": false}`
+    Body - `{"productId": "HT-1000", "name" :"Notebook Basic 15", "quantityUnit": 10,"checkOutStatus": false}`
 
 Delete Cart by Item ID
 

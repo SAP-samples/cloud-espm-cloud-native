@@ -75,7 +75,7 @@ Get Stock by Product ID
 
 *The stock is updated by quantity specified. e.g. if the current quantity is 50 and in the body for update stock request quantity is provided as 20 the quantity will be updated to 70*
 
-Below URL requires the retailer role to be added to user and hence if you are executing the same from postman, make sure you have the role, and inorder to get the Access token with scopes of `Retailer` role execute the following request from postman.
+Below URL requires the retailer role to be added to user and hence if you are executing the same from postman, make sure you have the role, and in order to get the Access token with scopes of `Retailer` role execute the following request from postman.
 
 Access token with scopes of `Retailer` role
 
@@ -88,7 +88,7 @@ The payload of the request needs to have following form-url-encoded values:
 
 *grant_type*: set to password to define that the client and user credentials method has to be used for the token determination
 
-*username*: set user name of authorized user
+*username*: set username of authorized user
 
 *password*: password of the authorized user
 
@@ -96,7 +96,7 @@ The payload of the request needs to have following form-url-encoded values:
 
 *client_secret*: the client secret determined for the application
 
-*response_type*: set to token to indicate than an access token is requested   
+*response_type*: set to token to indicate that an access token is requested   
 
 Update Stock by Product ID
 

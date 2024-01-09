@@ -53,7 +53,18 @@ To Deploy MTAR, run the command:
       config:
         database_id: <database_guid>
 ```
-
+> *Note:*  To avoid redirect uri issues after deployement ,please update xs-security.json file with required changes
+Use command "cf domains"
+  ex :
+```
+"oauth2-configuration": {
+        "redirect-uris": [
+        "https://*.eu10-004.hana.ondemand.com/**",
+        "https://*.eu10.hana.ondemand.com/**"
+        ]
+        }
+	
+```
 * From the root folder where mta.yaml is kept run the command:
 
 	  mbt build -p=cf
