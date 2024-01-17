@@ -56,6 +56,12 @@ jobs:
     - name: Read QPID config
       run: |
         cat /home/runner/config.json
+    - name: QPID stop
+      run: |
+        nohup qpid-broker/9.1.0/bin/qpid.stop &
+    - name: QPID start
+      run: |
+        nohup qpid-broker/9.1.0/bin/qpid-server start &
     - name: Build with Maven
       run: mvn clean install
     - name: espm customer service
