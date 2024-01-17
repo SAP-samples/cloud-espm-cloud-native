@@ -53,7 +53,7 @@ jobs:
     - name:  Update Qpid config
       run: |
         sudo sed -i '/"users" : \[/i\ \ \ \ "secureOnlyMechanisms": [],' /home/runner/config.json
-        nohup ./qpid-server start &
+        nohup qpid-broker/9.1.0/bin/qpid-server start &
     - name: Read QPID config
       run: |
         cat /home/runner/config.json
