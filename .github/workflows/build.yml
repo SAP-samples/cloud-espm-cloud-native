@@ -43,7 +43,7 @@ jobs:
     - name: Setup Java
       uses: actions/setup-java@v1
       with:
-        java-version: 11
+        java-version: 17
     - name: Setup Apache Qpid Broker j
       run: |
         wget https://downloads.apache.org/qpid/broker-j/9.1.0/binaries/apache-qpid-broker-j-9.1.0-bin.tar.gz
