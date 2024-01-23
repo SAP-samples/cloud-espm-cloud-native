@@ -3,9 +3,7 @@ package com.sap.refapps.espm.service;
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.util.Optional;
-
-import javax.jms.JMSException;
-
+import jakarta.jms.JMSException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.core.JsonProcessingException;

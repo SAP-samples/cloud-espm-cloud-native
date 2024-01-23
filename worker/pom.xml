@@ -41,11 +41,6 @@
 			<artifactId>jackson-dataformat-xml</artifactId>
 		</dependency>
 
-		<!-- xbem -->
-		<dependency>
-			<groupId>com.sap.cloud.servicesdk.xbem</groupId>
-			<artifactId>emjapi-connector-sap-cp</artifactId>
-		</dependency>
 
 		<dependency>
 			<groupId>com.sap.cloud.servicesdk.xbem</groupId>
@@ -74,13 +69,21 @@
 			<groupId>io.netty</groupId>
 			<artifactId>netty-handler</artifactId>
 		</dependency>
-
 		<dependency>
-			<groupId>org.springframework.security.oauth</groupId>
-			<artifactId>spring-security-oauth2</artifactId>
-			<version>2.5.0.RELEASE</version>
-		</dependency>
-		
+				<groupId>com.sap.cloud.security.xsuaa</groupId>
+				<artifactId>xsuaa-spring-boot-starter</artifactId>
+				<version>${sap.cloud.security.version}</version>
+			</dependency>
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-security</artifactId>
+	</dependency>
+
+
+
+
+
+
 		<!-- h2database -->
 		<dependency>
 			<groupId>com.h2database</groupId>

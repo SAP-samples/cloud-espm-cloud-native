@@ -125,7 +125,7 @@ The focus of this pattern is on the design of the failure unit. A failure unit i
 
 Before running ESPM application one would need
 
-* Java 11
+* [sapmachine 17] (https://github.com/SAP/SapMachine/releases/tag/sapmachine-17.0.8)
 * [Apache Maven](https://maven.apache.org/)
 * To build the multi target application, we need the [Cloud MTA Build tool](https://sap.github.io/cloud-mta-build-tool/), download the tool from [here](https://sap.github.io/cloud-mta-build-tool/download/)
 * For Windows system, install 'MAKE' from https://sap.github.io/cloud-mta-build-tool/makefile/
@@ -146,9 +146,9 @@ For Running locally:
 
 ### Message server
 
-* Download Qpid Broker-J 8.0 from [its repository](https://qpid.apache.org/releases/qpid-broker-j-8.0.6/)
+* Download Qpid Broker-J 9.1.0 from [its repository](https://qpid.apache.org/releases/qpid-broker-j-9.1.0/)
 
->Note: Qpid Broker-J 7.0 is incompatible with JDK 11.  
+>Note: Qpid Broker-J 8.0 is incompatible with JDK 11.  
 * Extract the zip and navigate to the bin directory
 * To run Qpid server
      - Windows - Run the qpid-server.bat
@@ -542,7 +542,7 @@ As a pre prerequisite, the sale-service and product-service should be bound to s
   e.g `"namespace": "myorg/espm/1"`
  For more details, check [here](https://help.sap.com/viewer/bf82e6b26456494cbdd197057c09979f/Cloud/en-US/d0483a9e38434f23a4579d6fcc72654b.html)
 
-* Replace the `QUEUE_NAME` for sales-svc (`<unique_id>-espm-sales-svc`) and worker (`<unique-id>-espm-worker`) apps in [manifest.yml file](./manifest.yml) with the new queue name that was created based on the namespace, name provided in the previous step. 
+* Replace the `QUEUE_NAME` for sales-svc(`<unique-id>-espm-sales-svc`), worker(`<unique-id>-espm-worker`) apps in [manifest.yml file](./manifest.yml) with the new queue name that was created based on the namespace, name provided in the previous step. 
 
 ### Listing Allowed Redirect URIs
 
@@ -565,7 +565,7 @@ The Tax Service Application can be deployed in two ways:
 
 * Create a service instance of the Authorization and Trust Management service with `application` plan by running the command `cf create-service xsuaa application espm-xsuaa-tax -c xs-security-tax.json`. This instance is to be bound to Tax Service
 
-* Edit the manifest.yml file and update `<unique_id>` with some unique value for each tax applications host name
+* Edit the manifest.yml file and update `<unique_id>` with some unique value for applications name
 
 * Deploy Tax  Service on to Cloud Foundry from the tax-service project folder by running command `cf push <unique_id>-espm-tax-svc` from CLI.
 * The TAX SERVICE can be accessed in Cloud Foundary in either of the 2 ways:
@@ -589,7 +589,7 @@ This will package your application to be ready for deployment.
 
 To Deploy MTAR, run the command:
 
-	cf deploy mta_archives/cloud-espm-cloud-native-tax_1.3.1.mtar
+	cf deploy mta_archives/cloud-espm-cloud-native-tax_1.3.2.mtar
 
 ### Create Destination
 
@@ -602,9 +602,9 @@ Destination will be used by ESPM Application to consume the Tax Service which is
 ### Build and Deploy ESPM Application
 
 #### Using CF manifest
-* In the root folder of project edit the manifest.yml file and update `<unique_id>` with some unique value for each applications name
-* Replace `<your_domain>` with your domain name. e.g `cfapps.eu10.hana.ondemand.com`
-* update `QUEUE_NAME` parameter for applications sales service (`<unique_id>-espm-sales-svc`) and worker (`<unique-id>-espm-worker`) with value
+* In the root folder of project edit the manifest.yml file and update `<unique_id>` with some unique value for each application name
+* Replace `<your_domain>` with your domain name. e.g `cfapps.eu10.hana.ondemand.com`	
+* update `QUEUE_NAME` parameter for applications  espm-sales-svc(`<unique-id>-espm-sales-svc`) and espm-worker(`<unique-id>-espm-worker`) with value
   `"<yourorgname>/<any_messageclientname>/<uniqueID>/salesorderqueue"`
   e.g `myorg/espm/1/salesorderqueue`
 
@@ -656,9 +656,10 @@ Destination will be used by ESPM Application to consume the Tax Service which is
 
 * Deploy Customer Service on to Cloud Foundry from the project root folder by running command `cf push <unique_id>-espm-customer-svc` from CLI.
 
-* Before deploying Gateway Service on Cloud Foundry please check the authenticationMethod should be route and the authenticationType should be none in xs-app.json.
+* Before deploying Gateway Service on Cloud Foundry please check the authenticationMethod should be `route` and the authenticationType should be `none` in 
+  xs-app.json.
 
-* Deploy Gateway Service to Cloud Foundry from the project root folder by running command `cf push <unique_id>-espm-gateway` from CLI.
+* Deploy Gateway Service on to Cloud Foundry from the project root folder by running command `cf push <unique_id>-espm-gateway` from CLI.	
 
 * Learn resilience patterns implemented in Product and Customer  services
 
@@ -666,7 +667,7 @@ Destination will be used by ESPM Application to consume the Tax Service which is
 #### Using CF deploy service
 
 * In mta.yml update `QUEUE_NAME` parameter for modules  espm-sales-svc and espm-worker with value
-  `"<yourorgname>/<yourmessageclientname>/<uniqueID>/salesorderqueue"`
+  `"<yourorgname>/<any_messageclientname>/<uniqueID>/salesorderqueue"`
   e.g `myorg/espm/1/salesorderqueue`
   
   > In case you are using a different name for the HANA instance, please update the [hana configuration file](./commons/src/main/java/com/sap/refapps/espm/config/HanaDataSourceConfig.java#L23), mta file as well with the same name.
@@ -703,11 +704,11 @@ We need to assign the role which we have created in the previous step to the use
 
  - In your Subaccount, navigate to Security > Users.
 
- - Enter the e-mail address of the user in search bar, select and expand.
+ - Enter the e-mail address of the user in search bar, select and Expand.
 
- - Choose Assign Role Collection
+ - Choose Assign Role Collection.
 
- - Select the required retailer role to assign it to the user.
+ - Select the required Retailer role to assign it to the user.
 
 ### Acessing the application UI
 * From CLI run command `cf apps`

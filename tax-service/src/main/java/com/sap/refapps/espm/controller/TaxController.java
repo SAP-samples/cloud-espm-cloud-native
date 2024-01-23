@@ -2,7 +2,7 @@ package com.sap.refapps.espm.controller;
 
 import java.math.BigDecimal;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.TypeMismatchException;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -6,11 +6,9 @@ import com.sap.cloud.servicesdk.xbem.core.exception.MessagingException;
 import com.sap.cloud.servicesdk.xbem.core.impl.MessagingServiceFactoryCreator;
 import com.sap.cloud.servicesdk.xbem.extension.sapcp.jms.MessagingServiceJmsConnectionFactory;
 import com.sap.cloud.servicesdk.xbem.extension.sapcp.jms.MessagingServiceJmsSettings;
-import org.springframework.cloud.Cloud;
-import org.springframework.cloud.CloudFactory;
-
-
-import org.springframework.cloud.service.ServiceConnectorConfig;
+import io.pivotal.cfenv.core.CfCredentials;
+import io.pivotal.cfenv.core.CfEnv;
+import java.util.Map;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -19,16 +17,16 @@ import org.springframework.context.annotation.Profile;
 @Profile("cloud")
 public class EnterpriseMessagingConfig {
 
-    @Bean
+  
+  @Bean
     public MessagingServiceFactory getMessagingServiceFactory() {
-        ServiceConnectorConfig config = null; // currently there are no configurations for the MessagingService supported
-        Cloud cloud = new CloudFactory().getCloud();
-        // get the MessagingService via the service connector
-        MessagingService messagingService = cloud.getSingletonServiceConnector(MessagingService.class, config);
-        if (messagingService == null) {
+        CfEnv cfEnv = new CfEnv();
+        CfCredentials cfCredentials = cfEnv.findCredentialsByName("espm-em");
+        Map<String, Object> credentials = cfCredentials.getMap();
+        if (credentials == null) {
             throw new IllegalStateException("Unable to create the MessagingService.");
         }
-        return MessagingServiceFactoryCreator.createFactory(messagingService);
+        return MessagingServiceFactoryCreator.createFactoryFromCredentials(credentials);
     }
 
     @Bean
@@ -42,9 +40,9 @@ public class EnterpriseMessagingConfig {
              */
 
             MessagingServiceJmsSettings settings = new MessagingServiceJmsSettings();
-            settings.setMaxReconnectAttempts(2); // use -1 for unlimited attempts
-            settings.setInitialReconnectDelay(3000);
-            settings.setReconnectDelay(3000);
+            settings.setFailoverMaxReconnectAttempts(2); // use -1 for unlimited attempts
+            settings.setFailoverInitialReconnectDelay(3000);
+            settings.setFailoverReconnectDelay(3000);
             return messagingServiceFactory.createConnectionFactory(MessagingServiceJmsConnectionFactory.class, null);
         } catch (MessagingException e) {
             throw new IllegalStateException("Unable to create the Connection Factory", e);

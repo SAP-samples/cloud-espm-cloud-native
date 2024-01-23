@@ -26,7 +26,7 @@ public class ProductSvcShedLoadValveTest extends ConcurrentHttpRequestTest {
 		int requestsToSend = maxRequests * 2;
 
 		List<ResponseEntity<String>> responseList = sendConcurrentHttpRequests(requestsToSend, requestsToSend,
-				"/product.svc/api/v1/products");
+				"/product.svc/api/v1/products/");
 
 		Map<HttpStatus, Long> responseCodeCounts = getCountPerHttpStatus(responseList);
 		System.out.println("========PRINT RESPONSE MAP============");

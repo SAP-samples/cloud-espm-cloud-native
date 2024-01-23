@@ -17,7 +17,7 @@ modules:
       TARGET_RUNTIME: tomcat
       SPRING_PROFILES_DEFAULT: cf
       JBP_CONFIG_COMPONENTS: "jres: ['com.sap.xs.java.buildpack.jdk.SAPMachineJDK']"
-      JBP_CONFIG_SAP_MACHINE_JRE: '{ jre: { version: "11.+" } }'
+      JBP_CONFIG_SAP_MACHINE_JDK: "{ version: 17.+ }" 
     requires:
       - name: espm-xsuaa-tax
     parameters:

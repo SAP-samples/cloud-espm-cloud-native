@@ -5,7 +5,7 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.UUID;
 
-import javax.jms.JMSException;
+import jakarta.jms.JMSException;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -128,9 +128,9 @@ public class SalesOrderController {
 					logger.info("get response value:", response.getStatusCodeValue());
 					String responseBody = response.getBody();
 					logger.info("response body for success", responseBody);
-					if (response.getStatusCodeValue() == 200) {
+					if (response.getStatusCode().value() == 200) {
 						salesOrderService.updateStatus(salesOrderId, statusCode, note);
-					} else if (response.getStatusCodeValue() == 204) {
+					} else if (response.getStatusCode().value() == 204) {
 						statusCode = "C";
 						note = "Out of Stock";
 						salesOrderService.updateStatus(salesOrderId, statusCode, note);

@@ -36,8 +36,8 @@ import org.springframework.web.context.WebApplicationContext;
         "classpath:stockTestData.sql" })
 public class ProductControllerTest {
 
-    protected static final String PRODUCT_API = "/product.svc/api/v1/products";
-    protected static final String STOCK_API = "/product.svc/api/v1/stocks";
+    protected static final String PRODUCT_API = "/product.svc/api/v1/products/";
+    protected static final String STOCK_API = "/product.svc/api/v1/stocks/";
 
     @Autowired
     WebApplicationContext context;

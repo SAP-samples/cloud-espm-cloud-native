@@ -1,10 +1,10 @@
 package com.sap.refapps.espm.valve;
 
-import static javax.servlet.http.HttpServletResponse.SC_SERVICE_UNAVAILABLE;
+import static jakarta.servlet.http.HttpServletResponse.SC_SERVICE_UNAVAILABLE;
 
 import java.io.IOException;
 
-import javax.servlet.ServletException;
+import jakarta.servlet.ServletException;
 
 import org.apache.catalina.connector.Request;
 import org.apache.catalina.connector.Response;

@@ -1,6 +1,15 @@
 package com.sap.refapps.espm.config;
 
-import com.sap.cloud.servicesdk.xbem.core.MessagingService;
+import com.sap.cloud.security.client.HttpClientFactory;
+import com.sap.cloud.security.config.ClientCredentials;
+import com.sap.cloud.security.config.OAuth2ServiceConfiguration;
+import com.sap.cloud.security.config.OAuth2ServiceConfigurationBuilder;
+import com.sap.cloud.security.config.Service;
+import com.sap.cloud.security.xsuaa.client.DefaultOAuth2TokenService;
+import com.sap.cloud.security.xsuaa.client.OAuth2TokenResponse;
+import com.sap.cloud.security.xsuaa.client.XsuaaDefaultEndpoints;
+import com.sap.cloud.security.xsuaa.tokenflows.ClientCredentialsTokenFlow;
+import com.sap.cloud.security.xsuaa.tokenflows.XsuaaTokenFlows;
 import com.sap.cloud.servicesdk.xbem.core.MessagingServiceFactory;
 import com.sap.cloud.servicesdk.xbem.core.exception.MessagingException;
 import com.sap.cloud.servicesdk.xbem.core.impl.MessagingServiceFactoryCreator;
@@ -11,27 +20,34 @@ import com.sap.refapps.espm.exception.EmsResponseErrorHandler;
 import com.sap.refapps.espm.exception.NotFoundException;
 import com.sap.refapps.espm.exception.UnauthorizedException;
 
+import java.util.Arrays;
+import java.util.Collections;
+
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
+
+import io.pivotal.cfenv.core.CfCredentials;
+import io.pivotal.cfenv.core.CfEnv;
+
 import java.io.IOException;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.cloud.Cloud;
-import org.springframework.cloud.CloudFactory;
-
-import org.springframework.cloud.service.ServiceConnectorConfig;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
-import org.springframework.security.oauth2.client.DefaultOAuth2ClientContext;
-import org.springframework.security.oauth2.client.OAuth2RestTemplate;
-import org.springframework.security.oauth2.client.token.grant.client.ClientCredentialsResourceDetails;
-import org.springframework.web.client.RestClientException;
+
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.DefaultUriBuilderFactory;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 
 @Profile("cloud")
 @Configuration
@@ -40,17 +56,15 @@ public class EnterpriseMessagingConfig {
 	private static final Logger logger = LoggerFactory.getLogger(EnterpriseMessagingConfig.class);
 
 	@Bean
-	public MessagingServiceFactory getMessagingServiceFactory() {
-		ServiceConnectorConfig config = null; // currently there are no configurations for the MessagingService
-												// supported
-		Cloud cloud = new CloudFactory().getCloud();
-		// get the MessagingService via the service connector
-		MessagingService messagingService = cloud.getSingletonServiceConnector(MessagingService.class, config);
-		if (messagingService == null) {
-			throw new IllegalStateException("Unable to create the MessagingService.");
-		}
-		return MessagingServiceFactoryCreator.createFactory(messagingService);
-	}
+    public MessagingServiceFactory getMessagingServiceFactory() {
+        CfEnv cfEnv = new CfEnv();
+        CfCredentials cfCredentials = cfEnv.findCredentialsByName("espm-em");
+        Map<String, Object> credentials = cfCredentials.getMap();
+        if (credentials == null) {
+            throw new IllegalStateException("Unable to create the MessagingService.");
+        }
+        return MessagingServiceFactoryCreator.createFactoryFromCredentials(credentials);
+    }
 
 	@Bean
 	public MessagingServiceJmsConnectionFactory getMessagingServiceJmsConnectionFactory(
@@ -66,9 +80,9 @@ public class EnterpriseMessagingConfig {
 			logger.info("Checking for queue");
 			checkQueue();
 			MessagingServiceJmsSettings settings = new MessagingServiceJmsSettings();
-			settings.setMaxReconnectAttempts(3); // use -1 for unlimited attempts
-			settings.setInitialReconnectDelay(3000);
-			settings.setReconnectDelay(3000);
+			settings.setFailoverMaxReconnectAttempts(3); // use -1 for unlimited attempts
+			settings.setFailoverInitialReconnectDelay(3000);
+			settings.setFailoverReconnectDelay(3000);
 			// settings.
 			return messagingServiceFactory.createConnectionFactory(MessagingServiceJmsConnectionFactory.class,
 					settings);
@@ -98,27 +112,70 @@ public class EnterpriseMessagingConfig {
 				.get("uri").textValue();
 
 		final String managementUrl = "/hub/rest/api/v1/management/messaging";
+		final String CLIENT_SECRET = emManagement.clientsecret;
+		final String CLIENT_ID = emManagement.clientid;
+		String tokenurl=emManagement.tokenendpoint;
+		final String TOKEN_ENDPOINT = tokenurl.substring(0, tokenurl.lastIndexOf("/oauth/token"));;
+		ClientCredentials identity = new ClientCredentials(CLIENT_ID, CLIENT_SECRET);
+		
 
-		DefaultOAuth2ClientContext clientContext = new DefaultOAuth2ClientContext();
 
-		RestTemplate restTemplate = new OAuth2RestTemplate(getClientCredentialsResourceDetails(emManagement));
+		        OAuth2TokenResponse tokenResponse = null;
+				OAuth2ServiceConfiguration config=OAuth2ServiceConfigurationBuilder.forService(Service.XSUAA)
+                .withClientId(CLIENT_ID)
+                .withClientSecret(CLIENT_SECRET)
+                .withUrl(TOKEN_ENDPOINT)
+                .build();      
+
+	 XsuaaTokenFlows tokenFlows = new XsuaaTokenFlows(new DefaultOAuth2TokenService(HttpClientFactory.create(identity)),
+                new XsuaaDefaultEndpoints(config), identity);
+
+
+		ClientCredentialsTokenFlow clientCredentialsTokenFlow = tokenFlows.clientCredentialsTokenFlow();
+
+		tokenResponse = clientCredentialsTokenFlow.execute();
+		String accessToken = tokenResponse.getAccessToken();
+        
+
+		
+
+		RestTemplate restTemplate = new RestTemplate();
+HttpHeaders headers = new HttpHeaders();
+headers.add("Authorization", "Bearer " + accessToken);  
+  headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
+HttpEntity<String> httpEntity = new HttpEntity<String>( headers);
+
+
+ restTemplate.exchange(url, HttpMethod.GET, httpEntity, String.class);
+
+
 
 		restTemplate.setUriTemplateHandler(new DefaultUriBuilderFactory(url + managementUrl));
 		restTemplate.setErrorHandler(new EmsResponseErrorHandler());
-
+ 
 		final String queueName = System.getenv("QUEUE_NAME");
 		final String PATH_QUEUE = "/queues/{queueName}";
 
 		try {
-			final String managementPath = "/hub/rest/api/v1/management/messaging/queues/";
-			logger.info("GET " + url + managementPath + queueName);
-			String queue = restTemplate.getForObject(PATH_QUEUE, String.class, queueName).toString();
+
+			String queue=  restTemplate.exchange(PATH_QUEUE, HttpMethod.GET, httpEntity, String.class,queueName).toString();
+			queue=queue.replace("<200 OK OK,","");
+			queue=queue.replace(">","");
+
 			final JsonNode fetchedQueue = mapper.readTree(queue);
+			
 			logger.info(fetchedQueue.get("name") + " already exists");
 		} catch (NotFoundException e) {
 			logger.info(e.getMessage());
 			logger.info("Queue is not available..!!! creating queue");
-			createQueue(restTemplate, PATH_QUEUE, queueName);
+		
+headers.setContentType(MediaType.APPLICATION_JSON);
+    headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+
+
+restTemplate.exchange(PATH_QUEUE, HttpMethod.PUT, httpEntity, String.class,queueName).toString();
+
+
 		} catch (UnauthorizedException e) {
 			logger.error(e.getMessage());
 		} catch (ConflictException e) {
@@ -127,49 +184,7 @@ public class EnterpriseMessagingConfig {
 
 	}
 
-	/**
-	 * Creating a queue
-	 * 
-	 * @param restTemplate
-	 * @param PATH_QUEUE
-	 * @param queueName
-	 */
-	private void createQueue(RestTemplate restTemplate, final String PATH_QUEUE, final String queueName) {
-		try {
-
-			restTemplate.put(PATH_QUEUE, null, queueName);
-		} catch (RestClientException e) {
-			logger.info(e.getMessage());
-
-		}
-	}
-
-	/**
-	 * Retrieving client credentials to access the api
-	 * 
-	 * @param emManagement
-	 * @return
-	 */
-	private ClientCredentialsResourceDetails getClientCredentialsResourceDetails(
-			EnterpriseMessagingService emManagement) {
-
-		// service key credentials
-		final String CLIENT_CREDENTIALS = emManagement.granttype;
-		final String CLIENT_SECRET = emManagement.clientsecret;
-		final String CLIENT_ID = emManagement.clientid;
-		final String TOKEN_ENDPOINT = emManagement.tokenendpoint;
-
-		ClientCredentialsResourceDetails resourceDetails = new ClientCredentialsResourceDetails();
-		resourceDetails.setAccessTokenUri(TOKEN_ENDPOINT);
-		resourceDetails.setClientId(CLIENT_ID);
-		resourceDetails.setClientSecret(CLIENT_SECRET);
-		resourceDetails.setGrantType(CLIENT_CREDENTIALS);
-
-		logger.error("Setting ResourceDetails");
-
-		return resourceDetails;
-
-	}
+	
 
 }
 
