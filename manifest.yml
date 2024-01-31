@@ -7,7 +7,7 @@ applications:
   env:
     CORS_DOMAIN: "<your_domain>"   # e.g: cfapps.eu10.hana.ondemand.com
     JBP_CONFIG_COMPONENTS: "jres: ['com.sap.xs.java.buildpack.jdk.SAPMachineJDK']"
-    JBP_CONFIG_SAP_MACHINE_JRE: '{ jre: { version: "11.+" } }'
+      JBP_CONFIG_SAP_MACHINE_JDK: "{ version: 17.+ }" 
   services:
     - espm-hana-db
     - espm-xsuaa
@@ -20,7 +20,7 @@ applications:
   env:
     CORS_DOMAIN: "<your_domain>"
     JBP_CONFIG_COMPONENTS: "jres: ['com.sap.xs.java.buildpack.jdk.SAPMachineJDK']"
-    JBP_CONFIG_SAP_MACHINE_JRE: '{ jre: { version: "11.+" } }'
+    JBP_CONFIG_SAP_MACHINE_JDK: "{ version: 17.+ }" 
   services:
     - espm-hana-db
     
@@ -33,7 +33,7 @@ applications:
     QUEUE_NAME: "<yourorgname>/<any_messageclientname>/<uniqueID>/salesorderqueue"
     PROD_SERVICE: https://<unique_id>-espm-product-svc.<your_domain>
     JBP_CONFIG_COMPONENTS: "jres: ['com.sap.xs.java.buildpack.jdk.SAPMachineJDK']"
-    JBP_CONFIG_SAP_MACHINE_JRE: '{ jre: { version: "11.+" } }'
+    JBP_CONFIG_SAP_MACHINE_JDK: "{ version: 17.+ }" 
   services:
     - espm-hana-db
     - espm-em
@@ -50,7 +50,7 @@ applications:
     QUEUE_NAME: "<yourorgname>/<any_messageclientname>/<uniqueID>/salesorderqueue"
     spring.main.allow-circular-references: true
     JBP_CONFIG_COMPONENTS: "jres: ['com.sap.xs.java.buildpack.jdk.SAPMachineJDK']"
-    JBP_CONFIG_SAP_MACHINE_JRE: '{ jre: { version: "11.+" } }'
+    JBP_CONFIG_SAP_MACHINE_JDK: "{ version: 17.+ }" 
   services:
     - espm-hana-db
     - espm-em

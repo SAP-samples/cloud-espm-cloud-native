@@ -39,7 +39,7 @@ public class ProductController {
 	 * @return list of product
 	 * @throws InterruptedException
 	 */
-	@GetMapping("/products")
+	@GetMapping("/products/")
 	public ResponseEntity<Iterable<Product>> getAllProducts() throws InterruptedException {
 		final Iterable<Product> products;
 		try {
@@ -90,7 +90,7 @@ public class ProductController {
 	 * @param productId
 	 * @return stock
 	 */
-	@GetMapping("/stocks")
+	@GetMapping("/stocks/")
 	public ResponseEntity<Iterable<ProductWithStock>> getStockForAllProducts() {
 		final Iterable<ProductWithStock> stocks = productService.getStockForAllProducts();
 		return new ResponseEntity<>(stocks, HttpStatus.OK);

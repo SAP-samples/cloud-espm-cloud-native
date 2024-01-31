@@ -72,10 +72,6 @@
 			<artifactId>resilience4j-timelimiter</artifactId>
 		</dependency>
 
-		<dependency>
-			<groupId>com.sap.cloud.servicesdk.xbem</groupId>
-			<artifactId>emjapi-connector-sap-cp</artifactId>
-		</dependency>
 
 		<dependency>
 			<groupId>com.sap.cloud.servicesdk.xbem</groupId>
@@ -92,10 +88,8 @@
 			<groupId>com.sap.cloud.security.xsuaa</groupId> <!-- Also managed by cloud-sdk -->
 			<artifactId>xsuaa-spring-boot-starter</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>org.apache.httpcomponents</groupId>
-			<artifactId>httpclient</artifactId>
-		</dependency>
+
+
 
 		<!-- h2database -->
 		<dependency>

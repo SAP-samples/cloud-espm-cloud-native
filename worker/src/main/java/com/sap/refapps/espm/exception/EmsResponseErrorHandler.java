@@ -34,7 +34,7 @@ public class EmsResponseErrorHandler extends DefaultResponseErrorHandler {
 	 */
 	public String constructMessage(HttpClientErrorException clientException) {
 		StringBuilder stringBuilder = new StringBuilder("Received response ");
-		stringBuilder.append(clientException.getRawStatusCode()).append(" - ").append(clientException.getStatusText());
+		stringBuilder.append(clientException.getStatusCode()).append(" - ").append(clientException.getStatusText());
 		stringBuilder.append(" from Enterprise Messaging Service.");
 
 		if (clientException.getResponseBodyAsString() != null && !"".equals(clientException.getResponseBodyAsString())) {

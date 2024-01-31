@@ -30,7 +30,7 @@ public abstract class ConcurrentHttpRequestTest {
 		Map<HttpStatus, Long> defaultCountPerStatus = Stream.of(HttpStatus.values())
 				.collect(toMap(identity(), e -> 0L));
 		responseList.stream().map(ResponseEntity::getStatusCode).collect(groupingBy(identity(), counting()))
-				.forEach((code, count) -> defaultCountPerStatus.merge(code, count, Long::max));
+				.forEach((code, count) -> defaultCountPerStatus.merge((HttpStatus) code, count, Long::max));
 
 		return defaultCountPerStatus;
 	}

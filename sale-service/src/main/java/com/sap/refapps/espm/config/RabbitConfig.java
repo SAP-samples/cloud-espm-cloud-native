@@ -5,6 +5,7 @@ import java.net.URISyntaxException;
 
 import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
+import org.springframework.amqp.rabbit.connection.CachingConnectionFactory.ConfirmType;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitAdmin;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -79,7 +80,7 @@ public class RabbitConfig {
 		connectionFactory.setUsername(rabbitUserName);
 		connectionFactory.setPassword(rabbitPassword);
 		connectionFactory.setChannelCacheSize(100);
-		connectionFactory.setPublisherConfirms(true);
+		connectionFactory.setPublisherConfirmType(ConfirmType.CORRELATED);
 		return connectionFactory;
 	}
 	

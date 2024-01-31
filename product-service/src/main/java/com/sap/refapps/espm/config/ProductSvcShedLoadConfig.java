@@ -1,6 +1,6 @@
 package com.sap.refapps.espm.config;
 
-import javax.servlet.Servlet;
+import jakarta.servlet.Servlet;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
