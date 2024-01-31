@@ -1,7 +1,7 @@
 ## Prerequisites and Required Systems
 This section contains the prerequisites that you have to fulfill before you get started. Make sure that the prerequisites are fulfilled and all required systems, services, and tools are available. 
 
-* SAPMachineJDK11
+* [SAPMachineJDK17] (https://github.com/SAP/SapMachine/releases/tag/sapmachine-17.0.8)
 * [Apache Maven](https://maven.apache.org/)
 * To build the multi target application, we need the [Cloud MTA Build tool](https://sap.github.io/cloud-mta-build-tool/), download the tool from [here](https://sap.github.io/cloud-mta-build-tool/download/)
 * For Windows system, install 'MAKE' from https://sap.github.io/cloud-mta-build-tool/makefile/
@@ -22,9 +22,9 @@ For Running locally:
 
 ### Message server
 
-* Download Qpid Broker-J 8.0 from [its repository](https://qpid.apache.org/releases/qpid-broker-j-8.0.6/)
+* Download Qpid Broker-J 9.0.0 from [its repository](https://qpid.apache.org/releases/qpid-broker-j-9.0.0/)
 
->Note: Qpid Broker-J 7.0 is incompatible with JDK 11.`  
+>Note: Qpid Broker-J 8.0.0 is incompatible with JDK 17.`  
 * Extract the zip and navigate to the bin directory
 * To run Qpid server
      - Windows - Run the qpid-server.bat
