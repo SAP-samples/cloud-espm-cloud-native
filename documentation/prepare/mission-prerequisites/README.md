@@ -15,7 +15,7 @@ This section contains the prerequisites that you have to fulfill before you get 
 
 For Running locally:
 * Message Server
-  [Apache Qpid](https://qpid.apache.org/) will be used as message server for local development and testing (steps on installing QPID can be found below. Qpid was chosen was local development as it's easy to install and setup. (Ensure JDK 11 is present)
+  [Apache Qpid](https://qpid.apache.org/) will be used as message server for local development and testing (steps on installing QPID can be found below. Qpid was chosen was local development as it's easy to install and setup. (Ensure JDK 17 is present)
 * Database Server
   [PostgreSQL](https://www.postgresql.org/) would be used as the SQL Database server for local development.
 
