@@ -17,7 +17,13 @@ The ESPM application has a dependency to Tax Service Application which is a mock
 
 ### Tax Service Application Deployment
 
-*Please note that the ESPM application and Tax Service application should be deployed on the same CF space.
+* Please note that the ESPM application and Tax Service application should be deployed on the same CF space.
+* Login to Cloud Foundry
+
+```
+cf api <api>
+cf login -o <org> -s <space>
+```
 
 From the tax-service folder where mta.yaml is kept for tax-service application run the command:
 

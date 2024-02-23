@@ -43,7 +43,7 @@ Delete Cart by Item ID
 
 Get All Products 
 
-    Endpoint URL - http://localhost:9992/product.svc/api/v1/products
+    Endpoint URL - http://localhost:9992/product.svc/api/v1/products/
     Method - `GET`
 
 Get Product by Product ID 
@@ -87,7 +87,7 @@ Get Sales Order by Customer Email ID
 
 Get All Sales Order|
 
-    Endpoint URL - http://localhost:9993/sale.svc/api/v1/salesOrders/
+    Endpoint URL - http://localhost:9993/sale.svc/api/v1/salesOrders
     Method - `GET`       
 
 #### Tax Service (External Service)
