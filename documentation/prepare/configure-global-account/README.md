@@ -49,6 +49,8 @@ In this section, you will set up the subaccount in SAP BTP to deploy the ESPM Ap
   
    ![enable cf](../images/cf-enablement.png)
 
+   Note : The namespace in em-default.json file contains exactly 3 segments (max length of 24 characters) with recommended approach as orgName/clientName/uniqueId,Please make sure to create the orgName with this considaration.
+
    1. In the **Plan** field, select **standard**.
    2. Choose **Create**.
 
