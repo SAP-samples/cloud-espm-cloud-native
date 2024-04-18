@@ -6,58 +6,58 @@ The below are the list of local service API endpoints of all the microservices.
 
 Create Customer
 
-    Endpoint URL - https://<unique_id>-espm-customer-svc.cfapps.eu10.hana.ondemand.com/customer.svc/api/v1/customers/
+    Endpoint URL - {Customer Application Routes}customer.svc/api/v1/customers/
     Header - `Content-Type:application/json`
     Method - `POST`
     Body - `{"emailAddress": "new_customer@test.com", "phoneNumber": "0123456789", "firstName": "new", "lastName": "customer", "dateOfBirth": "19900911", "city": "Bang, KR", "postalCode": "112233", "street": "100ft Road", "houseNumber": "123", "country": "IN"}`
 
 Get Customer by Email ID
 
-    Endpoint URL - https://<unique_id>-espm-customer-svc.cfapps.eu10.hana.ondemand.com/customer.svc/api/v1/customers/{emailAddress} 	
+    Endpoint URL - {Customer Application Routes}customer.svc/api/v1/customers/{emailAddress} 	
     Method - `GET`
 
 
 Create Cart
 
-    Endpoint URL - https://<unique_id>-espm-customer-svc.cfapps.eu10.hana.ondemand.com/customer.svc/api/v1/customers/{customerId}/carts/
+    Endpoint URL - {Customer Application Routes}customer.svc/api/v1/customers/{customerId}/carts/
     Header - `Content-Type:application/json`
     Method - `POST`
     Body - `{"productId": "HT-1000", "name" :"Notebook Basic 15", "checkOutStatus": "false","quantityUnit": 3}`     
 
 Get Cart by Customer ID
 
-    Endpoint URL - https://<unique_id>-espm-customer-svc.cfapps.eu10.hana.ondemand.com/customer.svc/api/v1/customers/{customerId}/carts/
+    Endpoint URL - {Customer Application Routes}customer.svc/api/v1/customers/{customerId}/carts/
     Method - `GET`
 
 Update Cart by Item ID
 
-    Endpoint URL - https://<unique_id>-espm-customer-svc.cfapps.eu10.hana.ondemand.com/customer.svc/api/v1/customers/{customerId}/carts/{itemId}         
+    Endpoint URL - {Customer Application Routes}customer.svc/api/v1/customers/{customerId}/carts/{itemId}         
     Header - `Content-Type:application/json`
     Method - `PUT`
     Body - `{"itemId": {itemId},"productId": "HT-1000",  "name" :"Notebook Basic 15", "quantityUnit": 10,"checkOutStatus": false}`
 
 Delete Cart by Item ID
 
-    Endpoint URL - https://<unique_id>-espm-customer-svc.cfapps.eu10.hana.ondemand.com/customer.svc/api/v1/customers/{customerId}/carts/{itemId}
+    Endpoint URL - {Customer Application Routes}customer.svc/api/v1/customers/{customerId}/carts/{itemId}
     Method - `DELETE`
 
 #### Product Service
 
 Get All Products
 
-    Endpoint URL - https://<unique_id>-espm-product-svc.cfapps.eu10.hana.ondemand.com/product.svc/api/v1/products
+    Endpoint URL - {Product Application Routes}product.svc/api/v1/products/
     Method - `GET`
 
 Get Product by Product ID   
 
-    Endpoint URL - https://<unique_id>-espm-product-svc.cfapps.eu10.hana.ondemand.com/product.svc/api/v1/products/{productId}
+    Endpoint URL - {Product Application Routes}product.svc/api/v1/products/{productId}/
     Method - `GET`  
 
 In order to access the below endpoint, the user needs retailer role and token has to be passed in the header.
 
 Execute the below command and make note of `xsuaa` service instance url, clientid, clientsecret.
 
-`cf env <unique_id>-espm-product-svc`
+`cf env espm-product-svc`
 
 Get New access Token
 
@@ -69,7 +69,7 @@ Get New access Token
 
 Get Stock by Product ID
 
-    Endpoint URL - https://<unique_id>-espm-product-svc.cfapps.eu10.hana.ondemand.com/product.svc/api/v1/stocks/{productId}
+    Endpoint URL - {Product Application Routes}product.svc/api/v1/stocks/{productId}/
     Method - `GET`       
     Header - `Content-Type:application/json` , `Authorization:Bearer <Get New Access Token>`                                |
 
@@ -100,7 +100,7 @@ The payload of the request needs to have following form-url-encoded values:
 
 Update Stock by Product ID
 
-    Endpoint URL - https://<unique_id>-espm-product-svc.cfapps.eu10.hana.ondemand.com/product.svc/api/v1/stocks/{productId}		 
+    Endpoint URL - {Product Application Routes}product.svc/api/v1/stocks/{productId}/		 
     Header - `Content-Type:application/json`   , `Authorization:Bearer <Access token with scopes of Retailer role>`
     Method - `PUT`
     Body - `{"productId": "HT-1000", "quantity": 20}`     
@@ -111,7 +111,7 @@ In order to access the below endpoint, the user needs retailer role and token ha
 
 Execute the below command and make note `xsuaa` service instance of url, clientid, clientsecret.
 
-`cf env <unique_id>-espm-sales-svc`
+`cf env espm-sales-svc`
 
 Get New access Token
 
@@ -122,25 +122,25 @@ Get New access Token
 
 Create Sales Order
 
-    Endpoint URL - https://<unique_id>-espm-sales-svc.cfapps.eu10.hana.ondemand.com/sale.svc/api/v1/salesOrders|
+    Endpoint URL - {Sales Application Routes}sale.svc/api/v1/salesOrders
     Header - `Content-Type:application/json`
     Method - `POST`
     Body - `{"customerEmail": "viola.gains@itelo.info",  "productName" :"Notebook Basic 15", "productId": "HT-1000","currencyCode": "EUR", "grossAmount":956,"quantity":4}`     
 
 Get Sales Order by Sales Order ID
 
-    Endpoint URL - https://<unique_id>-espm-sales-svc.cfapps.eu10.hana.ondemand.com/sale.svc/api/v1/salesOrders/{salesOrderId}
+    Endpoint URL - {Sales Application Routes}sale.svc/api/v1/salesOrders/{salesOrderId}
     Method  - `GET`       
     Header - `Content-Type:application/json` , `Authorization:Bearer <Get New Access Token>`
 
 Get Sales Order by Customer Email ID
 
-    Endpoint URL - https://<unique_id>-espm-sales-svc.cfapps.eu10.hana.ondemand.com/sale.svc/api/v1/salesOrders/email/{emailAddress}    
+    Endpoint URL - {Sales Application Routes}sale.svc/api/v1/salesOrders/email/{emailAddress}    
     Method - `GET`       
     Header - `Content-Type:application/json` , `Authorization:Bearer <Get New Access Token>`
 
 Get All Sales Order
 
-    Endpoint URL - https://<unique_id>-espm-sales-svc.cfapps.eu10.hana.ondemand.com/sale.svc/api/v1/salesOrders/
+    Endpoint URL - {Sales Application Routes}sale.svc/api/v1/salesOrders
     Method - `GET`       
     Header - `Content-Type:application/json` , `Authorization:Bearer <Get New Access Token>`
