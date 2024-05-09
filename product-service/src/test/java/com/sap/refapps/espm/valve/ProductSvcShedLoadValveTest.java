@@ -34,6 +34,6 @@ public class ProductSvcShedLoadValveTest extends ConcurrentHttpRequestTest {
 		assertThat(responseCodeCounts.get(HttpStatus.OK)).isGreaterThanOrEqualTo(0);
 		assertThat(responseCodeCounts.get(HttpStatus.INTERNAL_SERVER_ERROR)).isEqualTo(0);
 
-		assertThat(responseCodeCounts.get(HttpStatus.SERVICE_UNAVAILABLE)).isGreaterThan(0);
+		assertThat(responseCodeCounts.get(HttpStatus.TOO_MANY_REQUESTS)).isGreaterThan(0);
 	}
 }

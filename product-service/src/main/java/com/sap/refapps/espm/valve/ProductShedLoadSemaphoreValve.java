@@ -2,6 +2,7 @@ package com.sap.refapps.espm.valve;
 
 import static jakarta.servlet.http.HttpServletResponse.SC_SERVICE_UNAVAILABLE;
 
+
 import java.io.IOException;
 
 import jakarta.servlet.ServletException;
@@ -42,8 +43,7 @@ public class ProductShedLoadSemaphoreValve extends ValveBase {
             getNext().invoke(request, response);
         } catch (final ShedLoadSemaphore.LoadExceedException e) {
             logger.warn("Rejected, too many requests: {}", request.getRequestURL());
-            response.setStatus(SC_SERVICE_UNAVAILABLE);
-            response.setHeader("RATE_LIMIT_SET_AT", "valve");
+            response.sendError(429, "Too many requests");
         } catch (InterruptedException e) {
             logger.warn("Rejected due to interrupt: {}", request.getRequestURL());
             response.setStatus(SC_SERVICE_UNAVAILABLE);
