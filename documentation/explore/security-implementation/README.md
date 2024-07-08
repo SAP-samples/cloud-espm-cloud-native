@@ -1,6 +1,6 @@
 ## Security Implementation
 
-The security implementation in the ESPM application is based on [Spring Security](https://spring.io/projects/spring-security-oauth). Spring applications using the Spring-security libraries can integrate with the SAP Business Technology Platform Authorization and Trust Management service as described [here](https://help.sap.com/docs/SAP_HANA_PLATFORM/4505d0bdaf4948449b7f7379d24d0f0d/cc45f1833e364d348b5057a60d0b8aed.html#configure-spring-security-for-spring-boot-applications%0A(spring-xsuaa)). ESPM Application implements app-to-app communication so that two microservices can securely communicate with each other. This application showcases how to implement a secure communication using two  different ways:
+The security implementation in the ESPM application is based on [Spring Security](https://spring.io/projects/spring-security). Spring applications using the Spring-security libraries can integrate with the SAP Business Technology Platform Authorization and Trust Management service as described [here](https://help.sap.com/docs/SAP_HANA_PLATFORM/4505d0bdaf4948449b7f7379d24d0f0d/cc45f1833e364d348b5057a60d0b8aed.html#configure-spring-security-for-spring-boot-applications%0A(spring-xsuaa)). ESPM Application implements app-to-app communication so that two microservices can securely communicate with each other. This application showcases how to implement a secure communication using two  different ways:
 
 - Propagating a Business User
 - Using a Technical User

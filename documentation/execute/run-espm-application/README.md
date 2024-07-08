@@ -12,10 +12,8 @@
 ![Alt text](./images/3.png "3")
 * View all Products details. 
 ![Alt text](./images/4.png "4")
-* You can edit the number of quantity by entering the number in the column. Click on add to cart.
+* You can edit the number of quantity by entering the number in the Quantity column. Click on add to cart.
 ![Alt text](./images/5.png "5")
-* Click on Add to cart, if quantity is not added, minimum of 1 item is taken.
-![Alt text](./images/6.png "6")
 * Click on Cart icon on top right to checkout your order.
 ![Alt text](./images/7.png "7")
 * You are presented with a screen with all added cart items. Click on Step 2. You can see your logged in email.
