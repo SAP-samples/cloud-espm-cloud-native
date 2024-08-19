@@ -146,7 +146,7 @@ headers.add("Authorization", "Bearer " + accessToken);
 HttpEntity<String> httpEntity = new HttpEntity<String>( headers);
 
 
- restTemplate.exchange(url, HttpMethod.GET, httpEntity, String.class);
+// restTemplate.exchange(url, HttpMethod.GET, httpEntity, String.class);
 
 
 
